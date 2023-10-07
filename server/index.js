@@ -1,4 +1,4 @@
-const { query } = require('./consts/query')
+const { allTableQuery, allTableOneRowQuery } = require('./consts/query')
 const { transateRows } = require('./features/translateRows')
 const express = require('express');
 const { Pool } = require('pg');
@@ -18,9 +18,19 @@ const pool = new Pool({
 
 app.get('/getAll', async (req, res) => {
     try {
-      const { rows } = await pool.query(query);
+      const { rows } = await pool.query(allTableQuery);
       const translatedData = transateRows(rows)
       res.json(translatedData);
+    } catch (error) {
+      res.status(500).send('Ошибка сервера');
+    }
+  });
+
+app.get('/getAllTitles', async (req, res) => {
+    try {
+      const { rows } = await pool.query(allTableOneRowQuery);
+      const translatedData = transateRows(rows)
+      res.json(Object.keys(translatedData[0]));
     } catch (error) {
       res.status(500).send('Ошибка сервера');
     }

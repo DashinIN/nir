@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import  { useState } from 'react';
-import './App.css';
 import { utils as XLSXUtils, writeFile as XLSXWriteFile } from 'xlsx';
+import './index.scss'
 
 function App() {
   const [data, setData] = useState([]);
@@ -16,11 +16,11 @@ function App() {
       }
       const jsonData = await response.json();
       setData(jsonData);
-      
-      const ws = XLSXUtils.json_to_sheet(jsonData);
-      const wb = XLSXUtils.book_new();
-      XLSXUtils.book_append_sheet(wb, ws, 'Лист 1');
-      XLSXWriteFile(wb, 'Таблица.xlsx');
+      console.log(jsonData)
+      // const ws = XLSXUtils.json_to_sheet(jsonData);
+      // const wb = XLSXUtils.book_new();
+      // XLSXUtils.book_append_sheet(wb, ws, 'Лист 1');
+      // XLSXWriteFile(wb, 'Таблица.xlsx');
     } catch (error) {
       console.error('Ошибка:', error);
     } finally {
