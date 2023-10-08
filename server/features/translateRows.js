@@ -14,6 +14,17 @@ const { fieldTranslations } = require('../consts/translations.js')
         });
     }
 
+function translateTitles(data) {
+    for (let key in data) {
+        const translatedTitle = fieldTranslations[data[key]['column_name']]
+        if(translatedTitle) {
+            data[key]['column_name'] = translatedTitle
+        } 
+    }
+    return data.map(item => item['column_name'])  
+}
+
     module.exports = {
-        transateRows: transateRows
+        transateRows: transateRows,
+        translateTitles: translateTitles
       };

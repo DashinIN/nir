@@ -10,7 +10,7 @@ function App() {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:5000/getAll');
+      const response = await fetch('http://localhost:5000/getAllTitles');
       if (!response.ok) {
         throw new Error('Ошибка при получении данных');
       }
