@@ -1,7 +1,17 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 body {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   background-color: rgba(255, 255, 255, 0.87);
   color: #242424;
+}
+
+.App {
+  padding: 10px;
 }
 
 h1 {
@@ -25,6 +35,20 @@ button:hover {
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
+}
+
+.itemsWrapper {
+  margin: 20px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 300px;
+}
+
+.item {
+  border: 2px solid black;
+  padding: 20px;
+  background-color: white;
 }
 
 
