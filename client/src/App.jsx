@@ -1,11 +1,12 @@
 /* eslint-disable no-unused-vars */
-import  { useState } from 'react';
+import  { useEffect, useState } from 'react';
 import { Reorder } from 'framer-motion';
 import { utils as XLSXUtils, writeFile as XLSXWriteFile } from 'xlsx';
 import './index.scss';
 
 function App() {
-    const [data, setData] = useState([]);
+    const [items, setItems] = useState([]);
+    const [fields, setFields] = useState([]);
     const [loading, setLoading] = useState(false);
 
     const fetchData = async () => {
@@ -16,8 +17,9 @@ function App() {
                 throw new Error('Ошибка при получении данных');
             }
             const jsonData = await response.json();
-            setData(jsonData);
+            setFields(jsonData);
             console.log(jsonData);
+
             // const ws = XLSXUtils.json_to_sheet(jsonData);
             // const wb = XLSXUtils.book_new();
             // XLSXUtils.book_append_sheet(wb, ws, 'Лист 1');
@@ -28,8 +30,7 @@ function App() {
             setLoading(false);
         }
     };
-    const [items, setItems] = useState([]);
-    const fields = ['Первый элемент', 'Второй элемент', 'Третий элемент', 'Четвертый элемент', 'Пятый элемент'];
+  
 
     const handleCheckboxChange = (field) => {
         if (items.includes(field)) {
@@ -39,6 +40,10 @@ function App() {
         }
     };
 
+    useEffect(() => {
+        fetchData();
+    }, []);
+
     return (
         <div className="App">
             {/* <h1>Сгенерировать отчет</h1>
@@ -47,17 +52,21 @@ function App() {
       </button> */}
 
             <h2>Отметьте требуемые поля</h2>
-            {fields.map((field, index) => (
-                <div key={index}>
-                    <input
-                        type="checkbox"
-                        name="check"
-                        checked={items.includes(field)}
-                        onChange={() => handleCheckboxChange(field)}
-                    />
-                    <label htmlFor="check">{field}</label>
-                </div>
-            ))}
+            <div className="fieldsWrapper">
+                {fields.map((field, index) => (
+                    <div className='fieldItem' key={index}>
+                        <input
+                            type="checkbox"
+                            name="check"
+                            checked={items.includes(field)}
+                            onChange={() => handleCheckboxChange(field)}
+                        />
+                        <label htmlFor="check">{field}</label>
+                    </div>
+                ))}
+                
+            </div>
+            
 
             { Boolean(items.length) && (
                 <>
