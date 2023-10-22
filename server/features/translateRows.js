@@ -15,10 +15,7 @@ const transateRows = (data) => {
 }
 
 function translateTitles (data) {
-    return data
-        .map((item) => item.column_name)
-        .filter(item => fieldTranslations[item])
-        .map(item => fieldTranslations[item])
+    return data.map(item => fieldTranslations[item])
 }
 
 module.exports = {

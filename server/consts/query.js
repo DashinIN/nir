@@ -20,8 +20,18 @@ const allTableTitlesQuery = `
   FROM information_schema.columns
   WHERE table_name = 'my_view'
   `
+const getRequestQuery = (selectedFields) => {
+    const selectedFieldsString = selectedFields.join(', ')
+    const query = `
+    WITH my_view AS (${allTableQuery})
+      SELECT ${selectedFieldsString}
+      FROM my_view
+  `
+    return query
+}
 
 module.exports = {
     allTableQuery,
-    allTableTitlesQuery
+    allTableTitlesQuery,
+    getRequestQuery
 }
