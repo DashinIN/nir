@@ -1,47 +1,23 @@
 /* eslint-disable no-unused-vars */
-import  { useEffect, useState } from 'react';
+import  { useState } from 'react';
 import { Reorder } from 'framer-motion';
 import { utils as XLSXUtils, writeFile as XLSXWriteFile } from 'xlsx';
+import { useQuery, useMutation } from 'react-query';
+import {fetchAllTitles, sendSelectedTitles} from './api/queries';
 import './index.scss';
 
 function App() {
     const [items, setItems] = useState([]);
-    const [fields, setFields] = useState([]);
-    const [loading, setLoading] = useState(false);
 
-    const fetchAllTitles = async () => {
-        setLoading(true);
-        try {
-            const response = await fetch('http://localhost:5000/getAllTitles');
-            if (!response.ok) {
-                throw new Error('Ошибка при получении данных');
-            }
-            const jsonData = await response.json();
-            setFields(jsonData);
-        } catch (error) {
-            console.error('Ошибка:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
-  
+    const { data: fields, isLoading} = useQuery('titles', fetchAllTitles);
+    const sendingSelectedTitles = useMutation(sendSelectedTitles);
+
     const getRequestTable = async () => {
-        if(!items.length) {
+        if (!items.length) {
             return;
         }
-        setLoading(true);
         try {
-            const response = await fetch('http://localhost:5000/postOrder', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(items),
-            });
-            if (!response.ok) {
-                throw new Error('Ошибка HTTP: ' + response.status);
-            }
-            const data = await response.json();
+            const data = await sendingSelectedTitles.mutateAsync(items);
             const ws = XLSXUtils.json_to_sheet(data);
             const wb = XLSXUtils.book_new();
             XLSXUtils.book_append_sheet(wb, ws, 'Лист 1');
@@ -49,11 +25,8 @@ function App() {
         } catch (error) {
             console.error('Произошла ошибка:', error);
         }
-        finally {
-            setLoading(false);
-        }
     };
-
+      
     const handleCheckboxChange = (field) => {
         if (items.includes(field)) {
             setItems(items.filter(item => item !== field));
@@ -62,9 +35,9 @@ function App() {
         }
     };
 
-    useEffect(() => {
-        fetchAllTitles();
-    }, []);
+    if (isLoading) {
+        return <div>Загрузка полей...</div>;
+    }
 
     return (
         <div className="App">
@@ -72,10 +45,7 @@ function App() {
             <div className="fieldsWrapper">
                 {fields.map((field, index) => (
                     <div className='fieldItem' key={index}>
-                        <input
-                            type="checkbox"
-                            name="check"
-                            checked={items.includes(field)}
+                        <input type="checkbox" name="check" checked={items.includes(field)}
                             onChange={() => handleCheckboxChange(field)}
                         />
                         <label htmlFor="check">{field}</label>
@@ -96,8 +66,10 @@ function App() {
                 </>
             )}
             <h2>Сгенерировать отчет</h2>
-            <button onClick={getRequestTable} disabled={loading}>
-                {loading ? 'Загрузка...' : 'Получить таблицу'}
+            <button 
+                onClick={getRequestTable} 
+                disabled={sendingSelectedTitles.isLoading}>
+                {sendingSelectedTitles.isLoading ? 'Загрузка' : 'Получить таблицу'}
             </button>
         </div>
     );
