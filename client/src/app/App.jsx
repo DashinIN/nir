@@ -3,7 +3,8 @@ import  { useState } from 'react';
 import { Reorder } from 'framer-motion';
 import { utils as XLSXUtils, writeFile as XLSXWriteFile } from 'xlsx';
 import { useQuery, useMutation } from 'react-query';
-import {fetchAllTitles, sendSelectedTitles} from './api/queries';
+import { CheckboxItem } from '../shared/ui/CheckboxItem/CheckboxItem';
+import {fetchAllTitles, sendSelectedTitles} from '../shared/api/queries';
 import './index.scss';
 
 function App() {
@@ -44,12 +45,12 @@ function App() {
             <h2>Отметьте требуемые поля</h2>
             <div className="fieldsWrapper">
                 {fields.map((field, index) => (
-                    <div className='fieldItem' key={index}>
-                        <input type="checkbox" name="check" checked={items.includes(field)}
-                            onChange={() => handleCheckboxChange(field)}
-                        />
-                        <label htmlFor="check">{field}</label>
-                    </div>
+                    <CheckboxItem 
+                        key={index} 
+                        label={field}
+                        handleCheckboxChange={() => handleCheckboxChange(field)}
+                        handleCheck={items.includes(field)}
+                    />
                 ))}
             </div>
             { Boolean(items.length) && (
@@ -65,7 +66,7 @@ function App() {
                     <div>Порядок полей: {items.join(', ').toLowerCase()}</div>
                 </>
             )}
-            <h2>Сгенерировать отчет</h2>
+            <h2>Сгенерировать таблицу</h2>
             <button 
                 onClick={getRequestTable} 
                 disabled={sendingSelectedTitles.isLoading}>
