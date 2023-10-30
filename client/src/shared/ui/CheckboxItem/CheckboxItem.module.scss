@@ -1,16 +1,13 @@
 .CheckboxItem {
-    flex: 0 0 calc(33.33% - 10px); 
+    display: flex;
+    gap: 5px;
     padding: 5px 10px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    flex: 0 0 calc(33.33% - 10px); 
 
     cursor: pointer;
     user-select: none;
-
-    display: flex;
-    gap: 5px;
-
+    overflow: hidden;
+    white-space: nowrap;
     transition: all .3s ease;
 }
 

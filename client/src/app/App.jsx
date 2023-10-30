@@ -1,11 +1,11 @@
 /* eslint-disable no-unused-vars */
 import  { useState } from 'react';
-import { Reorder } from 'framer-motion';
-import { utils as XLSXUtils, writeFile as XLSXWriteFile } from 'xlsx';
 import { useQuery, useMutation } from 'react-query';
 import { CheckboxItem } from '../shared/ui/CheckboxItem/CheckboxItem';
 import {fetchAllTitles, sendSelectedTitles} from '../shared/api/queries';
-import './index.scss';
+import { outputToExel } from '../shared/lib/outputToExel/outputToExel';
+import { ReorderList } from '../shared/ui/ReorderList/ReorderList';
+import './styles/index.scss';
 
 function App() {
     const [items, setItems] = useState([]);
@@ -19,10 +19,7 @@ function App() {
         }
         try {
             const data = await sendingSelectedTitles.mutateAsync(items);
-            const ws = XLSXUtils.json_to_sheet(data);
-            const wb = XLSXUtils.book_new();
-            XLSXUtils.book_append_sheet(wb, ws, 'Лист 1');
-            XLSXWriteFile(wb, 'Таблица.xlsx');
+            outputToExel(data);
         } catch (error) {
             console.error('Произошла ошибка:', error);
         }
@@ -56,13 +53,7 @@ function App() {
             { Boolean(items.length) && (
                 <>
                     <h2>Выберете порядок полей</h2>
-                    <Reorder.Group values={items} onReorder={setItems} className='itemsWrapper'>
-                        {items.map(item => (
-                            <Reorder.Item key={item} value={item} className='item'>
-                                {item}
-                            </Reorder.Item>
-                        ))}
-                    </Reorder.Group>
+                    <ReorderList items={items} setItems={setItems}/>
                     <div>Порядок полей: {items.join(', ').toLowerCase()}</div>
                 </>
             )}
