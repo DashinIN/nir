@@ -1,7 +1,7 @@
 import { useQuery } from 'react-query';
-import { ReorderList } from '../../shared/ui/ReorderList/ReorderList';
-import { FieldsSelector } from '../../widgets/FieldsSelector/FieldsSelector';
-import { fetchAllTitles } from '../../shared/api/queries';
+import { ReorderList } from '@/shared/ui/ReorderList/ReorderList';
+import { FieldsSelector } from '@/widgets/FieldsSelector/FieldsSelector';
+import { fetchAllTitles } from '@/shared/api/queries';
 
 const CreateTemplate = ({items, setItems}) => {
     const { data: fields, isLoading} = useQuery('titles', fetchAllTitles);

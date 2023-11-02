@@ -1,4 +1,4 @@
-import { classNames } from '../../lib/classNames/classNames';
+import { classNames } from '@/shared/lib/classNames/classNames';
 import s from './CheckboxItem.module.scss';
 
 export const CheckboxItem = ({label, handleCheck, handleCheckboxChange}) => {

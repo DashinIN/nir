@@ -10,6 +10,10 @@ export default defineConfig({
                 lintCommand: 'eslint "./src/**/*.{js,jsx}"',
             },
         }),
-
     ],
+    resolve: {
+        alias: [
+            { find: '@', replacement: '/src' },
+        ]
+    }
 });

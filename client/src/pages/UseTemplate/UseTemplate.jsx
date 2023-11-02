@@ -1,5 +1,5 @@
-import { sendSelectedTitles } from '../../shared/api/queries';
-import { outputToExel } from '../../shared/lib/outputToExel/outputToExel';
+import { sendSelectedTitles } from '@/shared/api/queries';
+import { outputToExel } from '@/shared/lib/outputToExel/outputToExel';
 import { useMutation } from 'react-query';
 
 const UseTemplate = ({items}) => {

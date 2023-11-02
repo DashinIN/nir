@@ -1,4 +1,4 @@
-import { CheckboxItem } from '../../shared/ui/CheckboxItem/CheckboxItem';
+import { CheckboxItem } from '@/shared/ui/CheckboxItem/CheckboxItem';
 import s from './FieldsSelector.module.scss';
 
 export const FieldsSelector = ({fields, items, setItems}) => {
