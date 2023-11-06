@@ -1,7 +1,5 @@
 .CheckboxItem {
-    display: flex;
-    gap: 5px;
-    padding: 5px 10px;
+    padding: 6px 10px;
     flex: 0 0 calc(33.33% - 10px); 
     cursor: pointer;
     user-select: none;
@@ -13,4 +11,40 @@
 .checked {
     background-color: blueviolet;
     color: white;
+}
+
+.checkbox {
+    display:none;
+}
+
+.checkbox + label span {
+    display:inline-block;
+    width:25px;
+    height:19px;
+    margin: 0 5px -4px 0; 
+
+    &::before,
+    &::after {
+        transition: all .3s ease-in-out;
+        content: "";
+        position: absolute;
+        z-index: 1;
+        width: 1rem;
+        height: 1rem;
+        background: transparent;
+        border: 2px solid black; 
+    }
+
+    &::after {
+        z-index: 0;
+        border: none;
+    }
+}
+
+.checkbox:checked + label span {
+    &::before {
+        transform: rotateY(180deg);
+        background: black;
+        border-color: white;
+    }
 }

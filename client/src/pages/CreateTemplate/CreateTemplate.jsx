@@ -1,9 +1,11 @@
 import { useQuery } from 'react-query';
+import { useState } from 'react';
 import { ReorderList } from '@/shared/ui/ReorderList/ReorderList';
 import { FieldsSelector } from '@/widgets/FieldsSelector/FieldsSelector';
 import { fetchAllTitles } from '@/shared/api/queries';
 
-const CreateTemplate = ({items, setItems}) => {
+const CreateTemplate = () => {
+    const [items, setItems] = useState([]);
     const { data: fields, isLoading} = useQuery('titles', fetchAllTitles);
     
     if (isLoading) {

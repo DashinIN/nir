@@ -1,42 +1,13 @@
-/* eslint-disable no-unused-vars */
-import  { useState } from 'react';
-import { Route, Routes, NavLink } from 'react-router-dom';
+import { Navbar } from '@/widgets/Navbar/Navbar';
 import './styles/index.scss';
-import CreateTemplate from '@/pages/CreateTemplate/CreateTemplate';
-import UseTemplate from '@/pages/UseTemplate/UseTemplate';
-
+import { AppRouter } from './providers/router/AppRouter';
 
 function App() {
-    const [items, setItems] = useState([]);
 
     return (
         <div className="App">
-            <NavLink
-                to="/CreateTemplate"
-                className={({ isActive, isPending }) =>
-                    isPending ? 'pending' : isActive ? 'active' : ''
-                }
-            >
-                CreateTemplate
-            </NavLink>
-            <NavLink
-                to="/UseTemplate"
-                className={({ isActive, isPending }) =>
-                    isPending ? 'pending' : isActive ? 'active' : ''
-                }
-            >
-                UseTemplate
-            </NavLink>
-            <Routes>
-                <Route
-                    path={'/CreateTemplate'}
-                    element={<CreateTemplate items={items} setItems={setItems}/>}
-                />
-                <Route
-                    path={'/UseTemplate'}
-                    element={<UseTemplate items={items}/>}
-                />
-            </Routes>
+            <Navbar/>
+            <AppRouter />
         </div>
     );
 }

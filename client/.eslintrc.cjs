@@ -14,6 +14,10 @@ module.exports = {
   rules: {
     indent: [2, 4],
     'linebreak-style': 'off',
+    'react/self-closing-comp': ['error', {
+      'component': true,
+      'html': true
+    }],
     quotes: ['error', 'single'],
     semi: ['error', 'always'],
     'react/jsx-indent': [2, 4],

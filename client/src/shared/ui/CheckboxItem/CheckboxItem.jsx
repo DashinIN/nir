@@ -12,12 +12,17 @@ export const CheckboxItem = ({label, handleCheck, handleCheckboxChange}) => {
             className={classNames(s.CheckboxItem, mods, [])}
             onClick={handleCheckboxChange}
         >
-            <input 
-                type="checkbox" 
-                name="check" 
-                checked={handleCheck}
-            />
-            <label htmlFor="check">{label}</label>
+            <div >
+                <input 
+                    className={s.checkbox}
+                    onChange={() => {}} 
+                    checked={handleCheck} 
+                    type="checkbox" 
+                    name="check"
+                />
+                <label htmlFor="check"><span />{label}</label>
+            </div>
+            
         </div>
     );
 };
