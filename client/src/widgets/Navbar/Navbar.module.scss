@@ -1,6 +1,7 @@
 .Navbar {
     display: flex;
     background-color: blueviolet;
+    padding-top: 20px;
 }
 
 .NavLink {
@@ -11,7 +12,7 @@
     color: white;
     border-radius: 20px 20px 0 0;
     font-size: 1.2rem;
-    transition: all .5s ease;
+    transition: all .3s ease;
 }
 
 .activeNavLink {
