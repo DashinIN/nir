@@ -6,7 +6,6 @@ export const AppRouter = () => {
     return (
         <Routes>
             <Route
-                index
                 path={'/createTemplate'}
                 element={<CreateTemplate/>}
             />

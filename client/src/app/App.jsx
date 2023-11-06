@@ -1,14 +1,14 @@
 import { Navbar } from '@/widgets/Navbar/Navbar';
-import './styles/index.scss';
 import { AppRouter } from './providers/router/AppRouter';
+import './styles/index.scss';
 
 function App() {
 
     return (
-        <div className="App">
+        <>
             <Navbar/>
             <AppRouter />
-        </div>
+        </>
     );
 }
 

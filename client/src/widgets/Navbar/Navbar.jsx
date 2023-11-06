@@ -1,28 +1,28 @@
 import { NavLink } from 'react-router-dom';
 import s from './Navbar.module.scss';
+import { classNames } from '@/shared/lib/classNames/classNames';
 
-const toggleLink = ({ isActive, isPending }) => {
-    return isPending ? 
-        `${s.pendingNavLink}` :
-        isActive ? 
-            `${s.activeNavLink}` : '';
+const toggleLink = ({ isActive }) => {
+    return isActive ? 
+        classNames(s.activeNavLink, {}, [s.NavLink]) : 
+        classNames('', {}, [s.NavLink]);
 };
 
 
 export const Navbar = () => {
     return (
-        <div>
+        <div className={s.Navbar}>
             <NavLink
                 to="/CreateTemplate"
                 className={toggleLink}
             >
-                CreateTemplate
+                Создать шаблон
             </NavLink>
             <NavLink
                 to="/UseTemplate"
                 className={toggleLink}
             >
-                UseTemplate
+                Использовать шаблон
             </NavLink>
         </div>
     );

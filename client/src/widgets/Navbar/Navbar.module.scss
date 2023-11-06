@@ -1,7 +1,25 @@
-.activeNavLink {
-    background-color: red;
+.Navbar {
+    display: flex;
+    background-color: blueviolet;
 }
 
-.pendingNavLink {
-    background-color: blue;
+.NavLink {
+    padding: 25px 20px;
+    text-align: center;
+    flex: 1 1 50%;
+    background-color: blueviolet;
+    color: white;
+    border-radius: 20px 20px 0 0;
+    font-size: 1.2rem;
+    transition: all .5s ease;
 }
+
+.activeNavLink {
+    background-color: white;
+    color: black;
+
+    &:hover {
+        cursor: default;
+    }
+}
+
