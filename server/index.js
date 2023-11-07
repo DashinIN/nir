@@ -58,6 +58,24 @@ app.post('/postOrder', async (req, res) => {
     }
 })
 
+app.post('/addSample', async (req, res) => {
+    try {
+        const { name, items } = req.body
+        const translatedCountent = items
+            .map(item => Object.keys(fieldTranslations)
+                .find(key => fieldTranslations[key] === item)
+            ).join(' ')
+        const query = 'INSERT INTO output_samples (sample_name, sample_content) VALUES ($1, $2)'
+        const values = [name, translatedCountent]
+        console.log(values)
+        await pool.query(query, values)
+        res.status(201).json({ message: 'Запись успешно добавлена в таблицу output_samples' })
+    } catch (error) {
+        console.error('Ошибка:', error)
+        res.status(500).json({ error: 'Произошла ошибка при добавлении записи' })
+    }
+})
+
 app.listen(port, () => {
     console.log(`Сервер запущен на порту ${port}`)
 })

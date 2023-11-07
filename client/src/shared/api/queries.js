@@ -6,7 +6,7 @@ export const fetchAllTitles = async () => {
     return response.json();
 };
 
-export const  sendSelectedTitles = async (items) =>  {
+export const sendSelectedTitles = async (items) =>  {
     const response = await fetch('http://localhost:5000/postOrder', {
         method: 'POST',
         headers: {
@@ -17,5 +17,21 @@ export const  sendSelectedTitles = async (items) =>  {
     if (!response.ok) {
         throw new Error('Ошибка HTTP: ' + response.status);
     }
+    return response.json();
+};
+
+export const addSample = async (data) => {
+    const response = await fetch('http://localhost:5000/addSample', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+    });
+  
+    if (!response.ok) {
+        throw new Error('Произошла ошибка при добавлении записи');
+    }
+  
     return response.json();
 };
