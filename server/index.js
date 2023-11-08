@@ -67,12 +67,28 @@ app.post('/addSample', async (req, res) => {
             ).join(' ')
         const query = 'INSERT INTO output_samples (sample_name, sample_content) VALUES ($1, $2)'
         const values = [name, translatedCountent]
-        console.log(values)
         await pool.query(query, values)
         res.status(201).json({ message: 'Запись успешно добавлена в таблицу output_samples' })
     } catch (error) {
         console.error('Ошибка:', error)
         res.status(500).json({ error: 'Произошла ошибка при добавлении записи' })
+    }
+})
+
+app.get('/getAllSamples', async (req, res) => {
+    try {
+        const query = 'SELECT * FROM output_samples'
+        const { rows } = await pool.query(query)
+        const filteredRows = rows
+            .map((item) => {
+                item.sample_content = item.sample_content.split(' ')
+                item.sample_content = translateTitles(item.sample_content)
+                return item
+            })
+        res.status(200).json(filteredRows)
+    } catch (error) {
+        console.error('Ошибка:', error)
+        res.status(500).json({ error: 'Произошла ошибка при получении данных из таблицы output_samples' })
     }
 })
 
