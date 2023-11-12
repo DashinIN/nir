@@ -9,8 +9,8 @@
 }
 
 .checked {
-    background-color: blueviolet;
-    color: white;
+    background-color: var(--inverted-bg-color);
+    color: var(--bg-color);
 }
 
 .checkbox {
@@ -45,6 +45,6 @@
     &::before {
         transform: rotateY(180deg);
         background: black;
-        border-color: white;
+        border-color: var(--bg-color);
     }
 }

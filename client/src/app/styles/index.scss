@@ -1,20 +1,26 @@
+@import 'https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap';
 @import "./reset";
 
+:root {
+    --bg-color: #F7F3FB;
+    --inverted-bg-color: #6112AC;
+}
+
 body {
-    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-    background-color: rgb(255 255 255 / 87%);
+    font-family: Montserrat, sans-serif;
+    background-color: var(--bg-color);
     color: #242424;
 }
 
 *::-webkit-scrollbar{
     width: 10px;
     height: 10px;
-    background-color:  white;	
+    background-color:  var(--bg-color);
 }
 
 *::-webkit-scrollbar-thumb{
     border-radius: 8px;
-    background-color:  blueviolet;	
+    background-color:  var(--inverted-bg-color);
 }
 
 
@@ -28,3 +34,9 @@ button, input {
 
 
 
+.row {
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+    margin-top: 20px;
+}

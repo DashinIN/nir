@@ -32,6 +32,10 @@ const UseTemplate = () => {
             console.error('Произошла ошибка:', error);
         }
     };
+
+    const selectHandler = (item) => {
+        setSelectedSample(data.indexOf(item));
+    };
     
     if(isLoading) {
         return <div>загрузка шаблонов</div>;
@@ -40,21 +44,22 @@ const UseTemplate = () => {
     return (
         <>
             <h2>Список доступных шаблонов</h2>
+            <div className='row'>
+                <p>Название шаблона</p>
+                <p>Порядок полей</p>
+            </div>
             {   
                 data.map(item => (
                     <SelectListItem 
                         key = {item.sample_name}
                         name={item.sample_name}
-                        onClick={() => {
-                            setSelectedSample(data.indexOf(item));
-                        }}
+                        onSelect={() => selectHandler(item)}
                         isSelected = {data.indexOf(item) === selectedSample}
                         content={item.sample_content.join(', ')} 
                     />
                 ))
             }
-            <h3>Выбранный шаблон: {data[selectedSample].sample_name}</h3>
-            <h2>Сгенерировать таблицу</h2>
+            <h2>Сгенерировать таблицу по шаблону {data[selectedSample].sample_name}</h2>
             <button 
                 onClick={getRequestTable} 
                 disabled={useSendSelectedTitles.isLoading}>

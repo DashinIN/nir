@@ -1,6 +1,6 @@
 .Navbar {
     display: flex;
-    background-color: blueviolet;
+    background-color: var(--inverted-bg-color);
     padding-top: 20px;
 }
 
@@ -8,15 +8,15 @@
     padding: 25px 20px;
     text-align: center;
     flex: 1 1 50%;
-    background-color: blueviolet;
-    color: white;
+    background-color:  var(--inverted-bg-color);
+    color: var(--bg-color);
     border-radius: 20px 20px 0 0;
     font-size: 1.2rem;
     transition: all .3s ease;
 }
 
 .activeNavLink {
-    background-color: white;
+    background-color: var(--bg-color);
     color: black;
 
     &:hover {
