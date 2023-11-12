@@ -1,7 +1,7 @@
 import { classNames } from '@/shared/lib/classNames/classNames';
 import s from './CheckboxItem.module.scss';
 
-export const CheckboxItem = ({label, handleCheck, handleCheckboxChange}) => {
+export const CheckboxItem = ({label, handleCheck, changeHandler}) => {
     
     const mods = {
         [s.checked]: handleCheck
@@ -10,7 +10,7 @@ export const CheckboxItem = ({label, handleCheck, handleCheckboxChange}) => {
     return (
         <div 
             className={classNames(s.CheckboxItem, mods, [])}
-            onClick={handleCheckboxChange}
+            onClick={changeHandler}
         >
             <div >
                 <input 

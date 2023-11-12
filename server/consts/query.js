@@ -24,7 +24,7 @@ const allTableTitlesQuery = `
   `
 
 // Запрос на получение данных выбранных полей в выбранном порядке
-const getRequestQuery = (selectedFields) => {
+const selectedFieldsQuery = (selectedFields) => {
     // Массив выбранных полей объединяется в строку через запятую
     const selectedFieldsString = selectedFields.join(', ')
     // На основе исходного запроса выбираю нужные поля
@@ -39,5 +39,5 @@ const getRequestQuery = (selectedFields) => {
 module.exports = {
     allTableQuery,
     allTableTitlesQuery,
-    getRequestQuery
+    selectedFieldsQuery
 }

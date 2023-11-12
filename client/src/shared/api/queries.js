@@ -6,8 +6,8 @@ export const fetchAllTitles = async () => {
     return response.json();
 };
 
-export const sendSelectedTitles = async (items) =>  {
-    const response = await fetch('http://localhost:5000/postOrder', {
+export const fetchSelectedData = async (items) =>  {
+    const response = await fetch('http://localhost:5000/getSelectedData', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

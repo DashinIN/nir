@@ -3,9 +3,7 @@ import s from './Navbar.module.scss';
 import { classNames } from '@/shared/lib/classNames/classNames';
 
 const toggleLink = ({ isActive }) => {
-    return isActive ? 
-        classNames(s.activeNavLink, {}, [s.NavLink]) : 
-        classNames('', {}, [s.NavLink]);
+    return classNames(`${isActive ? s.activeNavLink : ''}`, {}, [s.NavLink]);
 };
 
 

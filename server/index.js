@@ -1,4 +1,4 @@
-const { allTableQuery, allTableTitlesQuery, getRequestQuery } = require('./consts/query')
+const { allTableQuery, allTableTitlesQuery, selectedFieldsQuery } = require('./consts/query')
 const { transateRows, translateTitlesRU, translateTitlesEN } = require('./features/translateRows')
 const express = require('express')
 const { Pool } = require('pg')
@@ -42,10 +42,10 @@ app.get('/getAllTitles', async (req, res) => {
     }
 })
 
-app.post('/postOrder', async (req, res) => {
-    const items = req.body
-    const translatedTitles = translateTitlesEN(items)
-    const requestQuery = getRequestQuery(translatedTitles)
+app.post('/getSelectedData', async (req, res) => {
+    const titles = req.body
+    const translatedTitles = translateTitlesEN(titles)
+    const requestQuery = selectedFieldsQuery(translatedTitles)
     try {
         const { rows } = await pool.query(requestQuery)
         const translatedData = transateRows(rows)
