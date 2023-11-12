@@ -1,15 +1,19 @@
-@import 'https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap';
+@import './varibales/global';
 @import "./reset";
 
-:root {
-    --bg-color: #F7F3FB;
-    --inverted-bg-color: #6112AC;
+body {
+    color: var(--primary-color);
+    font: var(--font-m);
 }
 
-body {
-    font-family: Montserrat, sans-serif;
-    background-color: var(--bg-color);
-    color: #242424;
+.app {
+    background: var(--bg-color);
+    color: var(--primary-color);
+    min-height: 100vh;
+}
+
+.content-page {
+    display: flex;
 }
 
 *::-webkit-scrollbar{
@@ -23,11 +27,10 @@ body {
     background-color:  var(--inverted-bg-color);
 }
 
-
 button, input {
     font-size: 1rem;
     padding: 10px 20px;
-    border: 1px solid black;
+    border: 1px solid var(--black-color);
     background-color: white;
     cursor: pointer;
 }

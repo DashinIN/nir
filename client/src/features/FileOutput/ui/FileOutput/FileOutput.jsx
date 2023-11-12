@@ -5,9 +5,11 @@ import { outputToExel } from '@/shared/lib/outputToExel/outputToExel';
 
 export const FileOutput = ({data, selectedSample}) => {
     const useFetchSelectedData = useMutation(fetchSelectedData);
+     
+    const selectedSampleName = data[selectedSample].sample_name;
+    const selectedSampleTitles = data[selectedSample].sample_content;
 
     const getRequestTable = async () => {
-        const selectedSampleTitles = data[selectedSample].sample_content;
         if (!selectedSampleTitles.length) {
             return;
         }
@@ -21,7 +23,7 @@ export const FileOutput = ({data, selectedSample}) => {
 
     return (
         <>
-            <h2>Сгенерировать таблицу по шаблону {data[selectedSample].sample_name}</h2>
+            <h2>Вывести таблицу в файл по шаблону: {selectedSampleName}</h2>
             <button 
                 onClick={getRequestTable} 
                 disabled={useFetchSelectedData.isLoading}>

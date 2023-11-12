@@ -6,6 +6,7 @@
     overflow: hidden;
     white-space: nowrap;
     transition: all .3s ease;
+    position: relative;
 }
 
 .checked {
@@ -14,7 +15,7 @@
 }
 
 .checkbox {
-    display:none;
+    display: none;
 }
 
 .checkbox + label span {

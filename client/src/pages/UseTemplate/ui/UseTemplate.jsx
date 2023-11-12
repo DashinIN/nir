@@ -4,6 +4,7 @@ import { getAllSamples } from '@/shared/api/queries';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
 import { Loader } from '@/shared/ui/Loader';
+import { Page } from '@/widgets/Page';
 
 const UseTemplate = () => {
     const [selectedSample, setSelectedSample] = useState(0);
@@ -14,7 +15,7 @@ const UseTemplate = () => {
     }
 
     return (
-        <>
+        <Page>
             <SampleSelector 
                 data={data}
                 selectedSample={selectedSample}
@@ -24,7 +25,7 @@ const UseTemplate = () => {
                 data={data}
                 selectedSample={selectedSample}
             />
-        </>
+        </Page>
     );
 };
 

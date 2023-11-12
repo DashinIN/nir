@@ -5,6 +5,7 @@ import { FieldsSelector } from '@/widgets/FieldsSelector';
 import { fetchAllTitles } from '@/shared/api/queries';
 import { SaveSample } from '@/features/SaveSample/';
 import { Loader } from '@/shared/ui/Loader';
+import { Page } from '@/widgets/Page';
 
 const CreateTemplate = () => {
     const [items, setItems] = useState([]);
@@ -15,7 +16,7 @@ const CreateTemplate = () => {
     }
 
     return (
-        <>  
+        <Page>  
             <FieldsSelector 
                 fields={fields} 
                 items={items} 
@@ -29,7 +30,7 @@ const CreateTemplate = () => {
                     <SaveSample items={items}/>
                 </>
             )}
-        </>
+        </Page>
     );
 };
 
