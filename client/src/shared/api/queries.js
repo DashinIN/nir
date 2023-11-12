@@ -35,3 +35,11 @@ export const addSample = async (data) => {
   
     return response.json();
 };
+
+export const getAllSamples = async () => {
+    const response = await fetch('http://localhost:5000/getAllSamples');
+    if (!response.ok) {
+        throw new Error('Произошла ошибка при получении данных');
+    }
+    return response.json();
+};

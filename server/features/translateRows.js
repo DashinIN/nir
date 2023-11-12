@@ -14,11 +14,18 @@ const transateRows = (data) => {
     })
 }
 
-function translateTitles (data) {
-    return data.map(item => fieldTranslations[item])
+const translateTitlesRU = (items) => {
+    return items.map(item => fieldTranslations[item])
+}
+
+const translateTitlesEN = (items) => {
+    return items.map(item => Object.keys(fieldTranslations)
+        .find(key => fieldTranslations[key] === item)
+    )
 }
 
 module.exports = {
     transateRows,
-    translateTitles
+    translateTitlesRU,
+    translateTitlesEN
 }

@@ -1,4 +1,4 @@
-import { sendSelectedTitles } from '@/shared/api/queries';
+import { sendSelectedTitles, getAllSamples } from '@/shared/api/queries';
 import { classNames } from '@/shared/lib/classNames/classNames';
 import { outputToExel } from '@/shared/lib/outputToExel/outputToExel';
 import { SelectListItem } from '@/shared/ui/SelectListItem/SelectListItem';
@@ -7,26 +7,16 @@ import { useQuery, useMutation } from 'react-query';
 
 const UseTemplate = () => {
     const [selectedSample, setSelectedSample] = useState(0);
-
-    const getAllSamples = async () => {
-        const response = await fetch('http://localhost:5000/getAllSamples');
-        if (!response.ok) {
-            throw new Error('Произошла ошибка при получении данных');
-        }
-        return response.json();
-    };
-
-    const { data, isLoading, isError } =  useQuery('getAllSamples', getAllSamples);
-
+    const { data, isLoading } =  useQuery('getAllSamples', getAllSamples);
     const useSendSelectedTitles = useMutation(sendSelectedTitles);
 
     const getRequestTable = async () => {
-        if (!data[selectedSample].sample_content.length) {
+        const selectedSampleTitles = data[selectedSample].sample_content;
+        if (!selectedSampleTitles.length) {
             return;
         }
         try {
-            console.log(data[selectedSample].sample_content);
-            const selectedData = await useSendSelectedTitles.mutateAsync(data[selectedSample].sample_content);
+            const selectedData = await useSendSelectedTitles.mutateAsync(selectedSampleTitles);
             outputToExel(selectedData);
         } catch (error) {
             console.error('Произошла ошибка:', error);
