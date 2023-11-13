@@ -1,4 +1,10 @@
 .fieldsWrapper {
     display: flex;
     flex-wrap: wrap; 
+    max-height: 50vh;
+    overflow-y: scroll;
+    background-color: white;
+    padding: 10px;
+    border: 1px solid black;
+    border-radius: 8px;
 }

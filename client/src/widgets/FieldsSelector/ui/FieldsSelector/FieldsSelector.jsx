@@ -1,6 +1,7 @@
 import { Button } from '@/shared/ui/Button';
 import { FieldsList } from '../FieldsList/FieldsList';
 import { useState } from 'react';
+import { Input } from '@/shared/ui/Input';
 
 export const FieldsSelector = ({fields, items, setItems}) => {
     const [searchValue, setSearchValue] = useState('');
@@ -20,7 +21,7 @@ export const FieldsSelector = ({fields, items, setItems}) => {
     return (
         <>  
             <h2>Отметьте требуемые поля</h2>
-            <input 
+            <Input 
                 placeholder='Поиск поля' 
                 type="text" 
                 value={searchValue}
@@ -29,11 +30,19 @@ export const FieldsSelector = ({fields, items, setItems}) => {
             <Button onClick={resetSearchHandler}>
                 Сбросить
             </Button>
-            <FieldsList 
-                fields={filteredFields}
-                items={items}
-                setItems={setItems}
-            />
+            {
+                filteredFields.length ? (
+                    <FieldsList 
+                        fields={filteredFields}
+                        items={items}
+                        setItems={setItems}
+                    />
+
+                ) : (
+                    <p>Такого поля нет</p>
+                )
+            }
+            
         </>
     );
 };

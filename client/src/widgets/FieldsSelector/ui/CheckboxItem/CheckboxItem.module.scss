@@ -7,11 +7,19 @@
     white-space: nowrap;
     transition: all .3s ease;
     position: relative;
+
+    &:hover {
+        background-color: var(--bg-color)
+    }
 }
 
 .checked {
     background-color: var(--inverted-bg-color);
     color: var(--bg-color);
+
+    &:hover {
+        background-color: var(--inverted-bg-color);
+    }
 }
 
 .checkbox {

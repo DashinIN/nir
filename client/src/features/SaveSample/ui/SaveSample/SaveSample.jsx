@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { useMutation } from 'react-query';
 import { addSample } from '@/shared/api/queries';
-import Button from '@/shared/ui/Button/Button';
+import { Button } from '@/shared/ui/Button/Button';
+import { Input } from '@/shared/ui/Input';
+import s from './SaveSample.module.scss';
 
 export const SaveSample = ({items}) => {
     const [sampleNameInputValue, setSampleNameInputValue] = useState('');
@@ -34,12 +36,14 @@ export const SaveSample = ({items}) => {
     return (
         <>
             <h2>Сохранить шаблон</h2>
-            <input 
-                type="text"
-                value={sampleNameInputValue}
-                onChange={handleNameChange}
-                placeholder="Название шаблона" />
-            <Button onClick={handleSave}>сохранить</Button>
+            <div className={s.search}>
+                <Input 
+                    type="text"
+                    value={sampleNameInputValue}
+                    onChange={handleNameChange}
+                    placeholder="Название шаблона" />
+                <Button onClick={handleSave}>сохранить</Button>
+            </div>
             {validationErrorMessage  && (
                 <div>{validationErrorMessage}</div>
             )}

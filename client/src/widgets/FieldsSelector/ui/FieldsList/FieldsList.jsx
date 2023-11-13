@@ -12,17 +12,15 @@ export const FieldsList = ({fields, items, setItems}) => {
     };
 
     return (
-        <>  
-            <div className={s.fieldsWrapper}>
-                {fields.map((field, index) => (
-                    <CheckboxItem 
-                        key={index} 
-                        label={field}
-                        changeHandler={() => handleCheckboxChange(field)}
-                        handleCheck={items.includes(field)}
-                    />
-                ))}
-            </div>
-        </>
+        <div className={s.fieldsWrapper}>
+            {fields.map((field, index) => (
+                <CheckboxItem 
+                    key={index} 
+                    label={field}
+                    changeHandler={() => handleCheckboxChange(field)}
+                    handleCheck={items.includes(field)}
+                />
+            ))}
+        </div>
     );
 };

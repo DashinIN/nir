@@ -19,6 +19,7 @@ body {
 *::-webkit-scrollbar{
     width: 10px;
     height: 10px;
+    border-radius: 8px;
     background-color:  var(--bg-color);
 }
 
@@ -26,16 +27,6 @@ body {
     border-radius: 8px;
     background-color:  var(--inverted-bg-color);
 }
-
-button, input {
-    font-size: 1rem;
-    padding: 10px 20px;
-    border: 1px solid var(--black-color);
-    background-color: white;
-    cursor: pointer;
-}
-
-
 
 .row {
     display: flex;
