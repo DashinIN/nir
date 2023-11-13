@@ -21,20 +21,31 @@ export const fetchSelectedData = async (items) =>  {
 };
 
 export const addSample = async (data) => {
-    const response = await fetch('http://localhost:5000/addSample', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-    });
-  
-    if (!response.ok) {
-        throw new Error('Произошла ошибка при добавлении записи');
+    try {
+        const response = await fetch('http://localhost:5000/addSample', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Произошла ошибка при добавлении шаблона');
+        }
+
+        return response.json();
+    } catch (error) {
+        throw new Error(error.message || 'Произошла неизвестная ошибка');
     }
-  
-    return response.json();
 };
+
+
+
+
+
+
 
 export const getAllSamples = async () => {
     const response = await fetch('http://localhost:5000/getAllSamples');

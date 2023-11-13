@@ -58,6 +58,8 @@ app.post('/getSelectedData', async (req, res) => {
 app.post('/addSample', async (req, res) => {
     try {
         const { name, items } = req.body
+
+        console.log(name, items)
         const titlesEN = translateTitlesEN(items)
         const insertSampleNameQuery = 'INSERT INTO output_samples (sample_name) VALUES ($1) RETURNING sample_id'
         const sampleName = [name]
@@ -74,8 +76,11 @@ app.post('/addSample', async (req, res) => {
 
         res.status(201).json({ message: 'Шаблон успешно добавлен' })
     } catch (error) {
-        console.error('Ошибка:', error)
-        res.status(500).json({ error: 'Произошла ошибка при добавлении шаблона' })
+        if (error.code === '23505') {
+            res.status(400).json({ error: 'Шаблон с таким именем уже существует. Выберете другое название шаблона' })
+        } else {
+            res.status(500).json({ error: 'Произошла ошибка при добавлении шаблона' })
+        }
     }
 })
 
