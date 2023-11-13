@@ -1,6 +1,7 @@
 import { useMutation } from 'react-query';
 import { fetchSelectedData } from '@/shared/api/queries';
 import { outputToExel } from '@/shared/lib/outputToExel/outputToExel';
+import {Button} from '@/shared/ui/Button';
 
 
 export const FileOutput = ({data, selectedSample}) => {
@@ -24,11 +25,11 @@ export const FileOutput = ({data, selectedSample}) => {
     return (
         <>
             <h2>Вывести таблицу в файл по шаблону: {selectedSampleName}</h2>
-            <button 
+            <Button 
                 onClick={getRequestTable} 
                 disabled={useFetchSelectedData.isLoading}>
                 {useFetchSelectedData.isLoading ? 'Загрузка' : 'Получить таблицу'}
-            </button>
+            </Button>
         </>
     );
 };

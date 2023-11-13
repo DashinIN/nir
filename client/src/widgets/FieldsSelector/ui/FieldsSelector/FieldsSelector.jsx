@@ -1,3 +1,4 @@
+import { Button } from '@/shared/ui/Button';
 import { FieldsList } from '../FieldsList/FieldsList';
 import { useState } from 'react';
 
@@ -25,9 +26,9 @@ export const FieldsSelector = ({fields, items, setItems}) => {
                 value={searchValue}
                 onChange={searchHandler}
             />
-            <button onClick={resetSearchHandler}>
+            <Button onClick={resetSearchHandler}>
                 Сбросить
-            </button>
+            </Button>
             <FieldsList 
                 fields={filteredFields}
                 items={items}
