@@ -1,7 +1,7 @@
-@import 'https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap';
+@import 'https://fonts.googleapis.com/css2?family=Onest:wght@400;500;700&display=swap';
 
 :root {
-    --font-family-main: 'Montserrat', serif;
+    --font-family-main: 'Onest', sans-serif;
     --font-size-s: 12px;
     --font-line-s: 20px;
     --font-s: var(--font-size-s) / var(--font-line-s) var(--font-family-main);
@@ -19,7 +19,9 @@
     --overlay-z-index:100;
     --overlay-color: rgb(0 0 0 / 52.1%);
     --red-light: rgb(255 0 98);
-    --bg-color: #F7F3FB;
-    --inverted-bg-color: #6112AC;
-    --black-color: #242424;
+    --bg-color: #f4f5fa;
+    --inverted-bg-color: #8d46f6;
+    --black-color: #191816;
+    --dark-gray-color: #d4d4dd;
+    --gray-color: #e1e1e9;
 }

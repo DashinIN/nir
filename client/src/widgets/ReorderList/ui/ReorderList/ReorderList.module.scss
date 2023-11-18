@@ -1,16 +1,20 @@
-.itemsWrapper {
-    margin: 20px 0;
-    width: 50vw;
+.reorderListWrapper {
+    background-color: white;
+    padding: 20px;
+    border-radius: 24px;
 }
   
 .item {
     font-size: 1.2rem;
-    border: 2px solid var(--black-color);
     margin-top: 4px;
-    padding: 5px 10px;
-    background-color: white;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: var(--bg-color);
     cursor: pointer;
     list-style-type: decimal;
     list-style-position: inside;
 }
-  
+
+.drag {
+    background-color: var(--gray-color);
+}
