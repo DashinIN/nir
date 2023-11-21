@@ -1,6 +1,18 @@
-.row {
-    display: flex;
-    justify-content: space-between;
-    font-weight: bold;
-    margin-top: 20px;
+.container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 24px;
+    width: 100%;
+}
+
+.wrapper {
+    overflow: hidden;
+    max-height: 50vh;
+    overflow-y: scroll;
+}
+
+.titles {
+    border-radius: 18px 18px 0 0;
+    padding: 15px 20px;
+    background-color: var(--bg-color);
 }

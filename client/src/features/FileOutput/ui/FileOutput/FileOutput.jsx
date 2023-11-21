@@ -2,6 +2,7 @@ import { useMutation } from 'react-query';
 import { fetchSelectedData } from '@/shared/api/queries';
 import { outputToExel } from '@/shared/lib/outputToExel/outputToExel';
 import {Button} from '@/shared/ui/Button';
+import { VStack } from '@/shared/ui/Stack';
 
 
 export const FileOutput = ({data, selectedSample}) => {
@@ -23,13 +24,13 @@ export const FileOutput = ({data, selectedSample}) => {
     };
 
     return (
-        <>
-            <h2>Вывести таблицу в файл по шаблону: {selectedSampleName}</h2>
+        <VStack gap={8} max>
+            <h2>Выбранный шаблон: {selectedSampleName}</h2>
             <Button 
                 onClick={getRequestTable} 
                 disabled={useFetchSelectedData.isLoading}>
-                {useFetchSelectedData.isLoading ? 'Загрузка' : 'Получить таблицу'}
+                {useFetchSelectedData.isLoading ? 'Формирование таблицы...' : 'Получить таблицу'}
             </Button>
-        </>
+        </VStack>
     );
 };

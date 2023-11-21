@@ -2,8 +2,8 @@ import { Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import CreateTemplate from '@/pages/CreateTemplate';
 import UseTemplate from '@/pages/UseTemplate';
-import { Loader } from '@/shared/ui/Loader';
 import MainPage from '@/pages/MainPage';
+import { Loader } from '@/shared/ui/Loader';
 
 export const AppRouter = () => {
     return (

@@ -9,9 +9,7 @@ function App() {
         <div className='app'>
             <Suspense fallback="">
                 <Navbar />
-                <div className="content-page">
-                    <AppRouter />
-                </div>
+                <AppRouter />
             </Suspense>
         </div>
     );
