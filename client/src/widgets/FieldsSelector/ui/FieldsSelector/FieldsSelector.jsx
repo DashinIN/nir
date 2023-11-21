@@ -2,6 +2,8 @@ import { Button } from '@/shared/ui/Button';
 import { FieldsList } from '../FieldsList/FieldsList';
 import { useState } from 'react';
 import { Input } from '@/shared/ui/Input';
+import s from './FieldsSelector.module.scss';
+import { HStack, VStack } from '@/shared/ui/Stack';
 
 export const FieldsSelector = ({fields, items, setItems}) => {
     const [searchValue, setSearchValue] = useState('');
@@ -19,17 +21,19 @@ export const FieldsSelector = ({fields, items, setItems}) => {
     );
 
     return (
-        <>  
+        <VStack gap={8}>
             <h2>Отметьте требуемые поля</h2>
-            <Input 
-                placeholder='Поиск поля' 
-                type="text" 
-                value={searchValue}
-                onChange={searchHandler}
-            />
-            <Button onClick={resetSearchHandler}>
-                Сбросить
-            </Button>
+            <HStack gap={4}>
+                <Input 
+                    placeholder='Поиск поля' 
+                    type="text" 
+                    value={searchValue}
+                    onChange={searchHandler}
+                />
+                <Button onClick={resetSearchHandler}>
+                    Сбросить
+                </Button>
+            </HStack>
             {
                 filteredFields.length ? (
                     <FieldsList 
@@ -43,6 +47,6 @@ export const FieldsSelector = ({fields, items, setItems}) => {
                 )
             }
             
-        </>
+        </VStack>
     );
 };

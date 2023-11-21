@@ -1,5 +1,5 @@
 import { SelectListItem } from '../SelectListItem/SelectListItem';
-
+import s from './SampleSelector.module.scss';
 
 export const SampleSelector = ({data, selectedSample, setSelectedSample}) => {
 
@@ -10,7 +10,7 @@ export const SampleSelector = ({data, selectedSample, setSelectedSample}) => {
     return (
         <>
             <h2>Список доступных шаблонов</h2>
-            <div className='row'>
+            <div className={s.row}>
                 <p>Название шаблона</p>
                 <p>Порядок полей</p>
             </div>
@@ -21,7 +21,7 @@ export const SampleSelector = ({data, selectedSample, setSelectedSample}) => {
                         name={item.sample_name}
                         onSelect={() => selectHandler(item)}
                         isSelected = {data.indexOf(item) === selectedSample}
-                        content={item.sample_content.join(', ')} 
+                        content={`Количество полей: ${item.sample_content.length}`} 
                     />
                 ))
             }
