@@ -2,13 +2,14 @@ import { Reorder } from 'framer-motion';
 import s from './ReorderList.module.scss';
 import { useState } from 'react';
 import { classNames } from '@/shared/lib/classNames/classNames';
+import { VStack } from '@/shared/ui/Stack';
 
 export const ReorderList = ({items, setItems}) => {
 
     const [draggedItem, setDraggedItem] = useState(null);
    
     return (
-        <div className={s.reorderListWrapper}>
+        <VStack max className={s.reorderListWrapper}>
             <Reorder.Group 
                 as='ol' 
                 values={items} 
@@ -26,6 +27,6 @@ export const ReorderList = ({items, setItems}) => {
                     </Reorder.Item>
                 ))}
             </Reorder.Group>
-        </div>
+        </VStack>
     );
 };

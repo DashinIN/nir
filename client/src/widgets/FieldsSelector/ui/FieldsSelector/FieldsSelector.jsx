@@ -21,7 +21,7 @@ export const FieldsSelector = ({fields, items, setItems}) => {
     );
 
     return (
-        <VStack gap={8}>
+        <VStack gap={8} max>
             <h2>Отметьте требуемые поля</h2>
             <HStack gap={4}>
                 <Input 

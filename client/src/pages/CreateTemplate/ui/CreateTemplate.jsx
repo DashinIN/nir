@@ -6,6 +6,7 @@ import { fetchAllTitles } from '@/shared/api/queries';
 import { SaveSample } from '@/features/SaveSample/';
 import { Loader } from '@/shared/ui/Loader';
 import { Page } from '@/widgets/Page';
+import { VStack } from '@/shared/ui/Stack';
 
 const CreateTemplate = () => {
     const [items, setItems] = useState([]);
@@ -17,19 +18,22 @@ const CreateTemplate = () => {
 
     return (
         <Page>  
-            <FieldsSelector 
-                fields={fields} 
-                items={items} 
-                setItems={setItems}
-            />
-            { Boolean(items.length) && (
-                <>
-                    <h2>Выберете порядок полей</h2>
-                    <ReorderList items={items} setItems={setItems}/>
-                    <div>Порядок полей: {items.join(', ').toLowerCase()}</div>
-                    <SaveSample items={items}/>
-                </>
-            )}
+            <VStack gap={16}>
+                <FieldsSelector 
+                    fields={fields} 
+                    items={items} 
+                    setItems={setItems}
+                />
+                { Boolean(items.length) && (
+                    <>
+                        <VStack gap={8} max>
+                            <h2>Выберете порядок полей</h2>
+                            <ReorderList items={items} setItems={setItems}/>
+                        </VStack>
+                        <SaveSample items={items}/>
+                    </>
+                )}
+            </VStack>
         </Page>
     );
 };

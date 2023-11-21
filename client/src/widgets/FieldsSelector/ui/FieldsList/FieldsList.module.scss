@@ -1,6 +1,6 @@
 .fieldsWrapper {
     display: flex;
-    flex-wrap: wrap; 
+    flex-direction: column;
     background-color: white;
     border-radius: 18px;
     max-height: 50vh;
@@ -11,4 +11,11 @@
     padding: 20px 15px;
     background-color: white;
     border-radius: 24px;
+}
+
+@media(width >= 500px) {
+    .fieldsWrapper {
+        flex-flow: row wrap; 
+    }
+
 }

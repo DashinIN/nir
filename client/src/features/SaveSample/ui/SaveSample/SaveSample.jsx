@@ -3,7 +3,7 @@ import { useMutation } from 'react-query';
 import { addSample } from '@/shared/api/queries';
 import { Button } from '@/shared/ui/Button/Button';
 import { Input } from '@/shared/ui/Input';
-import s from './SaveSample.module.scss';
+import { HStack, VStack } from '@/shared/ui/Stack';
 
 export const SaveSample = ({items}) => {
     const [sampleNameInputValue, setSampleNameInputValue] = useState('');
@@ -34,16 +34,8 @@ export const SaveSample = ({items}) => {
     };
 
     return (
-        <>
+        <VStack max gap={8}>
             <h2>Сохранить шаблон</h2>
-            <div className={s.search}>
-                <Input 
-                    type="text"
-                    value={sampleNameInputValue}
-                    onChange={handleNameChange}
-                    placeholder="Название шаблона" />
-                <Button onClick={handleSave}>сохранить</Button>
-            </div>
             {validationErrorMessage  && (
                 <div>{validationErrorMessage}</div>
             )}
@@ -52,7 +44,15 @@ export const SaveSample = ({items}) => {
             )}
             {addSampleMutation.isSuccess && (
                 <div>{addSampleMutation.data.message}</div>
-            )}            
-        </>
+            )}  
+            <HStack gap={8}>
+                <Input 
+                    type="text"
+                    value={sampleNameInputValue}
+                    onChange={handleNameChange}
+                    placeholder="Название шаблона" />
+                <Button onClick={handleSave}>сохранить</Button>
+            </HStack>          
+        </VStack>
     );
 };
