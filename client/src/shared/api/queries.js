@@ -41,12 +41,6 @@ export const addSample = async (data) => {
     }
 };
 
-
-
-
-
-
-
 export const getAllSamples = async () => {
     const response = await fetch('http://localhost:5000/getAllSamples');
     if (!response.ok) {
