@@ -2,10 +2,12 @@ import { Button } from '@/shared/ui/Button';
 import { FieldsList } from '../FieldsList/FieldsList';
 import { useState } from 'react';
 import { Input } from '@/shared/ui/Input';
-import s from './FieldsSelector.module.scss';
 import { HStack, VStack } from '@/shared/ui/Stack';
+import { useAllTitles } from '../../api/FieldsSelectorApi';
 
-export const FieldsSelector = ({fields, items, setItems}) => {
+export const FieldsSelector = ({ items, setItems}) => {
+    const { data: fields = [], isLoading } = useAllTitles();
+
     const [searchValue, setSearchValue] = useState('');
 
     const searchHandler = (e) => {
@@ -19,6 +21,10 @@ export const FieldsSelector = ({fields, items, setItems}) => {
     const filteredFields = fields.filter(field => 
         field.toLowerCase().includes(searchValue.toLowerCase())
     );
+
+    if (isLoading) {
+        return <div>загрузка</div>;
+    }
 
     return (
         <VStack gap={8} max>
