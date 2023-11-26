@@ -1,12 +1,29 @@
 import { HStack, VStack } from '@/shared/ui/Stack';
-import { SelectListItem } from '../SelectListItem/SelectListItem';
+import { SelectListItem } from '@/widgets/SelectListItem/SelectListItem';
 import s from './SampleSelector.module.scss';
+import { useAllSamples } from '../../api/sampleApi';
+import { useEffect } from 'react';
 
-export const SampleSelector = ({data, selectedSample, setSelectedSample}) => {
+export const SampleSelector = ({ selectedSample, setSelectedSample}) => {
+
+    const {data, isLoading, isError, refetch} = useAllSamples();
+    
+    useEffect(() => {
+        refetch();
+    }, [refetch]);
+
 
     const selectHandler = (item) => {
         setSelectedSample(data.indexOf(item));
     };
+
+    if(isLoading) {
+        return <div>загрузка</div>;
+    }
+
+    if(isError) {
+        return <div>ошибка загрузки</div>;
+    }
 
     return (
         <VStack max gap={8}>

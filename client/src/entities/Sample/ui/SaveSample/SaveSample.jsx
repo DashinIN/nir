@@ -25,8 +25,6 @@ export const SaveSample = ({items}) => {
 
         if (isSuccess) {
             setSampleNameInputValue('');
-            console.log(data);
-            console.log(error);
         }
     };
 

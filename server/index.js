@@ -42,7 +42,7 @@ app.get('/getAllTitles', async (req, res) => {
     }
 })
 
-app.post('/getSelectedData', async (req, res) => {
+app.post('/getSelectedSampleData', async (req, res) => {
     const titles = req.body
     const translatedTitles = translateTitlesEN(titles)
     const requestQuery = selectedFieldsQuery(translatedTitles)

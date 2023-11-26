@@ -9,7 +9,12 @@ const sampleApi = rtkApi.injectEndpoints({
                 body: data,
             }), 
         }),
+        getAllSamples: builder.query({
+            query: () => 'getAllSamples', 
+        }),
     }),
 });
 
+
 export const useAddSample = sampleApi.useAddSampleMutation;
+export const useAllSamples = sampleApi.useGetAllSamplesQuery;
