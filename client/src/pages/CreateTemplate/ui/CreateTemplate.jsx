@@ -1,9 +1,9 @@
 import { ReorderList } from '@/widgets/ReorderList';
 import { FieldsSelector } from '@/widgets/FieldsSelector';
-import { SaveSample } from '@/features/SaveSample/';
 import { Page } from '@/widgets/Page';
 import { VStack } from '@/shared/ui/Stack';
 import { useState } from 'react';
+import { SaveSample } from '@/entities/Sample';
 
 const CreateTemplate = () => {
     const [items, setItems] = useState([]);

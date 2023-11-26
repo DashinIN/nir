@@ -3,7 +3,7 @@ import { FieldsList } from '../FieldsList/FieldsList';
 import { useState } from 'react';
 import { Input } from '@/shared/ui/Input';
 import { HStack, VStack } from '@/shared/ui/Stack';
-import { useAllTitles } from '../../api/FieldsSelectorApi';
+import { useAllTitles } from '../../api/fieldsSelectorApi';
 
 export const FieldsSelector = ({ items, setItems}) => {
     const { data: fields = [], isLoading } = useAllTitles();

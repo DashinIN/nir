@@ -1,36 +1,33 @@
 import { useState } from 'react';
-import { useMutation } from 'react-query';
-import { addSample } from '@/shared/api/queries';
 import { Button } from '@/shared/ui/Button/Button';
 import { Input } from '@/shared/ui/Input';
 import { HStack, VStack } from '@/shared/ui/Stack';
+import { useAddSample } from '../../api/sampleApi';
 
 export const SaveSample = ({items}) => {
     const [sampleNameInputValue, setSampleNameInputValue] = useState('');
     const [validationErrorMessage, setValidationErrorMessage] = useState('');
-    const addSampleMutation  = useMutation(addSample); 
+    const [addSample, {isSuccess, isError, isLoading, error, data} ] = useAddSample();
 
     const handleNameChange = (event) => {
         setSampleNameInputValue(event.target.value);
     };
 
-    const handleSave = () => {
+    const handleSave = async () => {
         if (!(sampleNameInputValue.trim() !== '' && items)) {
             setValidationErrorMessage('Введите название и содержимое шаблона.');
             return;
         }
-    
         setValidationErrorMessage('');
-        const data = { name: sampleNameInputValue, items };
-    
-        addSampleMutation.mutate(data, {
-            onSuccess: () => {
-                setSampleNameInputValue('');
-            },
-            onError: (error) => {
-                console.error(error.message);
-            },
-        });
+
+        const sampeleData = { name: sampleNameInputValue, items };
+        await addSample(sampeleData);
+
+        if (isSuccess) {
+            setSampleNameInputValue('');
+            console.log(data);
+            console.log(error);
+        }
     };
 
     return (
@@ -39,11 +36,11 @@ export const SaveSample = ({items}) => {
             {validationErrorMessage  && (
                 <div>{validationErrorMessage}</div>
             )}
-            {(addSampleMutation.isError && !validationErrorMessage) && (
-                <div>{addSampleMutation.error.message}</div>
+            {(isError && !validationErrorMessage) && (
+                <div>{error.data.error}</div>
             )}
-            {addSampleMutation.isSuccess && (
-                <div>{addSampleMutation.data.message}</div>
+            {isSuccess && (
+                <div>{data.message}</div>
             )}  
             <HStack gap={8}>
                 <Input 
@@ -51,7 +48,9 @@ export const SaveSample = ({items}) => {
                     value={sampleNameInputValue}
                     onChange={handleNameChange}
                     placeholder="Название шаблона" />
-                <Button onClick={handleSave}>сохранить</Button>
+                <Button onClick={handleSave}>
+                    {isLoading ? 'Сохранение...' : 'Cохранить'}
+                </Button>
             </HStack>          
         </VStack>
     );
