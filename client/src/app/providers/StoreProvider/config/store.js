@@ -2,6 +2,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import { counterReducer } from '@/entities/Counter';
 import { rtkApi } from '@/shared/api/rtkApi';
 import { createReducerManager } from './ReducerManager';
+import { sampleReducer } from '@/entities/Sample/model/slice/sampleSlice';
 
 export function createReduxStore(initialState, asyncReducers) {
     const rootReducers = {

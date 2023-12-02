@@ -1,20 +1,25 @@
 import { HStack, VStack } from '@/shared/ui/Stack';
 import { SelectListItem } from '@/widgets/SelectListItem/SelectListItem';
-import s from './SampleSelector.module.scss';
 import { useAllSamples } from '../../api/sampleApi';
 import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { getSelectedSample } from '../../model/selectors/getSelectedSample';
+import { sampleActions } from '../../model/slice/sampleSlice';
+import s from './SampleSelector.module.scss';
 
-export const SampleSelector = ({ selectedSample, setSelectedSample}) => {
-
+export const SampleSelector = () => {
     const {data, isLoading, isError, refetch} = useAllSamples();
     
     useEffect(() => {
         refetch();
     }, [refetch]);
 
+    const dispatch = useDispatch();
+    const selectedSample = useSelector(getSelectedSample);
 
     const selectHandler = (item) => {
-        setSelectedSample(data.indexOf(item));
+        const sampleIndex = data.indexOf(item);
+        dispatch(sampleActions.setSelectedSample(sampleIndex));
     };
 
     if(isLoading) {

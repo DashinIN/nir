@@ -3,19 +3,26 @@ import { Button } from '@/shared/ui/Button';
 import { VStack } from '@/shared/ui/Stack';
 import { useAllSamples } from '@/entities/Sample/api/sampleApi';
 import { useGetSelectedSampleData } from '../../api/fileOutputApi';
+import { useSelector } from 'react-redux';
+import { getSelectedSample } from '@/entities/Sample/model/selectors/getSelectedSample';
 
 
-export const FileOutput = ({selectedSample}) => {
+export const FileOutput = () => {
+
+    const selectedSample = useSelector(getSelectedSample);
 
     const {data: allSamples, isSuccess } = useAllSamples();
+   
+    const [getSelectedSampleData, { isLoading} ]  = useGetSelectedSampleData();
+
     let selectedSampleName, selectedSampleTitles;
-    if(isSuccess) {
+    if (isSuccess && allSamples && allSamples[selectedSample]) {
         selectedSampleName = allSamples[selectedSample].sample_name;
         selectedSampleTitles = allSamples[selectedSample].sample_content;
+    } else {
+        return null;
     }
 
-    const [getSelectedSampleData, { isLoading} ]  = useGetSelectedSampleData();
-    
     const getRequestTable = async () => {
         if (!selectedSampleTitles.length) {
             return;
