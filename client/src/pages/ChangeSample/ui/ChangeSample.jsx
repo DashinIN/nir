@@ -1,28 +1,25 @@
-import { FileOutput } from '@/features/FileOutput';
 import { Page } from '@/widgets/Page';
 import { VStack } from '@/shared/ui/Stack';
 import { DynamicModuleLoader } from '@/shared/lib/components/DynamicModuleLoader/DynamicModuleLoader';
-import { sampleReducer } from '@/entities/Sample/model/slice/sampleSlice';
-
+import { SampleSelector, sampleReducer } from '@/entities/Sample';
 
 const initialReducers = {
     sample: sampleReducer,
 };
 
-const UseTemplate = () => {
-    
+const ChangeSample = () => {
     return (
         <DynamicModuleLoader 
-            removeAfterUnmount={false}  
+            removeAfterUnmount={false} 
             reducers={initialReducers}
         >
             <Page>
                 <VStack gap={16} max>
-                    <FileOutput />
+                    <SampleSelector />
                 </VStack>
             </Page>
         </DynamicModuleLoader>
     );
 };
 
-export default UseTemplate;
+export default ChangeSample;

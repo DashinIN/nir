@@ -11,17 +11,24 @@ export const Navbar = () => {
     return (
         <div className={s.Navbar}>
             <NavLink
-                to="/UseTemplate"
-                className={toggleLink}
-            >
-                Использовать шаблон
-            </NavLink>
-            <NavLink
-                to="/CreateTemplate"
+                to="/createTemplate"
                 className={toggleLink}
             >
                 Создать шаблон
             </NavLink>
+            <NavLink
+                to="/changeSample"
+                className={toggleLink}
+            >
+                Выбрать шаблон
+            </NavLink>
+            <NavLink
+                to="/useTemplate"
+                className={toggleLink}
+            >
+                Использовать шаблон
+            </NavLink>
+           
         </div>
     );
 };

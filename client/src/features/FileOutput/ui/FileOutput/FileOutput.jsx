@@ -16,7 +16,7 @@ export const FileOutput = () => {
     const [getSelectedSampleData, { isLoading} ]  = useGetSelectedSampleData();
 
     let selectedSampleName, selectedSampleTitles;
-    if (isSuccess && allSamples && allSamples[selectedSample]) {
+    if (isSuccess  && allSamples[selectedSample]) {
         selectedSampleName = allSamples[selectedSample].sample_name;
         selectedSampleTitles = allSamples[selectedSample].sample_content;
     } else {

@@ -29,17 +29,19 @@ export const FieldsSelector = ({ items, setItems}) => {
 
     return (
         <VStack gap={8} max>
-            <h2>Отметьте требуемые поля</h2>
-            <HStack gap={4}>
-                <Input 
-                    placeholder='Поиск поля' 
-                    type="text" 
-                    value={searchValue}
-                    onChange={searchHandler}
-                />
-                <Button onClick={resetSearchHandler}>
-                    Сбросить
-                </Button>
+            <HStack justify='between' max>
+                <h2>Отметьте требуемые поля</h2>
+                <HStack gap={4}>
+                    <Input 
+                        placeholder='Поиск поля' 
+                        type="text" 
+                        value={searchValue}
+                        onChange={searchHandler}
+                    />
+                    <Button onClick={resetSearchHandler}>
+                        Сбросить
+                    </Button>
+                </HStack>
             </HStack>
             {
                 filteredFields.length ? (

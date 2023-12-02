@@ -2,14 +2,14 @@
 
 
 .CheckboxItem {
-    padding: 6px 10px;
+    padding: 4px 10px;
+    font-size: 1rem;
     cursor: pointer;
     user-select: none;
     overflow: hidden;
     white-space: nowrap;
     transition: all .3s ease;
     position: relative;
-    flex-shrink: 0;
 
     &:hover {
         background-color: var(--bg-color)
@@ -62,9 +62,3 @@
     }
 }
 
-@media(width >=500px) {
-    .CheckboxItem {
-        flex: 0 0 calc(33.33% - 5px); 
-    }
-
-}

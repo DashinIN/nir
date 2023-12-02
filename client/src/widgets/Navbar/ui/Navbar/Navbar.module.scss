@@ -1,34 +1,27 @@
 .Navbar {
     height: var(--navbar-height);
     display: flex;
-    align-items: end;
     background-color: var(--inverted-bg-color);
 }
 
 .NavLink {
-    padding: 25px 20px;
     text-align: center;
-    flex: 1 1 50%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1 1 auto;
     background-color:  var(--inverted-bg-color);
     color: var(--bg-color);
-    border-radius: 20px 20px 0 0;
-    font-size: 1.2rem;
+    font-size: 1rem;
     transition: all .3s ease;
-
-    &:hover {
-        box-shadow: 0 0 0 0.1rem var(--bg-color);
-        transform: translateY(-2px);
-    }
+    cursor: pointer;
+    
 }
 
 .activeNavLink {
     background-color: var(--bg-color);
     color: var(--black-color);
-
-    &:hover {
-        cursor: default;
-        box-shadow: none;
-        transform: translateY(0);
-    }
+    cursor: default;
 }
 
