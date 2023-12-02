@@ -1,1 +1,1 @@
-export const getSelectedSample = (state) => state.sample?.selectedSample;
+export const getSelectedSample = (state) => state.sample;

@@ -12,7 +12,6 @@ export const DynamicModuleLoader = (props) => {
     const store = useStore();
 
     useEffect(() => {
-        console.log('DynamicModuleLoader useEffect');
         const mountedReducers = store.reducerManager.getMountedReducers();
 
         Object.entries(reducers).forEach(([name, reducer]) => {

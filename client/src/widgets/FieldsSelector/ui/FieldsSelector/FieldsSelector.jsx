@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Input } from '@/shared/ui/Input';
 import { HStack, VStack } from '@/shared/ui/Stack';
 import { useAllTitles } from '../../api/fieldsSelectorApi';
+import { Loader } from '@/shared/ui/Loader';
 
 export const FieldsSelector = ({ items, setItems}) => {
     const { data: fields = [], isLoading } = useAllTitles();
@@ -23,7 +24,7 @@ export const FieldsSelector = ({ items, setItems}) => {
     );
 
     if (isLoading) {
-        return <div>загрузка</div>;
+        return null;
     }
 
     return (

@@ -23,7 +23,7 @@ export const SampleSelector = () => {
     };
 
     if(isLoading) {
-        return <div>загрузка</div>;
+        return null;
     }
 
     if(isError) {
