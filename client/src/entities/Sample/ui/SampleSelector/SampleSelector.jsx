@@ -1,5 +1,5 @@
 import { HStack, VStack } from '@/shared/ui/Stack';
-import { SelectListItem } from '@/widgets/SelectListItem/SelectListItem';
+import { SelectListItem } from '../SelectListItem/SelectListItem';
 import { useAllSamples } from '../../api/sampleApi';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -65,7 +65,9 @@ export const SampleSelector = () => {
                     }
                 </VStack>
             </div>
-            <h2>Выбранный шаблон: {selectedSampleName}</h2>
+            <HStack max justify='center'>
+                <h2>Выбранный шаблон: {selectedSampleName}</h2>
+            </HStack>
         </VStack>
     );
 };

@@ -8,12 +8,15 @@
     transition: all .3s ease;
 
     &:hover {
-        background-color: var(--inverted-bg-color);
-        color: var(--bg-color);
+        background-color: var(--dark-gray-color);
     }
 }
 
 .active {
     background-color: var(--inverted-bg-color);
     color: var(--bg-color);
+
+    &:hover {
+        background-color: var(--inverted-bg-color);
+    }
 }

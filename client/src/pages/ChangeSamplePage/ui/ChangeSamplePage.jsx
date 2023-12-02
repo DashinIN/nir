@@ -7,7 +7,7 @@ const initialReducers = {
     sample: sampleReducer,
 };
 
-const ChangeSample = () => {
+const ChangeSamplePage = () => {
     return (
         <DynamicModuleLoader 
             removeAfterUnmount={false} 
@@ -22,4 +22,4 @@ const ChangeSample = () => {
     );
 };
 
-export default ChangeSample;
+export default ChangeSamplePage;

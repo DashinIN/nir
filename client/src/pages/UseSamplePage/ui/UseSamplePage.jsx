@@ -9,7 +9,7 @@ const initialReducers = {
     sample: sampleReducer,
 };
 
-const UseTemplate = () => {
+const UseSamplePage = () => {
     
     return (
         <DynamicModuleLoader 
@@ -25,4 +25,4 @@ const UseTemplate = () => {
     );
 };
 
-export default UseTemplate;
+export default UseSamplePage;

@@ -32,7 +32,7 @@ export const FileOutput = () => {
     };
 
     return (
-        <VStack gap={8} max>
+        <VStack gap={8} max align={'center'}>
             <h2>Выбранный шаблон: {selectedSampleName}</h2>
             <Button 
                 onClick={getRequestTable} 
