@@ -30,7 +30,7 @@ const CreateSamplePage = () => {
                     { Boolean(fields.length) && (
                         <>
                             <VStack gap={8} max>
-                                <h2>Выберете порядок полей</h2>
+                                <h2>Выберете порядок выбранных полей шаблона</h2>
                                 <ReorderList 
                                     items={fields} 
                                     setItems={handleSelectedFields}

@@ -25,7 +25,7 @@ export const ReorderList = ({items, setItems}) => {
                         onDragStart={() => setDraggedItem(item)}
                         onDragEnd={() => setDraggedItem(null)}
                     >
-                        {item}
+                        <p className={s.itemText}>{item}</p>
                         { draggedItem === item ? <DragActiveIcon /> : <DragIcon />}
                     </Reorder.Item>
                 ))}

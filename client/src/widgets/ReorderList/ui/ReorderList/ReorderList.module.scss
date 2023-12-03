@@ -6,6 +6,7 @@
 
 .itemsWrapper {
     width: 100%;
+    counter-reset: item; 
 }
   
 .item {
@@ -18,8 +19,17 @@
     border-radius: 10px;
     background-color: var(--bg-color);
     cursor: pointer;
-    list-style-type: decimal;
-    list-style-position: inside;
+    position: relative;
+}
+
+.item::before {
+    position: absolute;
+    content: counter(item) "."; 
+    counter-increment: item; 
+}
+
+.itemText {
+    margin-left: 20px;
 }
 
 .drag {

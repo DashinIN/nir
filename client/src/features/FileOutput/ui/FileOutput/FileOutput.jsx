@@ -40,7 +40,7 @@ export const FileOutput = () => {
                 disabled={isLoading}
                 className={s.downloadButton}
             >
-                {isLoading ? 'Формирование таблицы...' : 'Получить таблицу'}
+                {isLoading ? 'Формирование таблицы...' : 'Экспорт данных по шаблону в виде таблицы'}
                 <DownloadIcon />
             </Button>
         </VStack>

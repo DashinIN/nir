@@ -49,7 +49,7 @@ export const SampleSelector = () => {
             <div className={s.container}>
                 <HStack max gap={8} justify='between' className={s.titles}>
                     <p>Название шаблона</p>
-                    <p>Поля шаблона</p>
+                    <p>Информация о шаблоне</p>
                 </HStack>
                 <VStack max className={s.wrapper}>
                     {   

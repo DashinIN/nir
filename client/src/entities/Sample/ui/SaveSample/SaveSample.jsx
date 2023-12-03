@@ -33,17 +33,15 @@ export const SaveSample = ({items}) => {
     return (
         <VStack max gap={8}>
             <h2>Сохранить шаблон</h2>
-            <div className={s.errors}>
-                {validationErrorMessage  && (
-                    <div>{validationErrorMessage}</div>
-                )}
-                {(isError && !validationErrorMessage) && (
-                    <div>{error.data.error}</div>
-                )}
-                {isSuccess && (
-                    <div>{data.message}</div>
-                )}  
-            </div>
+            {validationErrorMessage  && (
+                <div className={s.errors}>{validationErrorMessage}</div>
+            )}
+            {(isError && !validationErrorMessage) && (
+                <div className={s.errors}>{error.data.error}</div>
+            )}
+            {isSuccess && (
+                <div>{data.message}</div>
+            )}  
             <HStack gap={8}>
                 <Input 
                     type="text"
