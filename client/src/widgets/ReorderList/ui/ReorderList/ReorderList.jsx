@@ -1,8 +1,10 @@
 import { Reorder } from 'framer-motion';
-import s from './ReorderList.module.scss';
 import { useState } from 'react';
 import { classNames } from '@/shared/lib/classNames/classNames';
 import { VStack } from '@/shared/ui/Stack';
+import DragIcon from '@/shared/assets/drag.svg';
+import DragActiveIcon from '@/shared/assets/dragActive.svg';
+import s from './ReorderList.module.scss';
 
 export const ReorderList = ({items, setItems}) => {
 
@@ -24,6 +26,7 @@ export const ReorderList = ({items, setItems}) => {
                         onDragEnd={() => setDraggedItem(null)}
                     >
                         {item}
+                        { draggedItem === item ? <DragActiveIcon /> : <DragIcon />}
                     </Reorder.Item>
                 ))}
             </Reorder.Group>

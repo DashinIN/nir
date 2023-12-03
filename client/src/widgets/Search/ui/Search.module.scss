@@ -1,0 +1,14 @@
+.cancelButton {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.cancelIcon {
+    fill: var(--black-color);
+}
+
+.searchIcon {
+    stroke: var(--black-color);	
+}

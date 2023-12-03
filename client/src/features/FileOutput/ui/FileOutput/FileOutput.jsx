@@ -5,7 +5,8 @@ import { useAllSamples } from '@/entities/Sample/api/sampleApi';
 import { useGetSelectedSampleData } from '../../api/fileOutputApi';
 import { useSelector } from 'react-redux';
 import { getSelectedSample } from '@/entities/Sample/model/selectors/getSelectedSample';
-
+import DownloadIcon from '@/shared/assets/download.svg';
+import s from './FileOutput.module.scss';
 
 export const FileOutput = () => {
 
@@ -36,8 +37,11 @@ export const FileOutput = () => {
             <h2>Выбранный шаблон: {selectedSampleName}</h2>
             <Button 
                 onClick={getRequestTable} 
-                disabled={isLoading}>
+                disabled={isLoading}
+                className={s.downloadButton}
+            >
                 {isLoading ? 'Формирование таблицы...' : 'Получить таблицу'}
+                <DownloadIcon />
             </Button>
         </VStack>
     );

@@ -3,6 +3,8 @@ import { Button } from '@/shared/ui/Button/Button';
 import { Input } from '@/shared/ui/Input';
 import { HStack, VStack } from '@/shared/ui/Stack';
 import { useAddSample } from '../../api/sampleApi';
+import SaveIcon from '@/shared/assets/save.svg';
+import s from './SaveSample.module.scss';
 
 export const SaveSample = ({items}) => {
     const [sampleNameInputValue, setSampleNameInputValue] = useState('');
@@ -31,23 +33,29 @@ export const SaveSample = ({items}) => {
     return (
         <VStack max gap={8}>
             <h2>Сохранить шаблон</h2>
-            {validationErrorMessage  && (
-                <div>{validationErrorMessage}</div>
-            )}
-            {(isError && !validationErrorMessage) && (
-                <div>{error.data.error}</div>
-            )}
-            {isSuccess && (
-                <div>{data.message}</div>
-            )}  
+            <div className={s.errors}>
+                {validationErrorMessage  && (
+                    <div>{validationErrorMessage}</div>
+                )}
+                {(isError && !validationErrorMessage) && (
+                    <div>{error.data.error}</div>
+                )}
+                {isSuccess && (
+                    <div>{data.message}</div>
+                )}  
+            </div>
             <HStack gap={8}>
                 <Input 
                     type="text"
                     value={sampleNameInputValue}
                     onChange={handleNameChange}
                     placeholder="Название шаблона" />
-                <Button onClick={handleSave}>
+                <Button 
+                    onClick={handleSave}
+                    className={s.saveButton}
+                >
                     {isLoading ? 'Сохранение...' : 'Cохранить'}
+                    <SaveIcon />
                 </Button>
             </HStack>          
         </VStack>
