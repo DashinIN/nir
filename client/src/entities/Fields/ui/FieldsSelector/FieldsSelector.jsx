@@ -1,7 +1,7 @@
 import { FieldsList } from '../FieldsList/FieldsList';
 import { useState } from 'react';
 import { HStack, VStack } from '@/shared/ui/Stack';
-import { useAllTitles } from '../../api/fieldsSelectorApi';
+import { useAllTitles } from '../../model/api/fieldsSelectorApi';
 import { Search } from '@/widgets/Search/ui/Search';
 
 export const FieldsSelector = ({ items, setItems}) => {

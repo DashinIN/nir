@@ -1,11 +1,10 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { ReorderList } from '@/widgets/ReorderList';
-import { FieldsSelector } from '@/widgets/FieldsSelector';
 import { Page } from '@/widgets/Page';
 import { VStack } from '@/shared/ui/Stack';
 import { SaveSample } from '@/entities/Sample';
 import { DynamicModuleLoader } from '@/shared/lib/components/DynamicModuleLoader/DynamicModuleLoader';
-import { fieldsActions, fieldsReducer, getFields } from '@/entities/Fields';
+import { FieldsSelector, fieldsActions, fieldsReducer, getFields } from '@/entities/Fields';
 
 const initialReducers = {
     fields: fieldsReducer,
