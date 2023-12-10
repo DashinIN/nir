@@ -45,6 +45,9 @@ export const SampleSelector = () => {
 
     return (
         <VStack max gap={8}>
+            <HStack max justify='center'>
+                <h2>Активный шаблон: {selectedSampleName}</h2>
+            </HStack>
             <h2>Список доступных шаблонов</h2>
             <div className={s.container}>
                 <HStack max gap={8} justify='between' className={s.titles}>
@@ -65,9 +68,6 @@ export const SampleSelector = () => {
                     }
                 </VStack>
             </div>
-            <HStack max justify='center'>
-                <h2>Выбранный шаблон: {selectedSampleName}</h2>
-            </HStack>
         </VStack>
     );
 };

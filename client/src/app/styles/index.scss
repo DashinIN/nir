@@ -10,6 +10,16 @@ body {
     background: var(--bg-color);
     color: var(--primary-color);
     min-height: 100vh;
+
+    h1 {
+        font-size: 1.5rem;
+        height: 70px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: var(--inverted-bg-color);
+        color: var(--bg-color);
+    }
 }
 
 *::-webkit-scrollbar{

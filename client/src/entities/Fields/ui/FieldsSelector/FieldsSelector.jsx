@@ -20,7 +20,7 @@ export const FieldsSelector = ({ items, setItems}) => {
     return (
         <VStack gap={8} max>
             <HStack justify='between' max>
-                <h2>Отметьте требуемые поля шаблона</h2>
+                <h2>Выбор полей шаблона</h2>
                 <Search 
                     searchValue={searchValue}
                     setSearchValue={setSearchValue}

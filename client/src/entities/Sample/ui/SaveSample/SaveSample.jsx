@@ -42,7 +42,7 @@ export const SaveSample = ({items}) => {
             {isSuccess && (
                 <div>{data.message}</div>
             )}  
-            <HStack gap={8}>
+            <HStack gap={8} max>
                 <Input 
                     type="text"
                     value={sampleNameInputValue}

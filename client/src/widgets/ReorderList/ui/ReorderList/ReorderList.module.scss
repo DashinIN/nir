@@ -2,6 +2,7 @@
     background-color: white;
     padding: 20px;
     border-radius: 24px;
+    width: 60%;
 }
 
 .itemsWrapper {
@@ -13,9 +14,9 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 1.2rem;
+    font-size: 1rem;
     margin-top: 4px;
-    padding: 10px;
+    padding: 8px;
     border-radius: 10px;
     background-color: var(--bg-color);
     cursor: pointer;
@@ -29,7 +30,7 @@
 }
 
 .itemText {
-    margin-left: 20px;
+    margin-left: 30px;
 }
 
 .drag {

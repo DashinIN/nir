@@ -8,6 +8,7 @@ function App() {
     return (
         <div className='app'>
             <Suspense fallback="">
+                <h1>Приложение для работы с реестром организаций</h1>
                 <Navbar />
                 <AppRouter />
             </Suspense>
