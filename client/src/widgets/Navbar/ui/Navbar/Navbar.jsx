@@ -28,7 +28,12 @@ export const Navbar = () => {
             >
                 Использовать шаблон
             </NavLink>
-           
+            <NavLink
+                to="/viewSample"
+                className={toggleLink}
+            >
+                Посмотреть данные
+            </NavLink>
         </div>
     );
 };
