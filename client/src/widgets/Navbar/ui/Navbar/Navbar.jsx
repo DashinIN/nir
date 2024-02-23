@@ -32,7 +32,7 @@ export const Navbar = () => {
                 to="/viewSample"
                 className={toggleLink}
             >
-                Посмотреть данные
+                Просмотр данных по шаблону
             </NavLink>
         </div>
     );
