@@ -1,9 +1,9 @@
 const { fieldTranslations } = require('../consts/translations.js')
 
-const transateRows = (data) => {
+const transateTableTitles = (data) => {
     return data.map(row => {
         const translatedRow = {}
-        for (const key in row) {
+        for (const key in row.dataValues) {
             if (fieldTranslations[key]) {
                 translatedRow[fieldTranslations[key]] = row[key]
             } else {
@@ -25,7 +25,7 @@ const translateTitlesEN = (items) => {
 }
 
 module.exports = {
-    transateRows,
+    transateTableTitles,
     translateTitlesRU,
     translateTitlesEN
 }

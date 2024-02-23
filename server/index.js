@@ -1,15 +1,17 @@
-const { allTableQuery, allTableTitlesQuery, selectedFieldsQuery } = require('./consts/query')
-const { transateRows, translateTitlesRU, translateTitlesEN } = require('./features/translateRows')
+require('dotenv').config()
+const sequelize = require('./db')
+const cors = require('cors')
+const router = require('./routes')
+
+const { translateTitlesRU, translateTitlesEN } = require('./features/translateRows')
 const express = require('express')
 const { Pool } = require('pg')
-const bodyParser = require('body-parser')
-const cors = require('cors')
-const { fieldTranslations } = require('./consts/translations')
 
+const PORT = process.env.PORT || 5000
 const app = express()
-app.use(bodyParser.json())
+app.use(express.json())
 app.use(cors())
-const port = 5000
+app.use('/api', router)
 
 const pool = new Pool({
     user: 'postgres',
@@ -19,42 +21,42 @@ const pool = new Pool({
     port: 5432
 })
 
-app.get('/getAll', async (req, res) => {
-    try {
-        const { rows } = await pool.query(allTableQuery)
-        const translatedData = transateRows(rows)
-        res.json(translatedData)
-    } catch (error) {
-        res.status(500).send('Ошибка сервера')
-    }
-})
+// app.get('/getAll', async (req, res) => {
+//     try {
+//         const { rows } = await pool.query(allTableQuery)
+//         const translatedData = transateRows(rows)
+//         res.json(translatedData)
+//     } catch (error) {
+//         res.status(500).send('Ошибка сервера')
+//     }
+// })
 
-app.get('/getAllTitles', async (req, res) => {
-    try {
-        const { rows } = await pool.query(allTableTitlesQuery)
-        const filteredRows = rows
-            .map((item) => item.column_name)
-            .filter(item => fieldTranslations[item])
-        const translatedData = translateTitlesRU(filteredRows)
-        res.json(translatedData)
-    } catch (error) {
-        res.status(500).send('Ошибка сервера')
-    }
-})
+// app.get('/getAllTitles', async (req, res) => {
+//     try {
+//         const { rows } = await pool.query(allTableTitlesQuery)
+//         const filteredRows = rows
+//             .map((item) => item.column_name)
+//             .filter(item => fieldTranslations[item])
+//         const translatedData = translateTitlesRU(filteredRows)
+//         res.json(translatedData)
+//     } catch (error) {
+//         res.status(500).send('Ошибка сервера')
+//     }
+// })
 
-app.post('/getSelectedSampleData', async (req, res) => {
-    const titles = req.body
-    console.log(titles)
-    const translatedTitles = translateTitlesEN(titles)
-    const requestQuery = selectedFieldsQuery(translatedTitles)
-    try {
-        const { rows } = await pool.query(requestQuery)
-        const translatedData = transateRows(rows)
-        res.json(translatedData)
-    } catch (error) {
-        res.status(500).send('Ошибка сервера')
-    }
-})
+// app.post('/getSelectedSampleData', async (req, res) => {
+//     const titles = req.body
+//     console.log(titles)
+//     const translatedTitles = translateTitlesEN(titles)
+//     const requestQuery = selectedFieldsQuery(translatedTitles)
+//     try {
+//         const { rows } = await pool.query(requestQuery)
+//         const translatedData = transateRows(rows)
+//         res.json(translatedData)
+//     } catch (error) {
+//         res.status(500).send('Ошибка сервера')
+//     }
+// })
 
 app.post('/addSample', async (req, res) => {
     try {
@@ -113,6 +115,14 @@ app.get('/getAllSamples', async (req, res) => {
     }
 })
 
-app.listen(port, () => {
-    console.log(`Сервер запущен на порту ${port}`)
-})
+const start = async () => {
+    try {
+        await sequelize.authenticate()
+        await sequelize.sync()
+        app.listen(PORT, () => console.log(`server start on port ${PORT}`))
+    } catch (e) {
+        console.log(e)
+    }
+}
+
+start()
