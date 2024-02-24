@@ -1,4 +1,5 @@
 const fieldTranslations = {
+    id: 'id',
     idlistedu: 'Код СБИАС',
     id_parent: 'Код СБИАС головной организации',
     id_givc: 'Идентификатор ГИВЦ',

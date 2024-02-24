@@ -106,8 +106,6 @@ const Orgs = sequelize.define('orgs', {
         allowNull: false
     },
     egrul_uchred: DataTypes.STRING(512),
-    isspo: DataTypes.NUMERIC(1, 0),
-    disable_egrul: DataTypes.NUMERIC(1, 0),
     kod_status_rub: DataTypes.INTEGER,
     kbkcode: DataTypes.STRING(10),
     kbkname: DataTypes.STRING(2048),
@@ -139,14 +137,58 @@ Orgs.belongsTo(SprMin, {
     as: 'sprMin'
 })
 
-Orgs.belongsTo(Regions, {
-    foreignKey: 'id_region',
-    as: 'region'
+Orgs.belongsTo(Regions, { foreignKey: 'id_region' })
+
+Regions.belongsTo(Fedokrug, { foreignKey: 'id_fedokrug' })
+
+const OutputSamples = sequelize.define('output_samples', {
+    sample_id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        allowNull: false
+    },
+    sample_name: {
+        type: DataTypes.STRING(255),
+        allowNull: false
+    }
+}, {
+    tableName: 'output_samples',
+    timestamps: false
 })
 
-Regions.belongsTo(Fedokrug, {
-    foreignKey: 'id_fedokrug',
-    as: 'fedokrug'
+const OutputSamplesFields = sequelize.define('output_samples_fields', {
+    field_id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+        allowNull: false
+    },
+    field_name_en: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    field_name_ru: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    field_order: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+    isEditable: {
+        type: DataTypes.NUMERIC(1, 0),
+        allowNull: false,
+        defaultValue: 1
+    },
+    sample_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    }
+}, {
+    tableName: 'output_samples_fields',
+    timestamps: false
 })
 
-module.exports = { Orgs, Fedokrug, Regions, SprMin }
+OutputSamplesFields.belongsTo(OutputSamples, { foreignKey: 'sample_id' })
+
+module.exports = { Orgs, Fedokrug, Regions, SprMin, OutputSamples, OutputSamplesFields }
