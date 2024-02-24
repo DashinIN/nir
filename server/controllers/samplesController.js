@@ -5,19 +5,23 @@ class SamplesController {
     async addSample (req, res) {
         try {
             const { name, items } = req.body
+            console.log(req.body)
             const newSample = await OutputSamples.create({
                 sample_name: name
             })
+            const titlesEN = translateTitlesEN(items)
             const sampleFieldsValues = items.map((item, index) => ({
                 sample_id: newSample.sample_id,
-                field_name_en: translateTitlesEN(item),
-                field_name_ru: items[index],
+                field_name_en: titlesEN[index],
+                field_name_ru: item,
                 field_order: index + 1,
                 isEditable: 1
             }))
+
             await OutputSamplesFields.bulkCreate(sampleFieldsValues)
             return res.status(201).json({ message: 'Шаблон успешно добавлен' })
         } catch (error) {
+            console.log(error)
             if (error.name === 'SequelizeUniqueConstraintError') {
                 return res.status(400).json({ error: 'Шаблон с таким именем уже существует. Выберите другое название шаблона' })
             } else {

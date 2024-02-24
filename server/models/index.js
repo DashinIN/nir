@@ -51,6 +51,7 @@ const Orgs = sequelize.define('orgs', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
+        autoIncrement: true,
         allowNull: false
     },
     idlistedu: {
@@ -145,6 +146,7 @@ const OutputSamples = sequelize.define('output_samples', {
     sample_id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
+        autoIncrement: true,
         allowNull: false
     },
     sample_name: {

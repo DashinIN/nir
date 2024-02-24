@@ -12,7 +12,7 @@ class OrgsController {
 
     async getAllTitles (req, res) {
         try {
-            const orgsFields = Object.keys(Orgs.tableAttributes)
+            const orgsFields = Object.keys(Orgs.tableAttributes).filter(field => field !== 'id')
             const translatedFields = translateTitlesRU(orgsFields)
             res.json(translatedFields)
         } catch (error) {
