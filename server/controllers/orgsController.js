@@ -1,4 +1,4 @@
-const { Orgs, Regions } = require('../models')
+const { Orgs, Regions, Fedokrug } = require('../models')
 const { transateTableTitles, translateTitlesRU } = require('../features/translateRows')
 
 class OrgsController {
@@ -31,6 +31,35 @@ class OrgsController {
             return res.json(orgs)
         } catch (error) {
             return res.status(500).json({ error: 'Ошибка при получении организаций по региону' })
+        }
+    }
+
+    async getUniqueValues (req, res) {
+        try {
+            const uniqueLevel = await Orgs.aggregate('id_level', 'DISTINCT', { plain: false })
+            const uniqueStatusEgrul = await Orgs.aggregate('status_egrul', 'DISTINCT', { plain: false })
+            const uniqueOrgType = await Orgs.aggregate('org_type', 'DISTINCT', { plain: false })
+
+            const levelValues = uniqueLevel.map(item => item.DISTINCT)
+            const StatusEgrulValues = uniqueStatusEgrul.map(item => item.DISTINCT)
+            const OrgTypeValues = uniqueOrgType.map(item => item.DISTINCT)
+
+            const fedokrugNames = await Fedokrug.findAll({ attributes: ['name_fedokrug'] })
+            const regionNames = await Regions.findAll({ attributes: ['name_region'] })
+
+            const fedokrugValues = fedokrugNames.map(item => item.name_fedokrug)
+            const regionValues = regionNames.map(item => item.name_region)
+
+            return res.json({
+                levelValues,
+                StatusEgrulValues,
+                OrgTypeValues,
+                fedokrugValues,
+                regionValues
+            })
+        } catch (error) {
+            console.log(error)
+            return res.status(500).json({ error: 'Ошибка при получении уникальных значений полей' })
         }
     }
 }
