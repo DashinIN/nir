@@ -1,14 +1,10 @@
-import { Button } from '@/shared/ui/Button';
-import { Table } from 'antd';
-import { useSelector } from 'react-redux';
-import { getSelectedSample } from '@/entities/Sample/model/selectors/getSelectedSample';
-import { useAllSamples } from '@/entities/Sample/api/sampleApi';
-import { useGetSelectedSampleData } from '@/features/FileOutput/api/fileOutputApi';
 import { DynamicModuleLoader } from '@/shared/lib/components/DynamicModuleLoader/DynamicModuleLoader';
 import { sampleReducer } from '@/entities/Sample/model/slice/sampleSlice';
 import { useState, useEffect } from 'react';
 import { Page } from '@/widgets/Page';
+import { useGetFilterValues, useGetFilteredOrgs } from '../api/viewSampleApi';
 import { Loader } from '@/shared/ui/Loader';
+import { Select } from '@/shared/ui/Select';
 
 
 const initialReducers = {
@@ -16,60 +12,93 @@ const initialReducers = {
 };
 
 const ViewSamplePage = () => {
-    
-    const [tableColumns, setTableColumns] = useState([]);
-    const [tableData, setTableData] = useState([]);
 
-    const selectedSample = useSelector(getSelectedSample);
-    const {data: allSamples, isSuccess } = useAllSamples();
    
-    const [getSelectedSampleData, { isLoading} ]  = useGetSelectedSampleData();
-
-    let selectedSampleName, selectedSampleTitles;
-    if (isSuccess  && allSamples[selectedSample]) {
-        selectedSampleName = allSamples[selectedSample].sample_name;
-        selectedSampleTitles = allSamples[selectedSample].sample_content;
-    } else {
-        return null;
-    }
     
+    const [orgTypeFilterValue, setOrgTypeFilterValue] = useState([]);
+    const [statusEgrulFilterValue, setStatusEgrulFilterValue] = useState([]);
+    const [fedOkrugFilterValue, setFedOkrugFilterValue] = useState([]);
+    const [levelFilterValue, setLevelFilterValue] = useState([]);
+    const [regionFilterValue, setRegionFilterValue] = useState([]);
 
-    const getRequestTable = async () => {
-        if (!selectedSampleTitles.length) {
-            return;
-        }
-        const {data: selectedData} = await getSelectedSampleData(selectedSampleTitles);
-        setTableData(selectedData);
+    const { data, isLoading, refetch } = useGetFilterValues({
+        fedOkrug: fedOkrugFilterValue,
+        region: regionFilterValue
+    });
 
-        const columns = Object.keys(selectedData[0]).map((key) => ({
-            title: key,
-            dataIndex: key,
-            key,
-            sorter: (a, b) => {
-                if (a[key] === null || a[key] === undefined || a[key] === '') {
-                    return 1;
-                } else if (b[key] === null || b[key] === undefined || b[key] === '') {
-                    return -1; 
-                }
-              
-                if (typeof a[key] === 'number' && typeof b[key] === 'number') {
-                    return a[key] - b[key];
-                } else {
-                    return a[key].localeCompare(b[key]);
-                }
-            },
-            sortDirections: ['descend', 'ascend'],
-        }));
-        setTableColumns(columns);
+
+    const [getFilteredOrgs, { data: filteredOrgs, error, isLoading: isOrgsLoading }] = useGetFilteredOrgs(); // Используем lazy query
+
+    const handleButtonClick = () => {
+        getFilteredOrgs({
+            orgType: orgTypeFilterValue,
+            statusEgrul: statusEgrulFilterValue,
+            fedOkrug: fedOkrugFilterValue,
+            level: levelFilterValue,
+            region: regionFilterValue
+        });
     };
 
-    // eslint-disable-next-line react-hooks/rules-of-hooks
+  
+
     useEffect(() => {
-        getRequestTable();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []); 
+        refetch();
+        if (data && data.regionValues) {
+            setRegionFilterValue(prev => prev.filter(region => data.regionValues.includes(region)));
+        }
+    }, [data, fedOkrugFilterValue, refetch]);
+
+    useEffect(() => {
+        console.log('Data:', filteredOrgs);
+        console.log('Loading:', isOrgsLoading);
+    }, [filteredOrgs, isOrgsLoading]);
 
    
+
+    const levelLabels = {
+        '1': 'головное',
+        '2': 'филиал',
+        '3': 'представительство'
+    };
+
+    const levelOptions = data ? data.levelValues.filter(value => value !== 0).map(value => ({
+        label: levelLabels[value] || value,
+        value: value
+    })) : [];
+    
+    const orgTypeOptions = data ? data.orgTypeValues.filter(value => Boolean(value) !== false).map(value => ({
+        label: value,
+        value: value
+    })) : [];
+    
+    const statusEgrulOptions = data ? data.statusEgrulValues.filter(value => Boolean(value) !== false).map(value => ({
+        label: value,
+        value: value
+    })) : [];
+    
+    const fedOkrugLabels = {
+        '1': 'Центральный федеральный округ',
+        '2': 'Северо-Западный федеральный округ',
+        '3': 'Южный федеральный округ',
+        '4': 'Приволжский федеральный округ',
+        '5': 'Уральский федеральный округ',
+        '6': 'Сибирский федеральный округ',
+        '7': 'Дальневосточный федеральный округ',
+        '8': 'Прочие',
+        '10': 'Федеральный округ не задан',
+        '11': 'Северо-Кавказский федеральный округ',
+        '9999': 'Не указано'
+    };
+    
+    const fedOkrugOptions = data ? Object.entries(fedOkrugLabels).map(([value, label]) => ({
+        label: label,
+        value: parseInt(value)
+    })) : [];
+    
+    const regionOptions = data ? data.regionValues.filter(value => Boolean(value) !== false).map(value => ({
+        label: value,
+        value: value
+    })) : [];
     
     return (
         <DynamicModuleLoader 
@@ -77,32 +106,43 @@ const ViewSamplePage = () => {
             reducers={initialReducers}
         >
             <Page>
-                {isLoading ? <Loader /> : (
-                    <Table 
-                        bordered 
-                        dataSource={tableData}
-                        columns={tableColumns}
-                        locale={{
-                            emptyText: 'Нет данных',
-                            filterConfirm: 'Подтвердить',
-                            filterReset: 'Сброс',
-                            filterTitle: 'Фильтр',
-                            selectAll: 'Выбрать все',
-                            selectInvert: 'Инвертировать выбор',
-                            sortTitle: 'Сортировать',
-                            triggerAsc: 'Нажмите, чтобы сортировать по возрастанию',
-                            triggerDesc: 'Нажмите, чтобы сортировать по убыванию',
-                            cancelSort: 'Нажмите, чтобы отменить сортировку',
-                        }}
-                        pagination={{
-                            pageSizeOptions: ['5', '10', '20', '50'], 
-                            showSizeChanger: true,
-                            locale: {
-                                items_per_page: 'на странице', 
-                            },
-                        }}
-                    />
+                <button onClick={handleButtonClick}>Отправить запрос</button>
+                {isLoading ? (<Loader />) : (
+                    <>
+                        <Select 
+                            options={orgTypeOptions}
+                            value={orgTypeFilterValue}
+                            onChange={setOrgTypeFilterValue}
+                            placeholder={'Тип организации'}
+                        />
+                        <Select 
+                            options={statusEgrulOptions}
+                            value={statusEgrulFilterValue}
+                            onChange={setStatusEgrulFilterValue}
+                            placeholder={'Статус в ЕГРЮЛ'}
+                        />
+                        <Select 
+                            options={fedOkrugOptions}
+                            value={fedOkrugFilterValue}
+                            onChange={setFedOkrugFilterValue}
+                            placeholder={'Федеральный округ'}
+                        />
+                        <Select 
+                            options={regionOptions}
+                            value={regionFilterValue}
+                            onChange={setRegionFilterValue}
+                            placeholder={'Регион'}
+                        />
+                        <Select 
+                            options={levelOptions}
+                            value={levelFilterValue}
+                            onChange={setLevelFilterValue}
+                            placeholder={'Уровень'}
+                        />
+                    </>
+               
                 )}
+              
                 
             </Page>
         </DynamicModuleLoader>
