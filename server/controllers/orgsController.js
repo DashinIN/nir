@@ -1,4 +1,4 @@
-const { Orgs, Regions, Fedokrug } = require('../models')
+const { Orgs, Regions, Fedokrug, OutputSamplesFields } = require('../models')
 const { Op } = require('sequelize') // добавлено Sequelize
 const { transateTableTitles, translateTitlesRU } = require('../features/translateRows')
 
@@ -80,11 +80,34 @@ class OrgsController {
         }
     }
 
+    async getSampleFieldsHeaders (req, res) {
+        try {
+            const selectedSampleId = req.body.selectedSampleId
+            // Получаем все поля для выбранного шаблона
+            const fields = await OutputSamplesFields.findAll({
+                where: { sample_id: selectedSampleId },
+                order: [['field_order', 'ASC']]
+            })
+
+            // Преобразуем полученные поля в формат заголовков для таблицы Ant Design
+            const headers = fields.map(field => ({
+                title: field.field_name_ru, // Заголовок на русском языке
+                dataIndex: field.field_name_en, // Идентификатор данных (название поля на английском языке)
+                key: field.field_name_en // Уникальный ключ
+                // Другие необходимые свойства, если есть
+            }))
+            console.log(headers)
+            return headers
+        } catch (error) {
+            console.error('Ошибка:', error)
+            throw new Error('Произошла ошибка при получении заголовков полей шаблона')
+        }
+    }
+
     async getFilteredOrgs (req, res) {
         try {
             const filters = req.body.filters
             console.log(filters)
-
             const filterObject = {}
 
             // Пример фильтрации по региону

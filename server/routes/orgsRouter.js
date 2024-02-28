@@ -6,6 +6,7 @@ router.get('/', orgsController.getAll)
 router.get('/titles', orgsController.getAllTitles)
 router.post('/values', orgsController.getFilterValues)
 router.post('/filter', orgsController.getFilteredOrgs)
+router.post('/sampleFieldsTitles', orgsController.getSampleFieldsHeaders)
 router.get('/region', orgsController.getByRegion)
 
 module.exports = router

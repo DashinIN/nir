@@ -2,9 +2,11 @@ import { DynamicModuleLoader } from '@/shared/lib/components/DynamicModuleLoader
 import { sampleReducer } from '@/entities/Sample/model/slice/sampleSlice';
 import { useState, useEffect } from 'react';
 import { Page } from '@/widgets/Page';
-import { useGetFilterValues, useGetFilteredOrgs } from '../api/viewSampleApi';
+import { getSelectedSample } from '../../../entities/Sample/model/selectors/getSelectedSample';
+import { useGetFilterValues, useGetFilteredOrgs, useGetSampleFieldsHeaders } from '../api/viewSampleApi';
 import { Loader } from '@/shared/ui/Loader';
 import { Select } from '@/shared/ui/Select';
+import { useDispatch, useSelector } from 'react-redux';
 
 
 const initialReducers = {
@@ -12,8 +14,14 @@ const initialReducers = {
 };
 
 const ViewSamplePage = () => {
+    const selectedSample = useSelector(getSelectedSample);
 
-   
+    const [pagination, setPagination] = useState({
+        current: 1,
+        pageSize: 10,
+        total: 0,
+    });
+
     
     const [orgTypeFilterValue, setOrgTypeFilterValue] = useState([]);
     const [statusEgrulFilterValue, setStatusEgrulFilterValue] = useState([]);
@@ -27,16 +35,26 @@ const ViewSamplePage = () => {
     });
 
 
+    console.log(selectedSample + ' peredal');
+    const { data: headers, isLoading: isHeadersLoading } = useGetSampleFieldsHeaders(selectedSample+1);
+    
+
+
     const [getFilteredOrgs, { data: filteredOrgs, error, isLoading: isOrgsLoading }] = useGetFilteredOrgs(); // Используем lazy query
 
     const handleButtonClick = () => {
-        getFilteredOrgs({
-            orgType: orgTypeFilterValue,
-            statusEgrul: statusEgrulFilterValue,
-            fedOkrug: fedOkrugFilterValue,
-            level: levelFilterValue,
-            region: regionFilterValue
-        });
+        getFilteredOrgs(
+            {
+                filters: {
+                    orgType: orgTypeFilterValue,
+                    statusEgrul: statusEgrulFilterValue,
+                    fedOkrug: fedOkrugFilterValue,
+                    level: levelFilterValue,
+                    region: regionFilterValue
+                },
+                page: pagination.current, // Передаем текущую страницу
+                pageSize: pagination.pageSize, // Передаем количество записей на странице
+            });
     };
 
   
@@ -139,6 +157,7 @@ const ViewSamplePage = () => {
                             onChange={setLevelFilterValue}
                             placeholder={'Уровень'}
                         />
+                      
                     </>
                
                 )}
