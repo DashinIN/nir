@@ -17,10 +17,10 @@ const viewSampleApi = rtkApi.injectEndpoints({
             })
         }),
         getFilteredOrgs: builder.query({
-            query: ({ filters }) => ({
+            query: ({ filters, selectedSampleId }) => ({
                 url: 'api/orgs/filter', // Путь к вашему эндпоинту
                 method: 'POST',
-                body: { filters }// Передача фильтров в теле запроса
+                body: { filters, selectedSampleId }// Передача фильтров в теле запроса
             }),
         }),
         getFilteredOrgsCount: builder.query({

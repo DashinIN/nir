@@ -106,6 +106,16 @@ class OrgsController {
 
     async getFilteredOrgs (req, res) {
         try {
+            const selectedSampleId = req.body.selectedSampleId
+            // Получаем все поля для выбранного шаблона
+            const fields = await OutputSamplesFields.findAll({
+                where: { sample_id: selectedSampleId },
+                order: [['field_order', 'ASC']]
+            })
+
+            // Преобразуем полученные поля в формат заголовков для таблицы Ant Design
+            const attributes = fields.map(field => field.field_name_en)
+
             const filters = req.body.filters
             console.log(filters)
             const filterObject = {}
@@ -144,7 +154,7 @@ class OrgsController {
             }
             console.log(filterObject)
 
-            const orgs = await Orgs.findAll({ where: filterObject })
+            const orgs = await Orgs.findAll({ where: filterObject, attributes })
             return res.json(orgs)
         } catch (error) {
             console.error('Ошибка:', error)

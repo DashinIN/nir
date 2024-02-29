@@ -69,7 +69,14 @@ const ViewSamplePage = () => {
         refetch: orgsCountRefetch 
     } = useGetFilteredOrgsCount(filters);
 
-    const [getFilteredOrgs, { data: filteredOrgs, error, isLoading: isOrgsLoading }] = useGetFilteredOrgs(filters); // Используем lazy query
+    const [getFilteredOrgs, { 
+        data: filteredOrgs,
+        error,
+        isLoading: isOrgsLoading 
+    }] = useGetFilteredOrgs({
+        filters: filters, 
+        selectedSampleId: selectedSample+1
+    }); 
 
     useEffect(() => {
         refetch();
@@ -88,7 +95,7 @@ const ViewSamplePage = () => {
 
 
     const handleButtonClick = () => {
-        getFilteredOrgs(filters);
+        getFilteredOrgs({filters: filters, selectedSampleId: selectedSample+1});
     };
 
     useEffect(() => {
