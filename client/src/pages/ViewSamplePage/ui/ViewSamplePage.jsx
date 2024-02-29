@@ -3,7 +3,7 @@ import { sampleReducer } from '@/entities/Sample/model/slice/sampleSlice';
 import { useState, useEffect } from 'react';
 import { Page } from '@/widgets/Page';
 import { getSelectedSample } from '../../../entities/Sample/model/selectors/getSelectedSample';
-import { useGetFilterValues, useGetFilteredOrgs, useGetSampleFieldsHeaders } from '../api/viewSampleApi';
+import { useGetFilterValues, useGetFilteredOrgs, useGetFilteredOrgsCount, useGetSampleFieldsHeaders } from '../api/viewSampleApi';
 import { Loader } from '@/shared/ui/Loader';
 import { Select } from '@/shared/ui/Select';
 import { useDispatch, useSelector } from 'react-redux';
@@ -50,13 +50,6 @@ const ViewSamplePage = () => {
     const [levelFilterValue, setLevelFilterValue] = useState([]);
     const [regionFilterValue, setRegionFilterValue] = useState([]);
 
-    const { data, isLoading, refetch } = useGetFilterValues({
-        fedOkrug: fedOkrugFilterValue,
-        region: regionFilterValue
-    });
-    const { data: headers, isLoading: isHeadersLoading } = useGetSampleFieldsHeaders(selectedSample+1);
-    const [getFilteredOrgs, { data: filteredOrgs, error, isLoading: isOrgsLoading }] = useGetFilteredOrgs(); // Используем lazy query
-
     const filters = {
         orgType: orgTypeFilterValue,
         statusEgrul: statusEgrulFilterValue,
@@ -65,17 +58,38 @@ const ViewSamplePage = () => {
         region: regionFilterValue
     };
 
-    const handleButtonClick = () => {
-        getFilteredOrgs(filters);
-    };
+    const { data, isLoading, refetch } = useGetFilterValues({
+        fedOkrug: fedOkrugFilterValue,
+        region: regionFilterValue
+    });
+    const { data: headers, isLoading: isHeadersLoading } = useGetSampleFieldsHeaders(selectedSample+1);
+    const {
+        data: filteredOrgsCount, 
+        isLoading: isFilteredOrgsCountLoading,
+        refetch: orgsCountRefetch 
+    } = useGetFilteredOrgsCount(filters);
 
-  
+    const [getFilteredOrgs, { data: filteredOrgs, error, isLoading: isOrgsLoading }] = useGetFilteredOrgs(filters); // Используем lazy query
+
     useEffect(() => {
         refetch();
         if (data && data.regionValues) {
             setRegionFilterValue(prev => prev.filter(region => data.regionValues.includes(region)));
         }
     }, [data, fedOkrugFilterValue, refetch]);
+
+    useEffect(() => {
+        orgsCountRefetch();
+    }, [orgTypeFilterValue, statusEgrulFilterValue, fedOkrugFilterValue, levelFilterValue, regionFilterValue, orgsCountRefetch]);
+
+    useEffect(() => {
+        console.log(filteredOrgsCount);
+    }, [filteredOrgsCount]);
+
+
+    const handleButtonClick = () => {
+        getFilteredOrgs(filters);
+    };
 
     useEffect(() => {
         console.log('Data:', filteredOrgs);

@@ -151,6 +151,52 @@ class OrgsController {
             return res.status(500).json({ error: 'Ошибка при получении организаций с учетом фильтров' })
         }
     }
+
+    async getFilteredOrgsCount (req, res) {
+        try {
+            const filters = req.body.filters
+            console.log(filters)
+            const filterObject = {}
+
+            // Пример фильтрации по региону
+            if (filters.region && filters.region.length > 0) {
+                const regionNames = filters.region
+                const regions = await Regions.findAll({ where: { name_region: regionNames } })
+                const regionIds = regions.map(region => region.id_region)
+                filterObject.id_region = { [Op.in]: regionIds }
+            }
+
+            // Пример фильтрации по уровню
+            if (filters.level && filters.level.length > 0) {
+                filterObject.id_level = { [Op.in]: filters.level }
+            }
+
+            // Пример фильтрации по статусу ЕГРЮЛ
+            if (filters.statusEgrul && filters.statusEgrul.length > 0) {
+                filterObject.status_egrul = { [Op.in]: filters.statusEgrul }
+            }
+
+            // Пример фильтрации по типу организации
+            if (filters.orgType && filters.orgType.length > 0) {
+                filterObject.org_type = { [Op.in]: filters.orgType }
+            }
+
+            // Пример фильтрации по федеральному округу
+            if (filters.fedOkrug && filters.fedOkrug.length > 0) {
+                const fedOkrugIds = filters.fedOkrug
+                const regionsInFedOkrug = await Regions.findAll({ where: { id_fedokrug: fedOkrugIds } })
+                const regionIds = regionsInFedOkrug.map(region => region.id_region)
+                filterObject.id_region = { [Op.in]: regionIds }
+            }
+            console.log(filterObject)
+
+            const totalCount = await Orgs.count({ where: filterObject })
+            return res.json({ totalCount })
+        } catch (error) {
+            console.error('Ошибка:', error)
+            return res.status(500).json({ error: 'Ошибка при получении количества организаций с учетом фильтров' })
+        }
+    }
 }
 
 module.exports = new OrgsController()

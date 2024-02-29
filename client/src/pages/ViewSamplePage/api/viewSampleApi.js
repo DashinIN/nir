@@ -17,10 +17,17 @@ const viewSampleApi = rtkApi.injectEndpoints({
             })
         }),
         getFilteredOrgs: builder.query({
-            query: ({ filters, page, pageSize }) => ({
+            query: ({ filters }) => ({
                 url: 'api/orgs/filter', // Путь к вашему эндпоинту
                 method: 'POST',
-                body: { filters, page, pageSize }// Передача фильтров в теле запроса
+                body: { filters }// Передача фильтров в теле запроса
+            }),
+        }),
+        getFilteredOrgsCount: builder.query({
+            query: (filters) => ({
+                url: 'api/orgs/filterCount', // Путь к вашему эндпоинту
+                method: 'POST',
+                body: { filters }// Передача фильтров в теле запроса
             }),
         }),
     }),
@@ -29,3 +36,4 @@ const viewSampleApi = rtkApi.injectEndpoints({
 export const useGetFilterValues = viewSampleApi.useGetFilterValuesQuery;
 export const useGetSampleFieldsHeaders = viewSampleApi.useGetSampleFieldsHeadersQuery;
 export const useGetFilteredOrgs = viewSampleApi.useLazyGetFilteredOrgsQuery;
+export const useGetFilteredOrgsCount = viewSampleApi.useGetFilteredOrgsCountQuery;
