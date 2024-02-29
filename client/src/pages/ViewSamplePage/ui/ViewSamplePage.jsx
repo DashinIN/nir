@@ -7,6 +7,7 @@ import { useGetFilterValues, useGetFilteredOrgs, useGetFilteredOrgsCount, useGet
 import { Loader } from '@/shared/ui/Loader';
 import { Select } from '@/shared/ui/Select';
 import { useDispatch, useSelector } from 'react-redux';
+import { Table } from 'antd';
 
 
 const initialReducers = {
@@ -42,6 +43,9 @@ const generateOptions = (values, labels) => {
 
 
 const ViewSamplePage = () => {
+    const [currentPage, setCurrentPage] = useState(1);
+    const [pageSize, setPageSize] = useState(100);
+
     const selectedSample = useSelector(getSelectedSample);
 
     const [orgTypeFilterValue, setOrgTypeFilterValue] = useState([]);
@@ -69,11 +73,12 @@ const ViewSamplePage = () => {
         refetch: orgsCountRefetch 
     } = useGetFilteredOrgsCount(filters);
 
-    const [getFilteredOrgs, { 
+    const  { 
         data: filteredOrgs,
         error,
-        isLoading: isOrgsLoading 
-    }] = useGetFilteredOrgs({
+        isLoading: isOrgsLoading,
+        refetch: orgsRefetch 
+    } = useGetFilteredOrgs({
         filters: filters, 
         selectedSampleId: selectedSample+1
     }); 
@@ -87,21 +92,22 @@ const ViewSamplePage = () => {
 
     useEffect(() => {
         orgsCountRefetch();
-    }, [orgTypeFilterValue, statusEgrulFilterValue, fedOkrugFilterValue, levelFilterValue, regionFilterValue, orgsCountRefetch]);
+        orgsRefetch();
+    }, [orgTypeFilterValue, statusEgrulFilterValue, fedOkrugFilterValue, levelFilterValue, regionFilterValue, orgsCountRefetch, orgsRefetch]);
 
     useEffect(() => {
-        console.log(filteredOrgsCount);
+        console.log('count:', filteredOrgsCount);
     }, [filteredOrgsCount]);
 
 
-    const handleButtonClick = () => {
-        getFilteredOrgs({filters: filters, selectedSampleId: selectedSample+1});
-    };
+  
 
     useEffect(() => {
         console.log('Data:', filteredOrgs);
         console.log('Loading:', isOrgsLoading);
-    }, [filteredOrgs, isOrgsLoading]);
+        console.log('headers:', headers);
+        console.log('isHeadersLoading:', isHeadersLoading);
+    }, [filteredOrgs, headers, isOrgsLoading, isHeadersLoading]);
 
 
     const levelOptions = generateOptions(data?.levelValues || [], levelLabels);
@@ -109,6 +115,11 @@ const ViewSamplePage = () => {
     const statusEgrulOptions = generateOptions(data?.statusEgrulValues || []);
     const fedOkrugOptions = generateOptions(data?.fedokrugValues || [], fedOkrugLabels);
     const regionOptions = generateOptions(data?.regionValues || []);
+
+    const handleTableChange = (pagination) => {
+        setCurrentPage(pagination.current);
+        setPageSize(pagination.pageSize);
+    };
     
     return (
         <DynamicModuleLoader 
@@ -116,8 +127,7 @@ const ViewSamplePage = () => {
             reducers={initialReducers}
         >
             <Page>
-                <button onClick={handleButtonClick}>Отправить запрос</button>
-                {isLoading ? (<Loader />) : (
+                {isLoading && isFilteredOrgsCountLoading ? (<Loader />) : (
                     <>
                         <Select 
                             options={orgTypeOptions}
@@ -149,7 +159,21 @@ const ViewSamplePage = () => {
                             onChange={setLevelFilterValue}
                             placeholder={'Уровень'}
                         />
+                        <Table
+                            dataSource={filteredOrgs}
+                            columns={headers} // Замените columns на ваши колонки таблицы
+                            loading={isLoading}
+                            pagination={{
+                                current: currentPage,
+                                pageSize: pageSize,
+                                total: filteredOrgsCount.totalCount,
+                                onChange: handleTableChange
+                            }}
+                            rowKey="id" // Укажите поле, которое уникально идентифицирует каждую строку
+                        />
+
                     </>
+                    
                 )}
             </Page>
         </DynamicModuleLoader>

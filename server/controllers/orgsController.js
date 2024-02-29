@@ -97,7 +97,7 @@ class OrgsController {
                 // Другие необходимые свойства, если есть
             }))
             console.log(headers)
-            return headers
+            return res.json(headers)
         } catch (error) {
             console.error('Ошибка:', error)
             throw new Error('Произошла ошибка при получении заголовков полей шаблона')
@@ -106,6 +106,12 @@ class OrgsController {
 
     async getFilteredOrgs (req, res) {
         try {
+            const page = req.body.page || 1 // Значение страницы по умолчанию
+            const pageSize = req.body.pageSize || 1000 // Размер страницы по умолчанию
+
+            // Вычисляем смещение на основе номера страницы и размера страницы
+            const offset = (page - 1) * pageSize
+
             const selectedSampleId = req.body.selectedSampleId
             // Получаем все поля для выбранного шаблона
             const fields = await OutputSamplesFields.findAll({
@@ -145,16 +151,19 @@ class OrgsController {
 
             // Пример фильтрации по федеральному округу
             if (filters.fedOkrug && filters.fedOkrug.length > 0) {
-                const fedOkrugNames = filters.fedOkrug
-                const fedOkrugs = await Fedokrug.findAll({ where: { name_fedokrug: fedOkrugNames } })
-                const fedOkrugIds = fedOkrugs.map(fedOkrug => fedOkrug.id_fedokrug)
+                const fedOkrugIds = filters.fedOkrug
                 const regionsInFedOkrug = await Regions.findAll({ where: { id_fedokrug: fedOkrugIds } })
                 const regionIds = regionsInFedOkrug.map(region => region.id_region)
                 filterObject.id_region = { [Op.in]: regionIds }
             }
             console.log(filterObject)
 
-            const orgs = await Orgs.findAll({ where: filterObject, attributes })
+            const orgs = await Orgs.findAll({
+                where: filterObject,
+                attributes,
+                offset, // Смещение
+                limit: pageSize // Лимит записей на странице
+            })
             return res.json(orgs)
         } catch (error) {
             console.error('Ошибка:', error)
