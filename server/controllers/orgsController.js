@@ -58,13 +58,13 @@ class OrgsController {
             const uniqueLevel = await Orgs.aggregate('id_level', 'DISTINCT', { plain: false })
             const uniqueStatusEgrul = await Orgs.aggregate('status_egrul', 'DISTINCT', { plain: false })
             const uniqueOrgType = await Orgs.aggregate('org_type', 'DISTINCT', { plain: false })
-            const fedokrugs = await Fedokrug.findAll({ attributes: ['name_fedokrug'] })
+            const fedokrugs = await Fedokrug.findAll({ attributes: ['id_fedokrug'] })
 
             // Извлечение значений из результатов запросов
             const levelValues = uniqueLevel.map(item => item.DISTINCT)
             const statusEgrulValues = uniqueStatusEgrul.map(item => item.DISTINCT)
             const orgTypeValues = uniqueOrgType.map(item => item.DISTINCT)
-            const fedokrugValues = fedokrugs.map(item => item.name_fedokrug)
+            const fedokrugValues = fedokrugs.map(item => item.id_fedokrug)
 
             // Возврат данных в формате JSON
             return res.json({

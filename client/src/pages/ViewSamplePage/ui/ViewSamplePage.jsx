@@ -13,16 +13,37 @@ const initialReducers = {
     sample: sampleReducer,
 };
 
+const levelLabels = {
+    '1': 'головное',
+    '2': 'филиал',
+    '3': 'представительство'
+};
+
+const fedOkrugLabels = {
+    '1': 'Центральный федеральный округ',
+    '2': 'Северо-Западный федеральный округ',
+    '3': 'Южный федеральный округ',
+    '4': 'Приволжский федеральный округ',
+    '5': 'Уральский федеральный округ',
+    '6': 'Сибирский федеральный округ',
+    '7': 'Дальневосточный федеральный округ',
+    '8': 'Прочие',
+    '10': 'Федеральный округ не задан',
+    '11': 'Северо-Кавказский федеральный округ',
+    '9999': 'Не указано'
+};
+
+const generateOptions = (values, labels) => {
+    return values ? values.filter(value => Boolean(value) !== false).map(value => ({
+        label: labels ? labels[value] || value : value,
+        value: value
+    })) : [];
+};
+
+
 const ViewSamplePage = () => {
     const selectedSample = useSelector(getSelectedSample);
 
-    const [pagination, setPagination] = useState({
-        current: 1,
-        pageSize: 10,
-        total: 0,
-    });
-
-    
     const [orgTypeFilterValue, setOrgTypeFilterValue] = useState([]);
     const [statusEgrulFilterValue, setStatusEgrulFilterValue] = useState([]);
     const [fedOkrugFilterValue, setFedOkrugFilterValue] = useState([]);
@@ -33,32 +54,22 @@ const ViewSamplePage = () => {
         fedOkrug: fedOkrugFilterValue,
         region: regionFilterValue
     });
-
-
-    console.log(selectedSample + ' peredal');
     const { data: headers, isLoading: isHeadersLoading } = useGetSampleFieldsHeaders(selectedSample+1);
-    
-
-
     const [getFilteredOrgs, { data: filteredOrgs, error, isLoading: isOrgsLoading }] = useGetFilteredOrgs(); // Используем lazy query
 
+    const filters = {
+        orgType: orgTypeFilterValue,
+        statusEgrul: statusEgrulFilterValue,
+        fedOkrug: fedOkrugFilterValue,
+        level: levelFilterValue,
+        region: regionFilterValue
+    };
+
     const handleButtonClick = () => {
-        getFilteredOrgs(
-            {
-                filters: {
-                    orgType: orgTypeFilterValue,
-                    statusEgrul: statusEgrulFilterValue,
-                    fedOkrug: fedOkrugFilterValue,
-                    level: levelFilterValue,
-                    region: regionFilterValue
-                },
-                page: pagination.current, // Передаем текущую страницу
-                pageSize: pagination.pageSize, // Передаем количество записей на странице
-            });
+        getFilteredOrgs(filters);
     };
 
   
-
     useEffect(() => {
         refetch();
         if (data && data.regionValues) {
@@ -71,52 +82,12 @@ const ViewSamplePage = () => {
         console.log('Loading:', isOrgsLoading);
     }, [filteredOrgs, isOrgsLoading]);
 
-   
 
-    const levelLabels = {
-        '1': 'головное',
-        '2': 'филиал',
-        '3': 'представительство'
-    };
-
-    const levelOptions = data ? data.levelValues.filter(value => value !== 0).map(value => ({
-        label: levelLabels[value] || value,
-        value: value
-    })) : [];
-    
-    const orgTypeOptions = data ? data.orgTypeValues.filter(value => Boolean(value) !== false).map(value => ({
-        label: value,
-        value: value
-    })) : [];
-    
-    const statusEgrulOptions = data ? data.statusEgrulValues.filter(value => Boolean(value) !== false).map(value => ({
-        label: value,
-        value: value
-    })) : [];
-    
-    const fedOkrugLabels = {
-        '1': 'Центральный федеральный округ',
-        '2': 'Северо-Западный федеральный округ',
-        '3': 'Южный федеральный округ',
-        '4': 'Приволжский федеральный округ',
-        '5': 'Уральский федеральный округ',
-        '6': 'Сибирский федеральный округ',
-        '7': 'Дальневосточный федеральный округ',
-        '8': 'Прочие',
-        '10': 'Федеральный округ не задан',
-        '11': 'Северо-Кавказский федеральный округ',
-        '9999': 'Не указано'
-    };
-    
-    const fedOkrugOptions = data ? Object.entries(fedOkrugLabels).map(([value, label]) => ({
-        label: label,
-        value: parseInt(value)
-    })) : [];
-    
-    const regionOptions = data ? data.regionValues.filter(value => Boolean(value) !== false).map(value => ({
-        label: value,
-        value: value
-    })) : [];
+    const levelOptions = generateOptions(data?.levelValues || [], levelLabels);
+    const orgTypeOptions = generateOptions(data?.orgTypeValues || []);
+    const statusEgrulOptions = generateOptions(data?.statusEgrulValues || []);
+    const fedOkrugOptions = generateOptions(data?.fedokrugValues || [], fedOkrugLabels);
+    const regionOptions = generateOptions(data?.regionValues || []);
     
     return (
         <DynamicModuleLoader 
@@ -157,12 +128,8 @@ const ViewSamplePage = () => {
                             onChange={setLevelFilterValue}
                             placeholder={'Уровень'}
                         />
-                      
                     </>
-               
                 )}
-              
-                
             </Page>
         </DynamicModuleLoader>
     );
