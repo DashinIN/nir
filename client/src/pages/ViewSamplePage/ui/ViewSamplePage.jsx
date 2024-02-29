@@ -3,10 +3,15 @@ import { sampleReducer } from '@/entities/Sample/model/slice/sampleSlice';
 import { useState, useEffect } from 'react';
 import { Page } from '@/widgets/Page';
 import { getSelectedSample } from '../../../entities/Sample/model/selectors/getSelectedSample';
-import { useGetFilterValues, useGetFilteredOrgs, useGetFilteredOrgsCount, useGetSampleFieldsHeaders } from '../api/viewSampleApi';
+import { 
+    useGetFilterValues,
+    useGetFilteredOrgs,
+    useGetFilteredOrgsCount, 
+    useGetSampleFieldsHeaders
+} from '../api/viewSampleApi';
 import { Loader } from '@/shared/ui/Loader';
 import { Select } from '@/shared/ui/Select';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Table } from 'antd';
 
 
@@ -43,16 +48,22 @@ const generateOptions = (values, labels) => {
 
 
 const ViewSamplePage = () => {
+    //Номер текущего шаблона
+    const selectedSample = useSelector(getSelectedSample);
+    const selectedSampleId = selectedSample + 1;
+     
+    //Пагинация
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize, setPageSize] = useState(100);
 
-    const selectedSample = useSelector(getSelectedSample);
-
+    //Состояния фильтров
     const [orgTypeFilterValue, setOrgTypeFilterValue] = useState([]);
     const [statusEgrulFilterValue, setStatusEgrulFilterValue] = useState([]);
     const [fedOkrugFilterValue, setFedOkrugFilterValue] = useState([]);
     const [levelFilterValue, setLevelFilterValue] = useState([]);
     const [regionFilterValue, setRegionFilterValue] = useState([]);
+
+    
 
     const filters = {
         orgType: orgTypeFilterValue,
@@ -62,63 +73,75 @@ const ViewSamplePage = () => {
         region: regionFilterValue
     };
 
-    const { data, isLoading, refetch } = useGetFilterValues({
+    //Получение параметров для фильтров
+    const { 
+        data: filtersData,
+        isLoading: isFiltersDataLoading,
+        refetch: filtersDataRefetch 
+    } = useGetFilterValues({
         fedOkrug: fedOkrugFilterValue,
         region: regionFilterValue
     });
-    const { data: headers, isLoading: isHeadersLoading } = useGetSampleFieldsHeaders(selectedSample+1);
+
+    const levelOptions = generateOptions(filtersData?.levelValues || [], levelLabels);
+    const orgTypeOptions = generateOptions(filtersData?.orgTypeValues || []);
+    const statusEgrulOptions = generateOptions(filtersData?.statusEgrulValues || []);
+    const fedOkrugOptions = generateOptions(filtersData?.fedokrugValues || [], fedOkrugLabels);
+    const regionOptions = generateOptions(filtersData?.regionValues || []);
+
+    //Запрос на количества записей
     const {
         data: filteredOrgsCount, 
         isLoading: isFilteredOrgsCountLoading,
         refetch: orgsCountRefetch 
     } = useGetFilteredOrgsCount(filters);
-
+   
+    //Запрос на получение заголовков полей
+    const {
+        data: orgsColumns,
+        isLoading: isOrgsColumnsLoading
+    } = useGetSampleFieldsHeaders(selectedSampleId);
+    
+    //Запрос на получение полей с фильтрами и пагинацией
     const  { 
         data: filteredOrgs,
-        error,
         isLoading: isOrgsLoading,
         refetch: orgsRefetch 
     } = useGetFilteredOrgs({
-        filters: filters, 
-        selectedSampleId: selectedSample+1
+        filters, 
+        selectedSampleId,
+        pageSize,
+        currentPage
     }); 
 
+    //При изменении федерального округа оставляем в выбранных только подходящие регионы
     useEffect(() => {
-        refetch();
-        if (data && data.regionValues) {
-            setRegionFilterValue(prev => prev.filter(region => data.regionValues.includes(region)));
+        filtersDataRefetch();
+        if (filtersData && filtersData.regionValues) {
+            setRegionFilterValue(prev => prev.filter(region => filtersData.regionValues.includes(region)));
         }
-    }, [data, fedOkrugFilterValue, refetch]);
+    }, [fedOkrugFilterValue, filtersData, filtersDataRefetch]);
 
+    //При изменении фильтров пересчитываем записи, делаем по ним пагинацию и обновляем таблицу
     useEffect(() => {
+        setCurrentPage(1);
         orgsCountRefetch();
         orgsRefetch();
-    }, [orgTypeFilterValue, statusEgrulFilterValue, fedOkrugFilterValue, levelFilterValue, regionFilterValue, orgsCountRefetch, orgsRefetch]);
-
-    useEffect(() => {
-        console.log('count:', filteredOrgsCount);
-    }, [filteredOrgsCount]);
-
-
-  
-
-    useEffect(() => {
-        console.log('Data:', filteredOrgs);
-        console.log('Loading:', isOrgsLoading);
-        console.log('headers:', headers);
-        console.log('isHeadersLoading:', isHeadersLoading);
-    }, [filteredOrgs, headers, isOrgsLoading, isHeadersLoading]);
+    }, [
+        orgTypeFilterValue,
+        statusEgrulFilterValue,
+        fedOkrugFilterValue,
+        levelFilterValue,
+        regionFilterValue,
+        orgsCountRefetch, 
+        orgsRefetch
+    ]);
 
 
-    const levelOptions = generateOptions(data?.levelValues || [], levelLabels);
-    const orgTypeOptions = generateOptions(data?.orgTypeValues || []);
-    const statusEgrulOptions = generateOptions(data?.statusEgrulValues || []);
-    const fedOkrugOptions = generateOptions(data?.fedokrugValues || [], fedOkrugLabels);
-    const regionOptions = generateOptions(data?.regionValues || []);
+    const isTableUpdating = isOrgsColumnsLoading || isOrgsLoading || isFilteredOrgsCountLoading;
 
     const handleTableChange = (pagination) => {
-        setCurrentPage(pagination.current);
-        setPageSize(pagination.pageSize);
+        setCurrentPage(pagination);
     };
     
     return (
@@ -127,7 +150,7 @@ const ViewSamplePage = () => {
             reducers={initialReducers}
         >
             <Page>
-                {isLoading && isFilteredOrgsCountLoading ? (<Loader />) : (
+                {isFiltersDataLoading  ? (<Loader />) : (
                     <>
                         <Select 
                             options={orgTypeOptions}
@@ -159,22 +182,28 @@ const ViewSamplePage = () => {
                             onChange={setLevelFilterValue}
                             placeholder={'Уровень'}
                         />
+                    </>
+                )}
+                {
+                    isTableUpdating ? (<Loader />) : (
                         <Table
                             dataSource={filteredOrgs}
-                            columns={headers} // Замените columns на ваши колонки таблицы
-                            loading={isLoading}
+                            columns={orgsColumns} 
+                            loading={isTableUpdating}
                             pagination={{
                                 current: currentPage,
                                 pageSize: pageSize,
                                 total: filteredOrgsCount.totalCount,
-                                onChange: handleTableChange
+                                onChange: handleTableChange,
+                                showSizeChanger: false 
                             }}
-                            rowKey="id" // Укажите поле, которое уникально идентифицирует каждую строку
+                            scroll={{
+                                y: 530,
+                            }}
                         />
-
-                    </>
-                    
-                )}
+                    )
+                }
+                
             </Page>
         </DynamicModuleLoader>
     );

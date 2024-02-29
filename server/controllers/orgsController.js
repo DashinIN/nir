@@ -106,7 +106,7 @@ class OrgsController {
 
     async getFilteredOrgs (req, res) {
         try {
-            const page = req.body.page || 1 // Значение страницы по умолчанию
+            const page = req.body.currentPage || 1 // Значение страницы по умолчанию
             const pageSize = req.body.pageSize || 1000 // Размер страницы по умолчанию
 
             // Вычисляем смещение на основе номера страницы и размера страницы
