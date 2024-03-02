@@ -64,8 +64,6 @@ const ViewSamplePage = () => {
     const [levelFilterValue, setLevelFilterValue] = useState([]);
     const [regionFilterValue, setRegionFilterValue] = useState([]);
 
-    
-
     const filters = {
         orgType: orgTypeFilterValue,
         statusEgrul: statusEgrulFilterValue,
@@ -89,8 +87,6 @@ const ViewSamplePage = () => {
     const statusEgrulOptions = generateOptions(filtersData?.statusEgrulValues || []);
     const fedOkrugOptions = generateOptions(filtersData?.fedokrugValues || [], fedOkrugLabels);
     const regionOptions = generateOptions(filtersData?.regionValues || []);
-
-
 
     //Запрос на количества записей
     const {
@@ -176,11 +172,6 @@ const ViewSamplePage = () => {
         
     };
 
-    useEffect(() => {
-        console.log(sortInfo);
-    }, [sortInfo]);
-    
-    
     return (
         <DynamicModuleLoader 
             removeAfterUnmount={false}  
@@ -224,16 +215,29 @@ const ViewSamplePage = () => {
                 {
                     isTableUpdating ? (<Loader />) : (
                         <Table
+                            bordered
                             rowKey={(org) => org.id}
-                            dataSource={filteredOrgs}
-                            columns={orgsColumns.map(column => ({
-                                ...column,
-                                sorter: true,
-                                sortDirections: ['descend', 'ascend'],
-                                onHeaderCell: column => ({
-                                    onClick: () => handleColumnSort(column), // Обработчик клика по заголовку столбца
-                                }),
-                            }))} 
+                            dataSource={filteredOrgs.map((org, index) => ({ ...org, index: (currentPage-1)*pageSize + index + 1 }))} 
+                            columns={[
+                                {
+                                    title: '№', 
+                                    dataIndex: 'index', 
+                                    width: '60px', 
+                                },
+                                ...orgsColumns.map(column => ({
+                                    ...column,
+                                    sorter: true,
+                                    sortDirections: ['ascend', 'descend'],
+                                    onHeaderCell: column => ({
+                                        onClick: () => handleColumnSort(column)
+                                    }),
+                                }))]} 
+                            locale={{
+                                emptyText: 'Записях об организациях, подходящих по фильтру нет',
+                                triggerAsc: 'Сортировать по возрастанию',
+                                triggerDesc: 'Сортировать по убыванию',
+                                cancelSort: 'Отменить сортировку',
+                            }}
                             loading={isTableUpdating}
                             pagination={{
                                 current: currentPage,
@@ -242,6 +246,10 @@ const ViewSamplePage = () => {
                                 onChange: handleTableChange,
                                 showSizeChanger: false 
                             }}
+                            scroll={{
+                                y: 510,
+                            }}
+                            
                         />
                     )
                 }
