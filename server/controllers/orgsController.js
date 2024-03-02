@@ -90,12 +90,15 @@ class OrgsController {
             })
 
             // Преобразуем полученные поля в формат заголовков для таблицы Ant Design
-            const headers = fields.map(field => ({
+            const headers = [{
+                title: 'id', // Заголовок на русском языке
+                dataIndex: 'id', // Идентификатор данных (название поля на английском языке)
+                key: 'id' // Уникальный ключ
+            }, ...fields.map(field => ({
                 title: field.field_name_ru, // Заголовок на русском языке
                 dataIndex: field.field_name_en, // Идентификатор данных (название поля на английском языке)
                 key: field.field_name_en // Уникальный ключ
-                // Другие необходимые свойства, если есть
-            }))
+            }))]
             console.log(headers)
             return res.json(headers)
         } catch (error) {
@@ -120,11 +123,18 @@ class OrgsController {
             })
 
             // Преобразуем полученные поля в формат заголовков для таблицы Ant Design
-            const attributes = fields.map(field => field.field_name_en)
+            const attributes = ['id', ...fields.map(field => field.field_name_en)]
 
             const filters = req.body.filters
-            console.log(filters)
             const filterObject = {}
+
+            const sortField = req.body.sortField // Поле для сортировки
+            const sortOrder = req.body.sortOrder
+
+            let order = []
+            if (sortField && sortOrder !== 0) {
+                order = [[sortField, sortOrder === 1 ? 'ASC' : 'DESC']]
+            }
 
             // Пример фильтрации по региону
             if (filters.region && filters.region.length > 0) {
@@ -162,8 +172,10 @@ class OrgsController {
                 where: filterObject,
                 attributes,
                 offset, // Смещение
-                limit: pageSize // Лимит записей на странице
+                limit: pageSize, // Лимит записей на странице
+                order
             })
+
             return res.json(orgs)
         } catch (error) {
             console.error('Ошибка:', error)
@@ -174,7 +186,6 @@ class OrgsController {
     async getFilteredOrgsCount (req, res) {
         try {
             const filters = req.body.filters
-            console.log(filters)
             const filterObject = {}
 
             // Пример фильтрации по региону

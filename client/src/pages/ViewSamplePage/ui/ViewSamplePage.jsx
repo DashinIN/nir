@@ -49,9 +49,10 @@ const generateOptions = (values, labels) => {
 
 const ViewSamplePage = () => {
     //Номер текущего шаблона
-    const selectedSample = useSelector(getSelectedSample);
+    const selectedSample = useSelector(getSelectedSample) || 1;
     const selectedSampleId = selectedSample + 1;
      
+    const [sortInfo, setSortInfo] = useState({ columnKey: null, order: 0 });
     //Пагинация
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize, setPageSize] = useState(100);
@@ -89,6 +90,8 @@ const ViewSamplePage = () => {
     const fedOkrugOptions = generateOptions(filtersData?.fedokrugValues || [], fedOkrugLabels);
     const regionOptions = generateOptions(filtersData?.regionValues || []);
 
+
+
     //Запрос на количества записей
     const {
         data: filteredOrgsCount, 
@@ -111,7 +114,9 @@ const ViewSamplePage = () => {
         filters, 
         selectedSampleId,
         pageSize,
-        currentPage
+        currentPage,
+        sortField: sortInfo.columnKey,
+        sortOrder: sortInfo.order
     }); 
 
     //При изменении федерального округа оставляем в выбранных только подходящие регионы
@@ -126,16 +131,25 @@ const ViewSamplePage = () => {
     useEffect(() => {
         setCurrentPage(1);
         orgsCountRefetch();
-        orgsRefetch();
+        orgsRefetch({
+            sortField: sortInfo.columnKey,
+            sortOrder: sortInfo.order
+        });
     }, [
         orgTypeFilterValue,
         statusEgrulFilterValue,
         fedOkrugFilterValue,
         levelFilterValue,
         regionFilterValue,
+        sortInfo,
         orgsCountRefetch, 
         orgsRefetch
     ]);
+
+    useEffect(() => {
+        console.log(orgsColumns);
+        console.log(filteredOrgs);
+    }, [filteredOrgs, orgsColumns]);
 
 
     const isTableUpdating = isOrgsColumnsLoading || isOrgsLoading || isFilteredOrgsCountLoading;
@@ -143,6 +157,29 @@ const ViewSamplePage = () => {
     const handleTableChange = (pagination) => {
         setCurrentPage(pagination);
     };
+
+    const handleColumnSort = (column) => {
+        setSortInfo(prev => {
+            if (prev.columnKey === column.key) {
+                const newOrder = (prev.order + 1) % 3;
+                return {
+                    columnKey: column.key,
+                    order: newOrder
+                };
+            } else {
+                return {
+                    columnKey: column.key,
+                    order: 1
+                };
+            }
+        });
+        
+    };
+
+    useEffect(() => {
+        console.log(sortInfo);
+    }, [sortInfo]);
+    
     
     return (
         <DynamicModuleLoader 
@@ -150,7 +187,7 @@ const ViewSamplePage = () => {
             reducers={initialReducers}
         >
             <Page>
-                {isFiltersDataLoading  ? (<Loader />) : (
+                {isFiltersDataLoading || isTableUpdating  ? (<Loader />) : (
                     <>
                         <Select 
                             options={orgTypeOptions}
@@ -187,8 +224,16 @@ const ViewSamplePage = () => {
                 {
                     isTableUpdating ? (<Loader />) : (
                         <Table
+                            rowKey={(org) => org.id}
                             dataSource={filteredOrgs}
-                            columns={orgsColumns} 
+                            columns={orgsColumns.map(column => ({
+                                ...column,
+                                sorter: true,
+                                sortDirections: ['descend', 'ascend'],
+                                onHeaderCell: column => ({
+                                    onClick: () => handleColumnSort(column), // Обработчик клика по заголовку столбца
+                                }),
+                            }))} 
                             loading={isTableUpdating}
                             pagination={{
                                 current: currentPage,
@@ -196,9 +241,6 @@ const ViewSamplePage = () => {
                                 total: filteredOrgsCount.totalCount,
                                 onChange: handleTableChange,
                                 showSizeChanger: false 
-                            }}
-                            scroll={{
-                                y: 530,
                             }}
                         />
                     )
