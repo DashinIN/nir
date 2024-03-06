@@ -1,6 +1,7 @@
 const { Orgs, Regions, Fedokrug, OutputSamplesFields } = require('../models')
 const { Op } = require('sequelize') // добавлено Sequelize
 const { transateTableTitles, translateTitlesRU } = require('../features/translateRows')
+const { fieldWidth } = require('../consts/width')
 
 class OrgsController {
     async getAll (req, res) {
@@ -93,13 +94,14 @@ class OrgsController {
             const headers = [{
                 title: 'id', // Заголовок на русском языке
                 dataIndex: 'id', // Идентификатор данных (название поля на английском языке)
-                key: 'id' // Уникальный ключ
+                key: 'id', // Уникальный ключ
+                width: fieldWidth.id
             }, ...fields.map(field => ({
                 title: field.field_name_ru, // Заголовок на русском языке
                 dataIndex: field.field_name_en, // Идентификатор данных (название поля на английском языке)
-                key: field.field_name_en // Уникальный ключ
+                key: field.field_name_en, // Уникальный ключ
+                width: fieldWidth[field.field_name_en]
             }))]
-            console.log(headers)
             return res.json(headers)
         } catch (error) {
             console.error('Ошибка:', error)

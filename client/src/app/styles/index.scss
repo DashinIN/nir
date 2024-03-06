@@ -4,6 +4,8 @@
 body {
     color: var(--primary-color);
     font: var(--font-m);
+    max-width: 100vw;
+    background: var(--bg-color);
 }
 
 .app {
@@ -20,6 +22,10 @@ body {
         background-color: var(--inverted-bg-color);
         color: var(--bg-color);
     }
+}
+
+.ant-table-wrapper {
+    max-width: none; /* Переназначение свойства max-width */
 }
 
 *::-webkit-scrollbar{
