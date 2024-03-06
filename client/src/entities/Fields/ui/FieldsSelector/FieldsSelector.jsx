@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { HStack, VStack } from '@/shared/ui/Stack';
 import { useAllTitles } from '../../model/api/fieldsSelectorApi';
 import { Search } from '@/widgets/Search/ui/Search';
+import { Button } from 'antd';
 
 export const FieldsSelector = ({ items, setItems}) => {
     const { data: fields = [], isLoading } = useAllTitles();
@@ -12,6 +13,10 @@ export const FieldsSelector = ({ items, setItems}) => {
     const filteredFields = fields.filter(field => 
         field.toLowerCase().includes(searchValue.toLowerCase())
     );
+    
+    const resetItems = () => {
+        setItems([]);
+    };
 
     if (isLoading) {
         return null;
@@ -21,10 +26,13 @@ export const FieldsSelector = ({ items, setItems}) => {
         <VStack gap={8} max>
             <HStack justify='between' max>
                 <h2>Выбор полей шаблона</h2>
-                <Search 
-                    searchValue={searchValue}
-                    setSearchValue={setSearchValue}
-                />
+                <HStack gap='8'>
+                    <Search 
+                        searchValue={searchValue}
+                        setSearchValue={setSearchValue}
+                    />
+                    <Button onClick={resetItems}>Сброс полей</Button>
+                </HStack>
             </HStack>
             {
                 filteredFields.length ? (

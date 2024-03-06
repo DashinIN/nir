@@ -1,8 +1,10 @@
 import MainPage from '@/pages/MainPage';
-import CreateSamplePage from '@/pages/CreateSamplePage';
 import ChangeSamplePage from '@/pages/ChangeSamplePage';
 import UseSamplePage from '@/pages/UseSamplePage/ui/UseSamplePage';
 import ViewSamplePage from '@/pages/ViewSamplePage';
+import ChangeSampleFieldsOrderPage from '@/pages/ChangeSampleFieldsOrderPage';
+import SelectSampleFieldsPage from '@/pages/SelectSampleFieldsPage';
+import SaveSamplePage from '@/pages/SaveSamplePage';
 
 export const routeConfig = [
     {
@@ -10,8 +12,16 @@ export const routeConfig = [
         element: <MainPage />,
     },
     {
-        path: '/createSample',
-        element: <CreateSamplePage />,
+        path: '/changeSampleFieldsOrder',
+        element: <ChangeSampleFieldsOrderPage />,
+    },
+    {
+        path: '/selectSampleFields',
+        element: <SelectSampleFieldsPage />,
+    },
+    {
+        path: '/saveSample',
+        element: <SaveSamplePage />,
     },
     {
         path: '/changeSample',

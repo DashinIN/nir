@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { Button } from '@/shared/ui/Button/Button';
-import { Input } from '@/shared/ui/Input';
+import { Button, Input } from 'antd';
 import { HStack, VStack } from '@/shared/ui/Stack';
 import { useAddSample } from '../../api/sampleApi';
 import SaveIcon from '@/shared/assets/save.svg';
@@ -31,8 +30,8 @@ export const SaveSample = ({items}) => {
     };
 
     return (
-        <VStack max gap={8}>
-            <h2>Сохранить шаблон</h2>
+        <VStack gap={8} align='center'>
+            <h2>Сохранение шаблона</h2>
             {validationErrorMessage  && (
                 <div className={s.errors}>{validationErrorMessage}</div>
             )}
@@ -42,15 +41,17 @@ export const SaveSample = ({items}) => {
             {isSuccess && (
                 <div>{data.message}</div>
             )}  
-            <HStack gap={8} max>
+            <HStack gap={8}>
                 <Input 
                     type="text"
+                    size='large'
                     value={sampleNameInputValue}
                     onChange={handleNameChange}
                     placeholder="Название шаблона" />
                 <Button 
                     onClick={handleSave}
                     className={s.saveButton}
+                    size='large'
                 >
                     {isLoading ? 'Сохранение...' : 'Cохранить'}
                     <SaveIcon />

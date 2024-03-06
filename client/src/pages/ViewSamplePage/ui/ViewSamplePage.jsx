@@ -9,10 +9,12 @@ import {
     useGetFilteredOrgsCount, 
     useGetSampleFieldsHeaders
 } from '../api/viewSampleApi';
+import { useAllSamples } from '@/entities/Sample/api/sampleApi';
 import { Loader } from '@/shared/ui/Loader';
 import { Select } from '@/shared/ui/Select';
 import { useSelector } from 'react-redux';
 import { Table } from 'antd';
+import { HStack, VStack } from '@/shared/ui/Stack';
 
 
 const initialReducers = {
@@ -51,7 +53,9 @@ const ViewSamplePage = () => {
     //Номер текущего шаблона
     const selectedSample = useSelector(getSelectedSample) || 1;
     const selectedSampleId = selectedSample + 1;
-     
+    const {data: allSamples, isSuccess } = useAllSamples();
+    
+ 
     const [sortInfo, setSortInfo] = useState({ columnKey: null, order: 0 });
     //Пагинация
     const [currentPage, setCurrentPage] = useState(1);
@@ -178,82 +182,87 @@ const ViewSamplePage = () => {
             reducers={initialReducers}
         >
             <Page>
-                {isFiltersDataLoading || isTableUpdating  ? (<Loader />) : (
-                    <>
-                        <Select 
-                            options={orgTypeOptions}
-                            value={orgTypeFilterValue}
-                            onChange={setOrgTypeFilterValue}
-                            placeholder={'Тип организации'}
-                        />
-                        <Select 
-                            options={statusEgrulOptions}
-                            value={statusEgrulFilterValue}
-                            onChange={setStatusEgrulFilterValue}
-                            placeholder={'Статус в ЕГРЮЛ'}
-                        />
-                        <Select 
-                            options={fedOkrugOptions}
-                            value={fedOkrugFilterValue}
-                            onChange={setFedOkrugFilterValue}
-                            placeholder={'Федеральный округ'}
-                        />
-                        <Select 
-                            options={regionOptions}
-                            value={regionFilterValue}
-                            onChange={setRegionFilterValue}
-                            placeholder={'Регион'}
-                        />
-                        <Select 
-                            options={levelOptions}
-                            value={levelFilterValue}
-                            onChange={setLevelFilterValue}
-                            placeholder={'Уровень'}
-                        />
-                    </>
-                )}
-                {
-                    isTableUpdating ? (<Loader />) : (
-                        <Table
-                            bordered
-                            rowKey={(org) => org.id}
-                            dataSource={filteredOrgs.map((org, index) => ({ ...org, index: (currentPage-1)*pageSize + index + 1 }))} 
-                            columns={[
-                                {
-                                    title: '№', 
-                                    dataIndex: 'index', 
-                                    width: '60px', 
-                                },
-                                ...orgsColumns.map(column => ({
-                                    ...column,
-                                    sorter: true,
-                                    sortDirections: ['ascend', 'descend'],
-                                    onHeaderCell: column => ({
-                                        onClick: () => handleColumnSort(column)
-                                    }),
-                                }))]} 
-                            locale={{
-                                emptyText: 'Записях об организациях, подходящих по фильтру нет',
-                                triggerAsc: 'Сортировать по возрастанию',
-                                triggerDesc: 'Сортировать по убыванию',
-                                cancelSort: 'Отменить сортировку',
-                            }}
-                            loading={isTableUpdating}
-                            pagination={{
-                                current: currentPage,
-                                pageSize: pageSize,
-                                total: filteredOrgsCount.totalCount,
-                                onChange: handleTableChange,
-                                showSizeChanger: false 
-                            }}
-                            scroll={{
-                                y: 510,
-                            }}
-                            
-                        />
-                    )
-                }
-                
+                <VStack max gap='8'>
+                    <HStack max justify='between'> 
+                        <h3>Фильтр</h3>
+                        {isSuccess && <h3>Активный шаблон: { allSamples[selectedSample].sample_name}</h3>}
+                    </HStack>   
+                    {isFiltersDataLoading || isTableUpdating  ? (<Loader />) : (
+                        <HStack max> 
+                            <Select 
+                                options={orgTypeOptions}
+                                value={orgTypeFilterValue}
+                                onChange={setOrgTypeFilterValue}
+                                placeholder={'Тип организации'}
+                            />
+                            <Select 
+                                options={statusEgrulOptions}
+                                value={statusEgrulFilterValue}
+                                onChange={setStatusEgrulFilterValue}
+                                placeholder={'Статус в ЕГРЮЛ'}
+                            />
+                            <Select 
+                                options={fedOkrugOptions}
+                                value={fedOkrugFilterValue}
+                                onChange={setFedOkrugFilterValue}
+                                placeholder={'Федеральный округ'}
+                            />
+                            <Select 
+                                options={regionOptions}
+                                value={regionFilterValue}
+                                onChange={setRegionFilterValue}
+                                placeholder={'Регион'}
+                            />
+                            <Select 
+                                options={levelOptions}
+                                value={levelFilterValue}
+                                onChange={setLevelFilterValue}
+                                placeholder={'Уровень'}
+                            />
+                        </HStack>  
+                    )}
+                    {
+                        isTableUpdating ? (<Loader />) : (
+                            <Table  
+                                size='small'
+                                bordered
+                                rowKey={(org) => org.id}
+                                dataSource={filteredOrgs.map((org, index) => ({ ...org, index: (currentPage-1)*pageSize + index + 1 }))} 
+                                columns={[
+                                    {
+                                        title: '№', 
+                                        dataIndex: 'index', 
+                                        width: '60px', 
+                                    },
+                                    ...orgsColumns.map(column => ({
+                                        ...column,
+                                        sorter: true,
+                                        sortDirections: ['ascend', 'descend'],
+                                        onHeaderCell: column => ({
+                                            onClick: () => handleColumnSort(column)
+                                        }),
+                                    }))]} 
+                                locale={{
+                                    emptyText: 'Записях об организациях, подходящих по фильтру нет',
+                                    triggerAsc: 'Сортировать по возрастанию',
+                                    triggerDesc: 'Сортировать по убыванию',
+                                    cancelSort: 'Отменить сортировку',
+                                }}
+                                loading={isTableUpdating}
+                                pagination={{
+                                    current: currentPage,
+                                    pageSize: pageSize,
+                                    total: filteredOrgsCount.totalCount,
+                                    onChange: handleTableChange,
+                                    showSizeChanger: false 
+                                }}
+                                scroll={{
+                                    y: 495,
+                                }}
+                            />
+                        )
+                    }
+                </VStack>
             </Page>
         </DynamicModuleLoader>
     );

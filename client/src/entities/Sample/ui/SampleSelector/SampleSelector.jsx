@@ -23,13 +23,6 @@ export const SampleSelector = () => {
     const dispatch = useDispatch();
     const selectedSample = useSelector(getSelectedSample);
 
-    let selectedSampleName;
-    if (isSuccess  && allSamples[selectedSample]) {
-        selectedSampleName = allSamples[selectedSample].sample_name;
-    } else {
-        return null;
-    }
-
     const selectHandler = (item) => {
         const sampleIndex = allSamples.indexOf(item);
         dispatch(sampleActions.setSelectedSample(sampleIndex));
@@ -46,7 +39,7 @@ export const SampleSelector = () => {
     return (
         <VStack max gap={8}>
             <HStack max justify='center'>
-                <h2>Активный шаблон: {selectedSampleName}</h2>
+                {isSuccess && <h2>Активный шаблон: {allSamples[selectedSample].sample_name}</h2>}
             </HStack>
             <h2>Список доступных шаблонов</h2>
             <div className={s.container}>
