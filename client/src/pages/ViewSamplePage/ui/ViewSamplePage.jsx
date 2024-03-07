@@ -158,7 +158,6 @@ const ViewSamplePage = () => {
     };
 
     const handleSaveEditModal = async () => {
-        console.log(selectedOrgForEdit);
         console.log(form.getFieldsValue());
         try {
             await editOrgRecord({ id: selectedOrgForEdit.id, updatedData: form.getFieldsValue() });
@@ -166,8 +165,8 @@ const ViewSamplePage = () => {
             orgsRefetch(); 
             message.success('Изменения внесены'); 
         } catch (error) {
-            message.error('Ошибка при удалении записи');
-            console.error('Ошибка при удалении записи:', error);
+            message.error('Ошибка при изменении');
+            console.error('Ошибка при изменении:', error);
         }
 
     };
