@@ -192,7 +192,7 @@ const ViewSamplePage = () => {
         }
     };
 
-    const [formValid, setFormValid] = useState(false);
+    const [formValid, setFormValid] = useState(true);
 
     const handleFormChange = () => {
         form.validateFields().then(() => {
@@ -283,7 +283,7 @@ const ViewSamplePage = () => {
                                     {
                                         title: 'Действия',
                                         key: 'actions',
-                                        width: '60px',
+                                        width: '100px',
                                         render: (text, record) => (
                                             <Space>
                                                 <Tooltip title="Редактировать" color='blue'>
