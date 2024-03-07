@@ -3,11 +3,11 @@ import { rtkApi } from '@/shared/api/rtkApi';
 const sampleApi = rtkApi.injectEndpoints({ 
     endpoints: (builder) => ({
         getAllSamples: builder.query({
-            query: () => 'api/samples', 
+            query: () => '/samples', 
         }),
         addSample: builder.mutation({
             query: (data) => ({
-                url: 'api/samples',
+                url: '/samples',
                 method: 'POST',
                 body: data,
             }), 

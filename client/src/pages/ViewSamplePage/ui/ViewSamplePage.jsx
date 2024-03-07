@@ -1,42 +1,17 @@
 import { DynamicModuleLoader } from '@/shared/lib/components/DynamicModuleLoader/DynamicModuleLoader';
 import { sampleReducer } from '@/entities/Sample/model/slice/sampleSlice';
 import { useState, useEffect } from 'react';
-import { getSelectedSample } from '../../../entities/Sample/model/selectors/getSelectedSample';
-import { 
-    useGetFilterValues,
-    useGetFilteredOrgs,
-    useGetFilteredOrgsCount, 
-    useGetSampleFieldsHeaders
-} from '../api/viewSampleApi';
-import { useAllSamples } from '@/entities/Sample/api/sampleApi';
+import { getSelectedSample, useAllSamples } from '@/entities/Sample';
+import { useDeleteOrgRecord, useEditOrgRecord, useGetFilterValues, useGetFilteredOrgs, useGetFilteredOrgsCount, useGetSampleFieldsHeaders } from '../api/viewSampleApi';
 import { Loader } from '@/shared/ui/Loader';
 import { Select } from '@/shared/ui/Select';
 import { useSelector } from 'react-redux';
-import { Table } from 'antd';
+import { Table, Modal, Button, Form, Input, message, Spin  } from 'antd';
 import { HStack, VStack } from '@/shared/ui/Stack';
+import { levelLabels, fedOkrugLabels } from '../consts/consts';
 
 const initialReducers = {
     sample: sampleReducer,
-};
-
-const levelLabels = {
-    '1': 'головное',
-    '2': 'филиал',
-    '3': 'представительство'
-};
-
-const fedOkrugLabels = {
-    '1': 'Центральный федеральный округ',
-    '2': 'Северо-Западный федеральный округ',
-    '3': 'Южный федеральный округ',
-    '4': 'Приволжский федеральный округ',
-    '5': 'Уральский федеральный округ',
-    '6': 'Сибирский федеральный округ',
-    '7': 'Дальневосточный федеральный округ',
-    '8': 'Прочие',
-    '10': 'Федеральный округ не задан',
-    '11': 'Северо-Кавказский федеральный округ',
-    '9999': 'Не указано'
 };
 
 const generateOptions = (values, labels) => {
@@ -45,6 +20,7 @@ const generateOptions = (values, labels) => {
         value: value
     })) : [];
 };
+
 
 
 const ViewSamplePage = () => {
@@ -157,34 +133,90 @@ const ViewSamplePage = () => {
     };
 
     const handleColumnSort = (column) => {
-        setSortInfo(prev => {
-            if (prev.columnKey === column.key) {
-                const newOrder = (prev.order + 1) % 3;
-                return {
-                    columnKey: column.key,
-                    order: newOrder
-                };
-            } else {
-                return {
-                    columnKey: column.key,
-                    order: 1
-                };
-            }
-        });
-        
+        setSortInfo(prev => ({
+            columnKey: column.key,
+            order: prev.columnKey === column.key ? (prev.order + 1) % 3 : 1
+        }));
     };
+
+
+    const [form] = Form.useForm();
+    const [editModalVisible, setEditModalVisible] = useState(false);
+    const [deleteModalVisible, setDeleteModalVisible] = useState(false);
+    const [selectedOrgForEdit, setSelectedOrgForEdit] = useState(null);
+
+
+    const handleOpenEditModal = (org) => {
+        console.log(org);
+        setSelectedOrgForEdit(org);
+        form.setFieldsValue(org);
+        setEditModalVisible(true);
+    };
+
+    // Обработчик закрытия модального окна редактирования
+    const handleCloseEditModal = () => {
+        setEditModalVisible(false);
+    };
+
+    const [editOrgRecord] =  useEditOrgRecord();
+    const [deleteOrgRecord] =  useDeleteOrgRecord();
+
+    const handleSaveEditModal = async () => {
+        console.log(selectedOrgForEdit);
+        console.log(form.getFieldsValue());
+        try {
+            await editOrgRecord({ id: selectedOrgForEdit.id, updatedData: form.getFieldsValue() });
+            setEditModalVisible(false); 
+            orgsRefetch(); 
+            message.success('Изменения внесены'); 
+        } catch (error) {
+            message.error('Ошибка при удалении записи');
+            console.error('Ошибка при удалении записи:', error);
+        }
+
+    };
+
+    // Обработчик открытия модального окна удаления
+    const handleOpenDeleteModal = (org) => {
+        setSelectedOrgForEdit(org);
+        setDeleteModalVisible(true);
+    };
+
+    // Обработчик закрытия модального окна удаления
+    const handleCloseDeleteModal = () => {
+        setDeleteModalVisible(false);
+    };
+
+    const handleConfirmDelete = async () => {
+        try {
+            await deleteOrgRecord(selectedOrgForEdit.id);
+            setDeleteModalVisible(false); 
+            orgsRefetch(); 
+            message.success('Запись успешно удалена!'); 
+        } catch (error) {
+            message.error('Ошибка при удалении записи');
+            console.error('Ошибка при удалении записи:', error);
+        }
+    };
+
+
+
 
     return (
         <DynamicModuleLoader 
             removeAfterUnmount={false}  
             reducers={initialReducers}
         >
-            <VStack  gap='8' >
+            <VStack gap='8' >
                 <HStack max justify='between'> 
                     <h3>Фильтр</h3>
                     {isSuccess && <h3>Активный шаблон: { allSamples[selectedSample].sample_name}</h3>}
                 </HStack>   
-                {isFiltersDataLoading || isTableUpdating  ? (<Loader />) : (
+                {isFiltersDataLoading || isTableUpdating  ? (
+                    <VStack max align='center'>
+                        <Loader />
+                    </VStack>
+                ) : (
                     <HStack max> 
                         <Select 
                             options={orgTypeOptions}
@@ -219,42 +251,101 @@ const ViewSamplePage = () => {
                     </HStack>  
                 )}
                 {
-                    isTableUpdating ? (<Loader />) : (
-                        <Table  
-                            size='small'
-                            bordered
-                            rowKey={(org) => org.id}
-                            dataSource={filteredOrgs.map((org, index) => ({ ...org, index: (currentPage-1)*pageSize + index + 1 }))} 
-                            columns={[
-                                {
-                                    title: '№', 
-                                    dataIndex: 'index', 
-                                    width: '60px',
-                                },
-                                ...orgsColumns.map(column => ({
-                                    ...column,
-                                    sorter: true,
-                                    sortDirections: ['ascend', 'descend'],
-                                    onHeaderCell: column => ({
-                                        onClick: () => handleColumnSort(column)
-                                    }),
-                                }))]} 
-                            locale={{
-                                emptyText: 'Записях об организациях, подходящих по фильтру нет',
-                                triggerAsc: 'Сортировать по возрастанию',
-                                triggerDesc: 'Сортировать по убыванию',
-                                cancelSort: 'Отменить сортировку',
-                            }}
-                            loading={isTableUpdating}
-                            pagination={{
-                                current: currentPage,
-                                pageSize: pageSize,
-                                total: filteredOrgsCount.totalCount,
-                                onChange: handleTableChange,
-                                showSizeChanger: false 
-                            }}
-                            sticky
-                        />
+                    isTableUpdating ? (
+                        <VStack max align='center'>
+                            <Loader />
+                        </VStack>
+                    ) : (
+                        <>
+                            <Table  
+                                size='small'
+                                bordered
+                                rowKey={(org) => org.id}
+                                dataSource={filteredOrgs.map((org, index) => ({ ...org, index: (currentPage-1)*pageSize + index + 1 }))} 
+                                columns={[
+                                    {
+                                        title: '№', 
+                                        dataIndex: 'index', 
+                                        width: '60px',
+                                    },
+                                    ...orgsColumns.map(column => ({
+                                        ...column,
+                                        sorter: true,
+                                        sortDirections: ['ascend', 'descend'],
+                                        onHeaderCell: column => ({
+                                            onClick: () => handleColumnSort(column)
+                                        }),
+                                    })),
+                                    {
+                                        title: 'Actions',
+                                        key: 'actions',
+                                        width: '200px',
+                                        render: (text, record) => (
+                                            <span>
+                                                <Button onClick={() => handleOpenEditModal(record)}>Edit</Button>
+                                                <Button onClick={() => handleOpenDeleteModal(record)}>Delete</Button>
+                                            </span>
+                                        ),
+                                    },
+                                ]} 
+                                locale={{
+                                    emptyText: 'Записях об организациях, подходящих по фильтру нет',
+                                    triggerAsc: 'Сортировать по возрастанию',
+                                    triggerDesc: 'Сортировать по убыванию',
+                                    cancelSort: 'Отменить сортировку',
+                                }}
+                                loading={isTableUpdating}
+                                pagination={{
+                                    current: currentPage,
+                                    pageSize: pageSize,
+                                    total: filteredOrgsCount.totalCount,
+                                    onChange: handleTableChange,
+                                    showSizeChanger: false 
+                                }}
+                                sticky
+                            />
+                            <Modal
+                                title="Редактировать запись"
+                                open={editModalVisible}
+                                onCancel={handleCloseEditModal}
+                                footer={[
+                                    <Button key="cancel" onClick={handleCloseEditModal}>
+                                        Отмена
+                                    </Button>,
+                                    <Button key="submit" type="primary" onClick={handleSaveEditModal}>
+                                        Сохранить
+                                    </Button>,
+                                ]}
+                            >
+                                <Form form={form} layout="vertical" name="edit_record_form">
+                                    {orgsColumns.map((column) => (
+                                        <Form.Item
+                                            key={column.key}
+                                            name={column.dataIndex}
+                                            label={column.title}
+                                            initialValue={selectedOrgForEdit && selectedOrgForEdit[column.dataIndex]}
+                                        >
+                                            <Input />
+                                        </Form.Item>
+                                    ))}
+                                </Form>
+                            </Modal>
+                            <Modal
+                                title="Удалить запись"
+                                open={deleteModalVisible}
+                                onCancel={handleCloseDeleteModal}
+                                footer={[
+                                    <Button key="cancel" onClick={handleCloseDeleteModal}>
+                                        Отмена
+                                    </Button>,
+                                    <Button key="submit" type="primary" onClick={handleConfirmDelete}>
+                                        Удалить
+                                    </Button>,
+                                ]}
+                            >
+                                <p>Вы уверены, что хотите удалить эту запись?</p>
+                            </Modal>
+                        </>
                     )
                 }
             </VStack>

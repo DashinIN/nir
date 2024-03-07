@@ -1,17 +1,9 @@
 const { Orgs, Regions, Fedokrug, OutputSamplesFields } = require('../models')
 const { Op } = require('sequelize') // добавлено Sequelize
-const { transateTableTitles, translateTitlesRU } = require('../features/translateRows')
+const { translateTitlesRU } = require('../features/translateRows')
 const { fieldWidth } = require('../consts/width')
 
 class OrgsController {
-    async getAll (req, res) {
-        const orgs = await Orgs.findAll({
-            limit: 100
-        })
-        const translatedData = transateTableTitles(orgs)
-        return res.json(translatedData)
-    }
-
     async getAllTitles (req, res) {
         try {
             const orgsFields = Object.keys(Orgs.tableAttributes).filter(field => field !== 'id')
@@ -20,19 +12,6 @@ class OrgsController {
         } catch (error) {
             console.error('Ошибка:', error)
             res.status(500).json({ error: 'Произошла ошибка при получении заголовков таблицы Orgs' })
-        }
-    }
-
-    async getByRegion (req, res) {
-        try {
-            const regionName = req.body.regionName
-            const region = await Regions.findOne({ where: { name_region: regionName } })
-            if (!region) return res.status(404).json({ error: 'Регион не найден' })
-            const regionId = region.id_region
-            const orgs = await Orgs.findAll({ where: { id_region: regionId } })
-            return res.json(orgs)
-        } catch (error) {
-            return res.status(500).json({ error: 'Ошибка при получении организаций по региону' })
         }
     }
 
@@ -227,6 +206,32 @@ class OrgsController {
         } catch (error) {
             console.error('Ошибка:', error)
             return res.status(500).json({ error: 'Ошибка при получении количества организаций с учетом фильтров' })
+        }
+    }
+
+    async editOrgRecord (req, res) {
+        try {
+            const recordId = req.params.id
+            const updatedData = req.body
+            console.log('ЗАПРОС')
+            console.log(recordId)
+            console.log(updatedData)
+            await Orgs.update(updatedData, { where: { id: recordId } })
+            return res.status(200).json({ message: 'Запись успешно отредактирована' })
+        } catch (error) {
+            console.error('Ошибка:', error)
+            return res.status(500).json({ error: 'Произошла ошибка при редактировании записи' })
+        }
+    }
+
+    async deleteOrgRecord (req, res) {
+        try {
+            const recordId = req.params.id
+            await Orgs.destroy({ where: { id: recordId } })
+            return res.status(200).json({ message: 'Запись успешно удалена' })
+        } catch (error) {
+            console.error('Ошибка:', error)
+            return res.status(500).json({ error: 'Произошла ошибка при удалении записи' })
         }
     }
 }

@@ -1,35 +1,49 @@
 import { rtkApi } from '@/shared/api/rtkApi';
 
 const viewSampleApi = rtkApi.injectEndpoints({ 
+    
     endpoints: (builder) => ({
         getFilterValues: builder.query({
             query: (filters) => ({
-                url: 'api/orgs/values',
+                url: '/orgs/values',
                 method: 'POST',
                 body: { filters },
             })
         }),
         getSampleFieldsHeaders: builder.query({
             query: (selectedSampleId) => ({
-                url: 'api/orgs/sampleFieldsTitles',
+                url: '/orgs/sampleFieldsTitles',
                 method: 'POST',
                 body: { selectedSampleId },
             })
         }),
         getFilteredOrgs: builder.query({
-            query: ({ filters, selectedSampleId, currentPage, pageSize, sortField, sortOrder }) => ({
-                url: 'api/orgs/filter', // Путь к вашему эндпоинту
+            query: (req) => ({
+                url: '/orgs/filter', 
                 method: 'POST',
-                body: { filters, selectedSampleId, currentPage, pageSize, sortField, sortOrder  }// Передача фильтров в теле запроса
+                body: req
             }),
         }),
         getFilteredOrgsCount: builder.query({
             query: (filters) => ({
-                url: 'api/orgs/filterCount', // Путь к вашему эндпоинту
+                url: '/orgs/filterCount',
                 method: 'POST',
-                body: { filters }// Передача фильтров в теле запроса
+                body: { filters }
             }),
         }),
+        editOrgRecord: builder.mutation({
+            query: ({ id, updatedData }) => ({
+                url: `/orgs/record/${id}`,
+                method: 'PUT',
+                body: updatedData
+            })
+        }),
+        deleteOrgRecord: builder.mutation({
+            query: (id) => ({
+                url: `/orgs/record/${id}`,
+                method: 'DELETE'
+            })
+        })
     }),
 });
 
@@ -37,3 +51,5 @@ export const useGetFilterValues = viewSampleApi.useGetFilterValuesQuery;
 export const useGetSampleFieldsHeaders = viewSampleApi.useGetSampleFieldsHeadersQuery;
 export const useGetFilteredOrgs = viewSampleApi.useGetFilteredOrgsQuery;
 export const useGetFilteredOrgsCount = viewSampleApi.useGetFilteredOrgsCountQuery;
+export const useEditOrgRecord = viewSampleApi.useEditOrgRecordMutation;
+export const useDeleteOrgRecord = viewSampleApi.useDeleteOrgRecordMutation;
