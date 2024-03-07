@@ -287,7 +287,7 @@ const ViewSamplePage = () => {
                                         width: '60px',
                                         render: (text, record) => (
                                             <Space>
-                                                <Tooltip title="Edit" color='blue'>
+                                                <Tooltip title="Редактировать" color='blue'>
                                                     <Button
                                                         type="primary"
                                                         shape="circle"
@@ -296,7 +296,7 @@ const ViewSamplePage = () => {
                                                         onClick={() => handleOpenEditModal(record)}
                                                     />
                                                 </Tooltip>
-                                                <Tooltip title="Delete" color='red'>
+                                                <Tooltip title="Удалить" color='red'>
                                                     <Button
                                                         type="default"
                                                         danger
