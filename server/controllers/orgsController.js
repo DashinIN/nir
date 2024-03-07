@@ -3,6 +3,32 @@ const { Op } = require('sequelize') // добавлено Sequelize
 const { translateTitlesRU } = require('../features/translateRows')
 const { fieldWidth } = require('../consts/width')
 
+async function applyFilters (filters) {
+    const filterObject = {}
+    if (filters.fedOkrug && filters.fedOkrug.length > 0 && (!filters.region || filters.region.length === 0)) {
+        const fedOkrugIds = filters.fedOkrug
+        const regionsInFedOkrug = await Regions.findAll({ where: { id_fedokrug: fedOkrugIds } })
+        const regionIds = regionsInFedOkrug.map(region => region.id_region)
+        filterObject.id_region = { [Op.in]: regionIds }
+    }
+    if (filters.region && filters.region.length > 0) {
+        const regionNames = filters.region
+        const regions = await Regions.findAll({ where: { name_region: regionNames } })
+        const regionIds = regions.map(region => region.id_region)
+        filterObject.id_region = { [Op.in]: regionIds }
+    }
+    if (filters.level && filters.level.length > 0) {
+        filterObject.id_level = { [Op.in]: filters.level }
+    }
+    if (filters.statusEgrul && filters.statusEgrul.length > 0) {
+        filterObject.status_egrul = { [Op.in]: filters.statusEgrul }
+    }
+    if (filters.orgType && filters.orgType.length > 0) {
+        filterObject.org_type = { [Op.in]: filters.orgType }
+    }
+    return filterObject
+}
+
 class OrgsController {
     async getAllTitles (req, res) {
         try {
@@ -18,35 +44,23 @@ class OrgsController {
     async getFilterValues (req, res) {
         try {
             const regionQueryOptions = {}
-
-            // Если фильтр fedOkrug присутствует и не пустой массив,
-            // добавляем его в опции запроса регионов
             if (req.body.filters && req.body.filters.fedOkrug && req.body.filters.fedOkrug.length > 0) {
                 regionQueryOptions.where = { id_fedokrug: req.body.filters.fedOkrug }
             }
-
-            // Запрос всех регионов с учетом опций фильтрации
             const regionNames = await Regions.findAll({
                 attributes: ['name_region'],
-                ...regionQueryOptions // Добавляем опции запроса
+                ...regionQueryOptions
             })
-
-            // Маппинг регионов в их имена
             const regionValues = regionNames.map(item => item.name_region)
-
-            // Запрос уникальных значений для всех остальных полей
             const uniqueLevel = await Orgs.aggregate('id_level', 'DISTINCT', { plain: false })
             const uniqueStatusEgrul = await Orgs.aggregate('status_egrul', 'DISTINCT', { plain: false })
             const uniqueOrgType = await Orgs.aggregate('org_type', 'DISTINCT', { plain: false })
             const fedokrugs = await Fedokrug.findAll({ attributes: ['id_fedokrug'] })
-
-            // Извлечение значений из результатов запросов
             const levelValues = uniqueLevel.map(item => item.DISTINCT)
             const statusEgrulValues = uniqueStatusEgrul.map(item => item.DISTINCT)
             const orgTypeValues = uniqueOrgType.map(item => item.DISTINCT)
             const fedokrugValues = fedokrugs.map(item => item.id_fedokrug)
 
-            // Возврат данных в формате JSON
             return res.json({
                 levelValues,
                 statusEgrulValues,
@@ -63,22 +77,20 @@ class OrgsController {
     async getSampleFieldsHeaders (req, res) {
         try {
             const selectedSampleId = req.body.selectedSampleId
-            // Получаем все поля для выбранного шаблона
             const fields = await OutputSamplesFields.findAll({
                 where: { sample_id: selectedSampleId },
                 order: [['field_order', 'ASC']]
             })
 
-            // Преобразуем полученные поля в формат заголовков для таблицы Ant Design
             const headers = [{
-                title: 'id', // Заголовок на русском языке
-                dataIndex: 'id', // Идентификатор данных (название поля на английском языке)
-                key: 'id', // Уникальный ключ
+                title: 'id',
+                dataIndex: 'id',
+                key: 'id',
                 width: fieldWidth.id
             }, ...fields.map(field => ({
-                title: field.field_name_ru, // Заголовок на русском языке
-                dataIndex: field.field_name_en, // Идентификатор данных (название поля на английском языке)
-                key: field.field_name_en, // Уникальный ключ
+                title: field.field_name_ru,
+                dataIndex: field.field_name_en,
+                key: field.field_name_en,
                 width: fieldWidth[field.field_name_en]
             }))]
             return res.json(headers)
@@ -90,70 +102,31 @@ class OrgsController {
 
     async getFilteredOrgs (req, res) {
         try {
-            const page = req.body.currentPage || 1 // Значение страницы по умолчанию
-            const pageSize = req.body.pageSize || 1000 // Размер страницы по умолчанию
-
-            // Вычисляем смещение на основе номера страницы и размера страницы
+            const page = req.body.currentPage || 1
+            const pageSize = req.body.pageSize || 1000
             const offset = (page - 1) * pageSize
 
             const selectedSampleId = req.body.selectedSampleId
-            // Получаем все поля для выбранного шаблона
             const fields = await OutputSamplesFields.findAll({
                 where: { sample_id: selectedSampleId },
                 order: [['field_order', 'ASC']]
             })
-
-            // Преобразуем полученные поля в формат заголовков для таблицы Ant Design
             const attributes = ['id', ...fields.map(field => field.field_name_en)]
-
-            const filters = req.body.filters
-            const filterObject = {}
 
             const sortField = req.body.sortField // Поле для сортировки
             const sortOrder = req.body.sortOrder
-
             let order = []
             if (sortField && sortOrder !== 0) {
                 order = [[sortField, sortOrder === 1 ? 'ASC' : 'DESC']]
             }
 
-            // Пример фильтрации по региону
-            if (filters.region && filters.region.length > 0) {
-                const regionNames = filters.region
-                const regions = await Regions.findAll({ where: { name_region: regionNames } })
-                const regionIds = regions.map(region => region.id_region)
-                filterObject.id_region = { [Op.in]: regionIds }
-            }
-
-            // Пример фильтрации по уровню
-            if (filters.level && filters.level.length > 0) {
-                filterObject.id_level = { [Op.in]: filters.level }
-            }
-
-            // Пример фильтрации по статусу ЕГРЮЛ
-            if (filters.statusEgrul && filters.statusEgrul.length > 0) {
-                filterObject.status_egrul = { [Op.in]: filters.statusEgrul }
-            }
-
-            // Пример фильтрации по типу организации
-            if (filters.orgType && filters.orgType.length > 0) {
-                filterObject.org_type = { [Op.in]: filters.orgType }
-            }
-
-            // Пример фильтрации по федеральному округу
-            if (filters.fedOkrug && filters.fedOkrug.length > 0) {
-                const fedOkrugIds = filters.fedOkrug
-                const regionsInFedOkrug = await Regions.findAll({ where: { id_fedokrug: fedOkrugIds } })
-                const regionIds = regionsInFedOkrug.map(region => region.id_region)
-                filterObject.id_region = { [Op.in]: regionIds }
-            }
-            console.log(filterObject)
+            const filterObject = await applyFilters(req.body.filters)
 
             const orgs = await Orgs.findAll({
                 where: filterObject,
                 attributes,
-                offset, // Смещение
-                limit: pageSize, // Лимит записей на странице
+                offset,
+                limit: pageSize,
                 order
             })
 
@@ -166,41 +139,7 @@ class OrgsController {
 
     async getFilteredOrgsCount (req, res) {
         try {
-            const filters = req.body.filters
-            const filterObject = {}
-
-            // Пример фильтрации по региону
-            if (filters.region && filters.region.length > 0) {
-                const regionNames = filters.region
-                const regions = await Regions.findAll({ where: { name_region: regionNames } })
-                const regionIds = regions.map(region => region.id_region)
-                filterObject.id_region = { [Op.in]: regionIds }
-            }
-
-            // Пример фильтрации по уровню
-            if (filters.level && filters.level.length > 0) {
-                filterObject.id_level = { [Op.in]: filters.level }
-            }
-
-            // Пример фильтрации по статусу ЕГРЮЛ
-            if (filters.statusEgrul && filters.statusEgrul.length > 0) {
-                filterObject.status_egrul = { [Op.in]: filters.statusEgrul }
-            }
-
-            // Пример фильтрации по типу организации
-            if (filters.orgType && filters.orgType.length > 0) {
-                filterObject.org_type = { [Op.in]: filters.orgType }
-            }
-
-            // Пример фильтрации по федеральному округу
-            if (filters.fedOkrug && filters.fedOkrug.length > 0) {
-                const fedOkrugIds = filters.fedOkrug
-                const regionsInFedOkrug = await Regions.findAll({ where: { id_fedokrug: fedOkrugIds } })
-                const regionIds = regionsInFedOkrug.map(region => region.id_region)
-                filterObject.id_region = { [Op.in]: regionIds }
-            }
-            console.log(filterObject)
-
+            const filterObject = await applyFilters(req.body.filters)
             const totalCount = await Orgs.count({ where: filterObject })
             return res.json({ totalCount })
         } catch (error) {

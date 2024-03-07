@@ -17,3 +17,15 @@ export const fedOkrugLabels = {
     '11': 'Северо-Кавказский федеральный округ',
     '9999': 'Не указано'
 };
+
+export const validationRules = {
+   
+    address: [
+        {   
+            type: 'string',
+            min: 3,
+            message: 'Адрес должен содержать минимум 3 символа',
+        },
+    ],
+   
+};

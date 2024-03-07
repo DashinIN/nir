@@ -6,9 +6,10 @@ import { useDeleteOrgRecord, useEditOrgRecord, useGetFilterValues, useGetFiltere
 import { Loader } from '@/shared/ui/Loader';
 import { Select } from '@/shared/ui/Select';
 import { useSelector } from 'react-redux';
-import { Table, Modal, Button, Form, Input, message, Spin  } from 'antd';
+import { Table, Modal, Button, Form, Input, message, Space, Tooltip  } from 'antd';
+import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { HStack, VStack } from '@/shared/ui/Stack';
-import { levelLabels, fedOkrugLabels } from '../consts/consts';
+import { levelLabels, fedOkrugLabels, validationRules } from '../consts/consts';
 
 const initialReducers = {
     sample: sampleReducer,
@@ -21,15 +22,12 @@ const generateOptions = (values, labels) => {
     })) : [];
 };
 
-
-
 const ViewSamplePage = () => {
     //Номер текущего шаблона
     const selectedSample = useSelector(getSelectedSample) || 1;
     const selectedSampleId = selectedSample + 1;
     const {data: allSamples, isSuccess } = useAllSamples();
-    
- 
+        
     const [sortInfo, setSortInfo] = useState({ columnKey: null, order: 0 });
     //Пагинация
     const [currentPage, setCurrentPage] = useState(1);
@@ -72,13 +70,13 @@ const ViewSamplePage = () => {
         isLoading: isFilteredOrgsCountLoading,
         refetch: orgsCountRefetch 
     } = useGetFilteredOrgsCount(filters);
-   
+    
     //Запрос на получение заголовков полей
     const {
         data: orgsColumns,
         isLoading: isOrgsColumnsLoading
     } = useGetSampleFieldsHeaders(selectedSampleId);
-    
+        
     //Запрос на получение полей с фильтрами и пагинацией
     const  { 
         data: filteredOrgs,
@@ -121,10 +119,12 @@ const ViewSamplePage = () => {
     ]);
 
     useEffect(() => {
-        console.log(orgsColumns);
         console.log(filteredOrgs);
-    }, [filteredOrgs, orgsColumns]);
+    }, [filteredOrgs]);
 
+    useEffect(() => {
+        console.log(orgsColumns);
+    }, [ orgsColumns]);
 
     const isTableUpdating = isOrgsColumnsLoading || isOrgsLoading || isFilteredOrgsCountLoading;
 
@@ -139,12 +139,12 @@ const ViewSamplePage = () => {
         }));
     };
 
-
     const [form] = Form.useForm();
     const [editModalVisible, setEditModalVisible] = useState(false);
     const [deleteModalVisible, setDeleteModalVisible] = useState(false);
     const [selectedOrgForEdit, setSelectedOrgForEdit] = useState(null);
-
+    const [editOrgRecord] =  useEditOrgRecord();
+    const [deleteOrgRecord] =  useDeleteOrgRecord();
 
     const handleOpenEditModal = (org) => {
         console.log(org);
@@ -153,13 +153,9 @@ const ViewSamplePage = () => {
         setEditModalVisible(true);
     };
 
-    // Обработчик закрытия модального окна редактирования
     const handleCloseEditModal = () => {
         setEditModalVisible(false);
     };
-
-    const [editOrgRecord] =  useEditOrgRecord();
-    const [deleteOrgRecord] =  useDeleteOrgRecord();
 
     const handleSaveEditModal = async () => {
         console.log(selectedOrgForEdit);
@@ -176,13 +172,11 @@ const ViewSamplePage = () => {
 
     };
 
-    // Обработчик открытия модального окна удаления
     const handleOpenDeleteModal = (org) => {
         setSelectedOrgForEdit(org);
         setDeleteModalVisible(true);
     };
 
-    // Обработчик закрытия модального окна удаления
     const handleCloseDeleteModal = () => {
         setDeleteModalVisible(false);
     };
@@ -199,8 +193,15 @@ const ViewSamplePage = () => {
         }
     };
 
+    const [formValid, setFormValid] = useState(false);
 
-
+    const handleFormChange = () => {
+        form.validateFields().then(() => {
+            setFormValid(true);
+        }).catch(() => {
+            setFormValid(false);
+        });
+    };
 
     return (
         <DynamicModuleLoader 
@@ -208,48 +209,52 @@ const ViewSamplePage = () => {
             reducers={initialReducers}
         >
             <VStack gap='8' >
-                <HStack max justify='between'> 
-                    <h3>Фильтр</h3>
-                    {isSuccess && <h3>Активный шаблон: { allSamples[selectedSample].sample_name}</h3>}
-                </HStack>   
-                {isFiltersDataLoading || isTableUpdating  ? (
-                    <VStack max align='center'>
-                        <Loader />
+                <div style={{ padding: '20px' }}>
+                    <VStack gap='8'>
+                        <HStack max justify='between'> 
+                            <h3>Фильтр</h3>
+                            {isSuccess && <h3>Активный шаблон: { allSamples[selectedSample].sample_name}</h3>}
+                        </HStack>   
+                        {isFiltersDataLoading || isTableUpdating  ? (
+                            <VStack max align='center'>
+                                <Loader />
+                            </VStack>
+                        ) : (
+                            <Space>
+                                <Select 
+                                    options={orgTypeOptions}
+                                    value={orgTypeFilterValue}
+                                    onChange={setOrgTypeFilterValue}
+                                    placeholder={'Тип организации'}
+                                />
+                                <Select 
+                                    options={statusEgrulOptions}
+                                    value={statusEgrulFilterValue}
+                                    onChange={setStatusEgrulFilterValue}
+                                    placeholder={'Статус в ЕГРЮЛ'}
+                                />
+                                <Select 
+                                    options={fedOkrugOptions}
+                                    value={fedOkrugFilterValue}
+                                    onChange={setFedOkrugFilterValue}
+                                    placeholder={'Федеральный округ'}
+                                />
+                                <Select 
+                                    options={regionOptions}
+                                    value={regionFilterValue}
+                                    onChange={setRegionFilterValue}
+                                    placeholder={'Регион'}
+                                />
+                                <Select 
+                                    options={levelOptions}
+                                    value={levelFilterValue}
+                                    onChange={setLevelFilterValue}
+                                    placeholder={'Уровень'}
+                                />
+                            </Space>  
+                        )}
                     </VStack>
-                ) : (
-                    <HStack max> 
-                        <Select 
-                            options={orgTypeOptions}
-                            value={orgTypeFilterValue}
-                            onChange={setOrgTypeFilterValue}
-                            placeholder={'Тип организации'}
-                        />
-                        <Select 
-                            options={statusEgrulOptions}
-                            value={statusEgrulFilterValue}
-                            onChange={setStatusEgrulFilterValue}
-                            placeholder={'Статус в ЕГРЮЛ'}
-                        />
-                        <Select 
-                            options={fedOkrugOptions}
-                            value={fedOkrugFilterValue}
-                            onChange={setFedOkrugFilterValue}
-                            placeholder={'Федеральный округ'}
-                        />
-                        <Select 
-                            options={regionOptions}
-                            value={regionFilterValue}
-                            onChange={setRegionFilterValue}
-                            placeholder={'Регион'}
-                        />
-                        <Select 
-                            options={levelOptions}
-                            value={levelFilterValue}
-                            onChange={setLevelFilterValue}
-                            placeholder={'Уровень'}
-                        />
-                    </HStack>  
-                )}
+                </div>
                 {
                     isTableUpdating ? (
                         <VStack max align='center'>
@@ -277,14 +282,31 @@ const ViewSamplePage = () => {
                                         }),
                                     })),
                                     {
-                                        title: 'Actions',
+                                        title: 'Действия',
                                         key: 'actions',
-                                        width: '200px',
+                                        width: '60px',
                                         render: (text, record) => (
-                                            <span>
-                                                <Button onClick={() => handleOpenEditModal(record)}>Edit</Button>
-                                                <Button onClick={() => handleOpenDeleteModal(record)}>Delete</Button>
-                                            </span>
+                                            <Space>
+                                                <Tooltip title="Edit" color='blue'>
+                                                    <Button
+                                                        type="primary"
+                                                        shape="circle"
+                                                        size="middle"
+                                                        icon={<EditOutlined />}
+                                                        onClick={() => handleOpenEditModal(record)}
+                                                    />
+                                                </Tooltip>
+                                                <Tooltip title="Delete" color='red'>
+                                                    <Button
+                                                        type="default"
+                                                        danger
+                                                        shape="circle"
+                                                        size="middle"
+                                                        icon={<DeleteOutlined />}
+                                                        onClick={() => handleOpenDeleteModal(record)}
+                                                    />
+                                                </Tooltip>
+                                            </Space>
                                         ),
                                     },
                                 ]} 
@@ -305,24 +327,26 @@ const ViewSamplePage = () => {
                                 sticky
                             />
                             <Modal
-                                title="Редактировать запись"
+                                title={`Редактировать запись ${ selectedOrgForEdit && selectedOrgForEdit.id}`}
                                 open={editModalVisible}
                                 onCancel={handleCloseEditModal}
+                                width={1000}
                                 footer={[
                                     <Button key="cancel" onClick={handleCloseEditModal}>
                                         Отмена
                                     </Button>,
-                                    <Button key="submit" type="primary" onClick={handleSaveEditModal}>
+                                    <Button  disabled={!formValid} key="submit" type="primary" onClick={handleSaveEditModal}>
                                         Сохранить
                                     </Button>,
                                 ]}
                             >
-                                <Form form={form} layout="vertical" name="edit_record_form">
-                                    {orgsColumns.map((column) => (
-                                        <Form.Item
+                                <Form size='small' form={form} layout="vertical" name="edit_record_form" onChange={handleFormChange}>
+                                    {orgsColumns.filter(org => org.title !== 'id').map((column) => (
+                                        <Form.Item 
                                             key={column.key}
                                             name={column.dataIndex}
                                             label={column.title}
+                                            rules={validationRules[column.dataIndex]}
                                             initialValue={selectedOrgForEdit && selectedOrgForEdit[column.dataIndex]}
                                         >
                                             <Input />
@@ -331,7 +355,7 @@ const ViewSamplePage = () => {
                                 </Form>
                             </Modal>
                             <Modal
-                                title="Удалить запись"
+                                title={`Удалить запись ${selectedOrgForEdit && selectedOrgForEdit.id}`}
                                 open={deleteModalVisible}
                                 onCancel={handleCloseDeleteModal}
                                 footer={[
