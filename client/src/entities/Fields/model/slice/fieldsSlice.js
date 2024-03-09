@@ -7,6 +7,12 @@ const fieldsSlice = createSlice({
         setFields: (state, action) => {
             return action.payload;
         },
+        updateField: (state, action) => {
+            const { name, rights } = action.payload;
+            return state.map(item =>
+                item.name === name ? { name: item.name, rights } : item
+            );
+        },
     },
 });
 

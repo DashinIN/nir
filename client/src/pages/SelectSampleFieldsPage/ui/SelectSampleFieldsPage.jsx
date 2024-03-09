@@ -12,14 +12,15 @@ const SelectSampleFieldsPage = () => {
     const fields = useSelector(getFields) || [];
 
     const handleSelectedFields = (selectedFields) => {
-        dispatch(fieldsActions.setFields(selectedFields));
+        const fieldsData = selectedFields.map(item => ({name: item, rights: 'USER'}));
+        dispatch(fieldsActions.setFields(fieldsData));
     };
 
     return (
         <DynamicModuleLoader reducers={initialReducers} removeAfterUnmount={false}>
             <Page>  
                 <FieldsSelector 
-                    items={fields} 
+                    items={fields.map(item => item.name)} 
                     setItems={handleSelectedFields}
                 />
             </Page>

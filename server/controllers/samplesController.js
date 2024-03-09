@@ -9,13 +9,13 @@ class SamplesController {
             const newSample = await OutputSamples.create({
                 sample_name: name
             })
-            const titlesEN = translateTitlesEN(items)
+            const titlesEN = translateTitlesEN(items.map(item => item.name))
             const sampleFieldsValues = items.map((item, index) => ({
                 sample_id: newSample.sample_id,
                 field_name_en: titlesEN[index],
-                field_name_ru: item,
+                field_name_ru: item.name,
                 field_order: index + 1,
-                isEditable: 1
+                isEditable: Number(item.rights === 'USER')
             }))
 
             await OutputSamplesFields.bulkCreate(sampleFieldsValues)
