@@ -1,4 +1,4 @@
-import { User } from '../models'
+const { User } = require('../models')
 const ApiError = require('../error/ApiError')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
@@ -44,11 +44,6 @@ class UserController {
 
     async check (req, res, next) {
         const token = generateJwt(req.user.id, req.user.email, req.user.role)
-
-        // const {id} = req.query
-        // if (!id) {
-        //   return next(ApiError.badRequest('Не задан ID'))
-        // }
         return res.json({ token })
     }
 }
