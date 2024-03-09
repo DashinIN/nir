@@ -15,7 +15,7 @@ class SamplesController {
                 field_name_en: titlesEN[index],
                 field_name_ru: item.name,
                 field_order: index + 1,
-                isEditable: Number(item.rights === 'USER')
+                rights: item.rights
             }))
 
             await OutputSamplesFields.bulkCreate(sampleFieldsValues)

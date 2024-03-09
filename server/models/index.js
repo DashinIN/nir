@@ -177,10 +177,9 @@ const OutputSamplesFields = sequelize.define('output_samples_fields', {
         type: DataTypes.INTEGER,
         allowNull: false
     },
-    isEditable: {
-        type: DataTypes.NUMERIC(1, 0),
-        allowNull: false,
-        defaultValue: 1
+    rights: {
+        type: DataTypes.STRING,
+        allowNull: false
     },
     sample_id: {
         type: DataTypes.INTEGER,
