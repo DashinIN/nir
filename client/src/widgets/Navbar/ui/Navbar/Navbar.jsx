@@ -8,6 +8,8 @@ import {useLogin, useRegistration} from '@/entities/User/api/userApi';
 import { useDispatch } from 'react-redux';
 import { useAuth } from '@/entities/User/hooks/useAuth';
 import { HStack } from '@/shared/ui/Stack';
+import {  useNavigate } from 'react-router-dom';
+
 
 const items  = [
     {
@@ -70,8 +72,12 @@ export const Navbar = () => {
     const dispatch = useDispatch();
     const {isAuth, user} = useAuth();
 
+    const navigate = useNavigate();
+
     const logOut = () => {
         localStorage.removeItem('token');
+       
+        navigate('/');
         dispatch(userActions.setUser());
     };
 
@@ -93,18 +99,20 @@ export const Navbar = () => {
                         <Button type='primary'>Создание шаблона</Button>
                     </Dropdown>
                 )}
-            
-                <Button type='primary'>
-                    <NavLink to="/changeSample">Выбрать шаблон</NavLink>
-                </Button>   
-                <Button type='primary'>
-                    <NavLink to="/useSample">Использовать шаблон</NavLink>
-                </Button>  
-                <Button type='primary'>
-                    <NavLink to="/viewSample">Просмотр данных по шаблону</NavLink>
-                </Button>
+                {isAuth && (
+                    <>
+                        <Button type='primary'>
+                            <NavLink to="/changeSample">Выбрать шаблон</NavLink>
+                        </Button>   
+                        <Button type='primary'>
+                            <NavLink to="/useSample">Использовать шаблон</NavLink>
+                        </Button>  
+                        <Button type='primary'>
+                            <NavLink to="/viewSample">Просмотр данных по шаблону</NavLink>
+                        </Button>
+                    </>
+                )}
             </HStack>
-            
             <HStack gap={16}>
                 {user.role === 'ADMIN' && (
                     <>
@@ -117,8 +125,6 @@ export const Navbar = () => {
                         />
                     </>
                 )}
-
-           
                 {isAuth ?  (
                     <Button onClick={logOut} type='primary'>Выйти</Button>
                 ): (
@@ -131,7 +137,6 @@ export const Navbar = () => {
                         />
                     </>
                 )}
-            
                 {user && (
                     <div style={{ color: '#f4f5fa' }}>
                         <h3>{user.email}</h3>
@@ -139,7 +144,6 @@ export const Navbar = () => {
                     </div>
                 )}
             </HStack>
-        
         </div>
     );
 };
