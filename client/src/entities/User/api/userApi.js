@@ -1,6 +1,6 @@
 import { rtkApi } from '@/shared/api/rtkApi';
 
-const userApi = rtkApi.injectEndpoints({ 
+export const userApi = rtkApi.injectEndpoints({ 
     endpoints: (builder) => ({
         registration: builder.mutation({
             query: (userData) => ({
@@ -17,11 +17,12 @@ const userApi = rtkApi.injectEndpoints({
             }),
         }),
         check: builder.query({
-            query: () => '/user/check',
+            query: () => '/user/auth',
         }),
-    }),
+    }), 
 });
 
 
 export const useRegistration = userApi.useRegistrationMutation;
 export const useLogin = userApi.useLoginMutation;
+export const useCheck = userApi.useCheckQuery;

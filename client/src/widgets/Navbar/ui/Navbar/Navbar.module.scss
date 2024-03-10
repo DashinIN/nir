@@ -1,5 +1,6 @@
 .Navbar {
     display: flex;
+    justify-content: space-between;
     gap: 16px;
     padding: 10px;
     background-color: var(--inverted-bg-color);

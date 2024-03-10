@@ -207,50 +207,52 @@ const ViewSamplePage = () => {
             removeAfterUnmount={false}  
             reducers={initialReducers}
         >
-            <VStack gap='8' >
-                <div style={{ padding: '20px' }}>
-                    <VStack gap='8'>
-                        <HStack max justify='between'> 
-                            <h3>Фильтр</h3>
-                            {isSuccess && <h3>Активный шаблон: { allSamples[selectedSample].sample_name}</h3>}
-                        </HStack>   
+            <VStack gap='8' max>
+                <div style={{ padding: '20px', width: '100%' }}>
+                    <VStack gap='8' max> 
                         {isFiltersDataLoading || isTableUpdating  ? (
                             <VStack max align='center'>
                                 <Loader />
                             </VStack>
                         ) : (
-                            <Space>
-                                <Select 
-                                    options={orgTypeOptions}
-                                    value={orgTypeFilterValue}
-                                    onChange={setOrgTypeFilterValue}
-                                    placeholder={'Тип организации'}
-                                />
-                                <Select 
-                                    options={statusEgrulOptions}
-                                    value={statusEgrulFilterValue}
-                                    onChange={setStatusEgrulFilterValue}
-                                    placeholder={'Статус в ЕГРЮЛ'}
-                                />
-                                <Select 
-                                    options={fedOkrugOptions}
-                                    value={fedOkrugFilterValue}
-                                    onChange={setFedOkrugFilterValue}
-                                    placeholder={'Федеральный округ'}
-                                />
-                                <Select 
-                                    options={regionOptions}
-                                    value={regionFilterValue}
-                                    onChange={setRegionFilterValue}
-                                    placeholder={'Регион'}
-                                />
-                                <Select 
-                                    options={levelOptions}
-                                    value={levelFilterValue}
-                                    onChange={setLevelFilterValue}
-                                    placeholder={'Уровень'}
-                                />
-                            </Space>  
+                            <>
+                                <HStack max justify='between'> 
+                                    <h3>Фильтр</h3>
+                                    {isSuccess && <h3>Активный шаблон: { allSamples[selectedSample].sample_name}</h3>}
+                                </HStack>  
+                                <Space>
+                                    <Select 
+                                        options={orgTypeOptions}
+                                        value={orgTypeFilterValue}
+                                        onChange={setOrgTypeFilterValue}
+                                        placeholder={'Тип организации'}
+                                    />
+                                    <Select 
+                                        options={statusEgrulOptions}
+                                        value={statusEgrulFilterValue}
+                                        onChange={setStatusEgrulFilterValue}
+                                        placeholder={'Статус в ЕГРЮЛ'}
+                                    />
+                                    <Select 
+                                        options={fedOkrugOptions}
+                                        value={fedOkrugFilterValue}
+                                        onChange={setFedOkrugFilterValue}
+                                        placeholder={'Федеральный округ'}
+                                    />
+                                    <Select 
+                                        options={regionOptions}
+                                        value={regionFilterValue}
+                                        onChange={setRegionFilterValue}
+                                        placeholder={'Регион'}
+                                    />
+                                    <Select 
+                                        options={levelOptions}
+                                        value={levelFilterValue}
+                                        onChange={setLevelFilterValue}
+                                        placeholder={'Уровень'}
+                                    />
+                                </Space>  
+                            </>
                         )}
                     </VStack>
                 </div>

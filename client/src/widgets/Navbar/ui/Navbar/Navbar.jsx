@@ -2,15 +2,12 @@ import { NavLink } from 'react-router-dom';
 import { useState } from 'react';
 import { Dropdown, Button } from 'antd';
 import s from './Navbar.module.scss';
-import { DynamicModuleLoader } from '@/shared/lib/components/DynamicModuleLoader/DynamicModuleLoader';
-
-import { classNames } from '@/shared/lib/classNames/classNames';
-import { userReducer } from '@/entities/User/model/slice/userSlice';
+import { userActions } from '@/entities/User/model/slice/userSlice';
 import { AuthModal } from '@/entities/User/ui/AuthModal';
-
-const toggleLink = ({ isActive }) => {
-    return classNames(`${isActive ? s.activeNavLink : ''}`, {}, [s.NavLink]);
-};
+import {useLogin, useRegistration} from '@/entities/User/api/userApi';
+import { useDispatch } from 'react-redux';
+import { useAuth } from '@/entities/User/hooks/useAuth';
+import { HStack } from '@/shared/ui/Stack';
 
 const items  = [
     {
@@ -27,21 +24,19 @@ const items  = [
     },
 ];
 
-const initialReducers = {
-    user: userReducer,
-};
 
 export const Navbar = () => {
 
+    const [register ] = useRegistration();
+    const [login ] = useLogin();
+
     const handleRegistration = async (values) => {
-        // try {
-        //     await loginUser(values).unwrap();
-        //     setErrorMessage(null);
-        //     form.resetFields();
-        //     onCancel(); // Закрываем модальное окно после успешной авторизации
-        // } catch (error) {
-        //     setErrorMessage(error.message || 'Ошибка авторизации');
-        // }
+        try {
+            await register(values);
+          
+        } catch (err) {
+            console.error('Error during registration:', err); // Вывод ошибки в консоль
+        }
     };
 
     const [registrationModalVisible, setRegistrationModalVisible] = useState(false);
@@ -55,14 +50,12 @@ export const Navbar = () => {
     };
 
     const handleAuth = async (values) => {
-        // try {
-        //     await loginUser(values).unwrap();
-        //     setErrorMessage(null);
-        //     form.resetFields();
-        //     onCancel(); // Закрываем модальное окно после успешной авторизации
-        // } catch (error) {
-        //     setErrorMessage(error.message || 'Ошибка авторизации');
-        // }
+        try {
+            await login(values);
+          
+        } catch (err) {
+            console.error('Error during login:', err); // Вывод ошибки в консоль
+        }
     };
 
     const [authModalVisible, setAuthModalVisible] = useState(false);
@@ -74,17 +67,33 @@ export const Navbar = () => {
     const handleCloseAuthModal = () => {
         setAuthModalVisible(false);
     };
+    const dispatch = useDispatch();
+    const {isAuth, user} = useAuth();
+
+    const logOut = () => {
+        localStorage.removeItem('token');
+        dispatch(userActions.setUser());
+    };
+
+    const roles = {
+        'ADMIN': 'администратор',
+        'MANAGER': 'редактор',
+        'USER': 'пользователь',
+    };
 
     return (
-        <DynamicModuleLoader reducers={initialReducers} removeAfterUnmount={false}>
-            <div className={s.Navbar}>
-                <Dropdown   menu={{
-                    items,
-                    selectable: true,
-                    defaultSelectedKeys: ['1'],
-                }} placement="bottomLeft">
-                    <Button type='primary'>Создание шаблона</Button>
-                </Dropdown>
+        <div className={s.Navbar}>
+            <HStack gap={16}>
+                {user.role === 'ADMIN' && (
+                    <Dropdown   menu={{
+                        items,
+                        selectable: true,
+                        defaultSelectedKeys: ['1'],
+                    }} placement="bottomLeft">
+                        <Button type='primary'>Создание шаблона</Button>
+                    </Dropdown>
+                )}
+            
                 <Button type='primary'>
                     <NavLink to="/changeSample">Выбрать шаблон</NavLink>
                 </Button>   
@@ -94,20 +103,43 @@ export const Navbar = () => {
                 <Button type='primary'>
                     <NavLink to="/viewSample">Просмотр данных по шаблону</NavLink>
                 </Button>
-                <Button onClick={handleOpenAuthModal} type='primary'>Авторизация</Button>
-                <AuthModal 
-                    modalVisible={authModalVisible}
-                    handleCloseModal={handleCloseAuthModal}
-                    handleAuth={handleAuth}
-                />
-                <Button onClick={handleOpenRegistrationModal} type='primary'>Регистрация</Button>
-                <AuthModal 
-                    isRegistration
-                    modalVisible={registrationModalVisible}
-                    handleCloseModal={handleCloseRegistrationModal}
-                    handleAuth={handleRegistration}
-                />
-            </div>
-        </DynamicModuleLoader>
+            </HStack>
+            
+            <HStack gap={16}>
+                {user.role === 'ADMIN' && (
+                    <>
+                        <Button onClick={handleOpenRegistrationModal} type='primary'>Регистрация</Button>
+                        <AuthModal 
+                            isRegistration
+                            modalVisible={registrationModalVisible}
+                            handleCloseModal={handleCloseRegistrationModal}
+                            handleAuth={handleRegistration}
+                        />
+                    </>
+                )}
+
+           
+                {isAuth ?  (
+                    <Button onClick={logOut} type='primary'>Выйти</Button>
+                ): (
+                    <>
+                        <Button onClick={handleOpenAuthModal} type='primary'>Авторизация</Button>
+                        <AuthModal 
+                            modalVisible={authModalVisible}
+                            handleCloseModal={handleCloseAuthModal}
+                            handleAuth={handleAuth}
+                        />
+                    </>
+                )}
+            
+                {user && (
+                    <div style={{ color: '#f4f5fa' }}>
+                        <h3>{user.email}</h3>
+                        <h3>{roles[user.role]}</h3>
+                    </div>
+                )}
+            </HStack>
+        
+        </div>
     );
 };

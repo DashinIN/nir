@@ -1,10 +1,10 @@
-import { Modal, Dropdown, Form, Input, Select, Button } from 'antd';
+import { Modal, Dropdown, Form, Input, Select, Button, Space } from 'antd';
 import { useState } from 'react';
 
 
 export const AuthModal = ({isRegistration, modalVisible, handleCloseModal, handleAuth}) => {
-
     const [form] = Form.useForm();
+
     const [formValid, setFormValid] = useState(false);
 
     const handleFormChange = () => {
@@ -29,24 +29,25 @@ export const AuthModal = ({isRegistration, modalVisible, handleCloseModal, handl
         handleCloseModal();
     };
 
+    const handleConfirm =  async (values) => {
+       
+        await handleAuth(values);
+        form.resetFields(); 
+        handleCloseModal();
+      
+    };
+
     return (
         <Modal
             title={isRegistration ? 'Регистрация': 'Авторизация'}
             open={modalVisible}
             onCancel={handleCancel}
-            footer={[
-                <Button key="cancel" onClick={handleCancel}>
-                    Отмена
-                </Button>,
-                <Button  type="primary" key="submit" htmlType="submit" disabled={!formValid}>
-                    {isRegistration ? 'Зарегистрировать пользователя': 'Войти'}
-                </Button>,
-            ]}
+            footer={null}
         >
             <Form
                 form={form}
                 layout="vertical"
-                onFinish={handleAuth}
+                onFinish={handleConfirm}
                 onChange={handleFormChange}
             >
                 <Form.Item
@@ -99,6 +100,17 @@ export const AuthModal = ({isRegistration, modalVisible, handleCloseModal, handl
                         />
                     </Form.Item>
                 )}
+                <Form.Item>
+                    <Space size='large'>
+                        <Button key="cancel" onClick={handleCancel}>
+                            Отмена
+                        </Button>
+                        <Button htmlType="submit" type="primary" key="submit" disabled={!formValid}>
+                            {isRegistration ? 'Зарегистрировать пользователя': 'Войти'}
+                        </Button>
+                    </Space>
+                </Form.Item>
+                
             </Form>
         </Modal>
 
