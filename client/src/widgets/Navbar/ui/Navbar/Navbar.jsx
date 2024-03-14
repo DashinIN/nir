@@ -32,12 +32,18 @@ export const Navbar = () => {
     const [register ] = useRegistration();
     const [login ] = useLogin();
 
+    const dispatch = useDispatch();
+    const {isAuth, user} = useAuth();
+
+    const navigate = useNavigate();
+
+
     const handleRegistration = async (values) => {
         try {
             await register(values);
           
         } catch (err) {
-            console.error('Error during registration:', err); // Вывод ошибки в консоль
+            console.error('Error during registration:', err); 
         }
     };
 
@@ -54,9 +60,9 @@ export const Navbar = () => {
     const handleAuth = async (values) => {
         try {
             await login(values);
-          
+            navigate('/');
         } catch (err) {
-            console.error('Error during login:', err); // Вывод ошибки в консоль
+            console.error('Error during login:', err); 
         }
     };
 
@@ -69,14 +75,9 @@ export const Navbar = () => {
     const handleCloseAuthModal = () => {
         setAuthModalVisible(false);
     };
-    const dispatch = useDispatch();
-    const {isAuth, user} = useAuth();
-
-    const navigate = useNavigate();
-
+  
     const logOut = () => {
         localStorage.removeItem('token');
-       
         navigate('/');
         dispatch(userActions.setUser());
     };

@@ -6,6 +6,8 @@ import ChangeSampleFieldsOrderPage from '@/pages/ChangeSampleFieldsOrderPage';
 import SelectSampleFieldsPage from '@/pages/SelectSampleFieldsPage';
 import SaveSamplePage from '@/pages/SaveSamplePage';
 
+
+
 export const routeConfig = [
     {
         path: '/',
@@ -14,6 +16,7 @@ export const routeConfig = [
     {
         path: '/changeSampleFieldsOrder',
         element: <ChangeSampleFieldsOrderPage />,
+        roles: ['ADMIN']
     },
     {
         path: '/selectSampleFields',
@@ -22,6 +25,7 @@ export const routeConfig = [
     {
         path: '/saveSample',
         element: <SaveSamplePage />,
+        roles: ['ADMIN']
     },
     {
         path: '/changeSample',
