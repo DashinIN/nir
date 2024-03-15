@@ -127,7 +127,8 @@ const Orgs = sequelize.define('orgs', {
     tz_org: DataTypes.STRING(20),
     ogrn_rub: DataTypes.STRING(30),
     oktmoname: DataTypes.STRING(256),
-    org_create_date: DataTypes.DATE
+    org_create_date: DataTypes.DATE,
+    date_stop: DataTypes.DATE
 }, {
     tableName: 'orgs',
     timestamps: false

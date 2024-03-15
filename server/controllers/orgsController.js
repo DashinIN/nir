@@ -26,6 +26,8 @@ async function applyFilters (filters) {
     if (filters.orgType && filters.orgType.length > 0) {
         filterObject.org_type = { [Op.in]: filters.orgType }
     }
+    filterObject.date_stop = null
+
     return filterObject
 }
 

@@ -264,6 +264,8 @@ const ViewSamplePage = () => {
                     ) : (
                         <>
                             <Table  
+                                style={{ maxWidth: '100%' }}
+                                scroll={{ x: 'max-content' }} 
                                 size='small'
                                 bordered
                                 rowKey={(org) => org.id}
