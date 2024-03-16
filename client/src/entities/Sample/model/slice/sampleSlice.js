@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const sampleSlice = createSlice({
     name: 'sample',
-    initialState: 0,
+    initialState: null,
     reducers: {
         setSelectedSample: (state, action) => {
             return action.payload;

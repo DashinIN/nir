@@ -1,10 +1,12 @@
 import { HStack, VStack } from '@/shared/ui/Stack';
 import { SelectListItem } from '../SelectListItem/SelectListItem';
-import { useAllSamples } from '../../api/sampleApi';
+import { useAllSamples, useDeleteSample } from '../../api/sampleApi';
 import { useEffect } from 'react';
+import { message } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { getSelectedSample } from '../../model/selectors/getSelectedSample';
 import { sampleActions } from '../../model/slice/sampleSlice';
+import { useNavigate } from 'react-router-dom';
 import s from './SampleSelector.module.scss';
 
 export const SampleSelector = () => {
@@ -12,20 +14,46 @@ export const SampleSelector = () => {
         data: allSamples,
         isLoading,
         isError,
-        isSuccess,
         refetch
     } = useAllSamples();
-    
-    useEffect(() => {
-        refetch();
-    }, [refetch]);
-
     const dispatch = useDispatch();
-    const selectedSample = useSelector(getSelectedSample);
+    const selectedSampleId = useSelector(getSelectedSample); 
 
-    const selectHandler = (item) => {
-        const sampleIndex = allSamples.indexOf(item);
-        dispatch(sampleActions.setSelectedSample(sampleIndex));
+    useEffect(() => {
+        if(!selectedSampleId && allSamples){
+            const firstSampleId = allSamples[0].sample_id;
+            dispatch(sampleActions.setSelectedSample(firstSampleId));
+        }
+        refetch();
+    }, [allSamples, dispatch, refetch, selectedSampleId]);
+
+    const [deleteSample] = useDeleteSample();
+
+    const navigate = useNavigate();   
+
+    const selectHandler = (item) => () => {
+        dispatch(sampleActions.setSelectedSample(item.sample_id));
+    };
+
+    const editHandler = (item)  => () => {
+        const sample = allSamples.find(sample => sample.sample_name === item.sample_name); 
+        const sampleId = sample.sample_id; 
+        navigate(`/editSample/${sampleId}`); 
+    };
+
+    const deleteHandler = (item) => async () => {
+        const sample = allSamples.find(sample => sample.sample_name === item.sample_name); 
+        const sampleId = sample.sample_id; 
+        try {
+            const deleteData = await deleteSample(sampleId);
+            const updatedSamples = await refetch();
+            const firstSampleId = updatedSamples.data[0].sample_id;
+            dispatch(sampleActions.setSelectedSample(firstSampleId));
+            message.success(deleteData.data.message); 
+        } catch (error) {
+            message.error('Ошибка при удалении шаблона');
+            console.error('Ошибка при удалении шаблона:', error);
+        }
     };
 
     if(isLoading) {
@@ -39,7 +67,8 @@ export const SampleSelector = () => {
     return (
         <VStack max gap={8}>
             <HStack max justify='center'>
-                {isSuccess && <h2>Активный шаблон: {allSamples[selectedSample].sample_name}</h2>}
+                <h3>Активный шаблон: {allSamples.find(sample => sample.sample_id === selectedSampleId)?.sample_name}</h3>                   
+
             </HStack>
             <h2>Список доступных шаблонов</h2>
             <div className={s.container}>
@@ -51,16 +80,19 @@ export const SampleSelector = () => {
                     {   
                         allSamples.map(item => (
                             <SelectListItem 
-                                key = {item.sample_name}
+                                key={item.sample_name}
                                 name={item.sample_name}
-                                onSelect={() => selectHandler(item)}
-                                isSelected = {allSamples.indexOf(item) === selectedSample}
+                                onSelect={selectHandler(item)}
+                                onEdit={editHandler(item)}
+                                onDelete={deleteHandler(item)}
+                                isSelected={item.sample_id === selectedSampleId} 
                                 content={`Количество полей: ${item.sample_content.length}`} 
                             />
                         ))
                     }
                 </VStack>
             </div>
+            
         </VStack>
     );
 };

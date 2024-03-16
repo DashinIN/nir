@@ -5,7 +5,7 @@ import ViewSamplePage from '@/pages/ViewSamplePage';
 import ChangeSampleFieldsOrderPage from '@/pages/ChangeSampleFieldsOrderPage';
 import SelectSampleFieldsPage from '@/pages/SelectSampleFieldsPage';
 import SaveSamplePage from '@/pages/SaveSamplePage';
-
+import EditSamplePage from '@/pages/EditSamplePage/ui/EditSamplePage.async';
 
 
 export const routeConfig = [
@@ -25,6 +25,11 @@ export const routeConfig = [
     {
         path: '/saveSample',
         element: <SaveSamplePage />,
+        roles: ['ADMIN']
+    },
+    {
+        path: '/editSample/:id',
+        element:  <EditSamplePage />,
         roles: ['ADMIN']
     },
     {

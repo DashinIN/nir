@@ -13,7 +13,7 @@ const SaveSamplePage = () => {
     const fields = useSelector(getFields) || [];
 
     return (
-        <DynamicModuleLoader  reducers={initialReducers} removeAfterUnmount={false}>
+        <DynamicModuleLoader  reducers={initialReducers}>
             <Page>  
                 <VStack gap={8} max align='center'>
                     { fields.length ? (

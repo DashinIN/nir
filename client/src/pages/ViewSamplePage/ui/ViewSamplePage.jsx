@@ -24,8 +24,7 @@ const generateOptions = (values, labels) => {
 
 const ViewSamplePage = () => {
     //Номер текущего шаблона
-    const selectedSample = useSelector(getSelectedSample) || 1;
-    const selectedSampleId = selectedSample + 1;
+    const selectedSampleId = useSelector(getSelectedSample);
     const {data: allSamples, isSuccess } = useAllSamples();
         
     const [sortInfo, setSortInfo] = useState({ columnKey: null, order: 0 });
@@ -218,7 +217,7 @@ const ViewSamplePage = () => {
                             <>
                                 <HStack max justify='between'> 
                                     <h3>Фильтр</h3>
-                                    {isSuccess && <h3>Активный шаблон: { allSamples[selectedSample].sample_name}</h3>}
+                                    <h3>Активный шаблон: {allSamples.find(sample => sample.sample_id === selectedSampleId)?.sample_name}</h3>                                    
                                 </HStack>  
                                 <Space>
                                     <Select 

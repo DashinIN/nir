@@ -10,8 +10,8 @@ const initialReducers = {
 const ChangeSamplePage = () => {
     return (
         <DynamicModuleLoader 
-            removeAfterUnmount={false} 
             reducers={initialReducers}
+            removeAfterUnmount={false}
         >
             <Page>
                 <VStack gap={16} max>

@@ -1,7 +1,7 @@
 import { FieldsList } from '../FieldsList/FieldsList';
 import { useState } from 'react';
 import { HStack, VStack } from '@/shared/ui/Stack';
-import { useAllTitles } from '../../model/api/fieldsSelectorApi';
+import { useAllTitles } from '../../api/fieldsSelectorApi';
 import { Search } from '@/widgets/Search/ui/Search';
 import { Button } from 'antd';
 
@@ -11,7 +11,7 @@ export const FieldsSelector = ({ items, setItems}) => {
     const [searchValue, setSearchValue] = useState('');
 
     const filteredFields = fields.filter(field => 
-        field.toLowerCase().includes(searchValue.toLowerCase())
+        field && field.toLowerCase().includes(searchValue.toLowerCase())
     );
     
     const resetItems = () => {

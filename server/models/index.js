@@ -191,6 +191,7 @@ const OutputSamplesFields = sequelize.define('output_samples_fields', {
     timestamps: false
 })
 
+OutputSamples.hasMany(OutputSamplesFields, { foreignKey: 'sample_id', onDelete: 'CASCADE' })
 OutputSamplesFields.belongsTo(OutputSamples, { foreignKey: 'sample_id' })
 
 const User = sequelize.define('user', {
