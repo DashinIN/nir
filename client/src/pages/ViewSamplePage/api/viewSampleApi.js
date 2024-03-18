@@ -1,15 +1,7 @@
 import { rtkApi } from '@/shared/api/rtkApi';
 
 const viewSampleApi = rtkApi.injectEndpoints({ 
-    
     endpoints: (builder) => ({
-        getFilterValues: builder.query({
-            query: (filters) => ({
-                url: '/orgs/values',
-                method: 'POST',
-                body: { filters },
-            })
-        }),
         getSampleFieldsHeaders: builder.query({
             query: (selectedSampleId) => ({
                 url: '/orgs/sampleFieldsTitles',
@@ -47,7 +39,6 @@ const viewSampleApi = rtkApi.injectEndpoints({
     }),
 });
 
-export const useGetFilterValues = viewSampleApi.useGetFilterValuesQuery;
 export const useGetSampleFieldsHeaders = viewSampleApi.useGetSampleFieldsHeadersQuery;
 export const useGetFilteredOrgs = viewSampleApi.useGetFilteredOrgsQuery;
 export const useGetFilteredOrgsCount = viewSampleApi.useGetFilteredOrgsCountQuery;

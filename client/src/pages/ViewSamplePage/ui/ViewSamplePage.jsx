@@ -1,68 +1,37 @@
 import { DynamicModuleLoader } from '@/shared/lib/components/DynamicModuleLoader/DynamicModuleLoader';
 import { sampleReducer } from '@/entities/Sample/model/slice/sampleSlice';
 import { useState, useEffect } from 'react';
-import { getSelectedSample, useAllSamples } from '@/entities/Sample';
-import { useDeleteOrgRecord, useEditOrgRecord, useGetFilterValues, useGetFilteredOrgs, useGetFilteredOrgsCount, useGetSampleFieldsHeaders } from '../api/viewSampleApi';
+import { getSelectedSample } from '@/entities/Sample';
+import { useDeleteOrgRecord, useEditOrgRecord, useGetFilteredOrgs, useGetFilteredOrgsCount, useGetSampleFieldsHeaders } from '../api/viewSampleApi';
 import { Loader } from '@/shared/ui/Loader';
-import { Select } from '@/shared/ui/Select';
 import { useSelector } from 'react-redux';
 import { Table, Modal, Button, Form, Input, message, Space, Tooltip  } from 'antd';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import { HStack, VStack } from '@/shared/ui/Stack';
-import { levelLabels, fedOkrugLabels, validationRules } from '../consts/consts';
+import { VStack } from '@/shared/ui/Stack';
+import { validationRules } from '../consts/consts';
+import { filtersReducer } from '@/entities/Filters/model/slice/FiltersSlice';
+import { getFilters } from '@/entities/Filters/model/selectors/getFilters';
+import { Filters } from '@/entities/Filters/ui/Filters/Filters';
 
 const initialReducers = {
     sample: sampleReducer,
+    filters: filtersReducer
 };
 
-const generateOptions = (values, labels) => {
-    return values ? values.filter(value => Boolean(value) !== false).map(value => ({
-        label: labels ? labels[value] || value : value,
-        value: value
-    })) : [];
-};
 
 const ViewSamplePage = () => {
-    //Номер текущего шаблона
-    const selectedSampleId = useSelector(getSelectedSample);
-    const {data: allSamples, isSuccess } = useAllSamples();
+    //Id текущего шаблона
+    const selectedSampleId = useSelector(getSelectedSample); 
         
-    const [sortInfo, setSortInfo] = useState({ columnKey: null, order: 0 });
     //Пагинация
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize, setPageSize] = useState(100);
 
-    //Состояния фильтров
-    const [orgTypeFilterValue, setOrgTypeFilterValue] = useState([]);
-    const [statusEgrulFilterValue, setStatusEgrulFilterValue] = useState([]);
-    const [fedOkrugFilterValue, setFedOkrugFilterValue] = useState([]);
-    const [levelFilterValue, setLevelFilterValue] = useState([]);
-    const [regionFilterValue, setRegionFilterValue] = useState([]);
-
-    const filters = {
-        orgType: orgTypeFilterValue,
-        statusEgrul: statusEgrulFilterValue,
-        fedOkrug: fedOkrugFilterValue,
-        level: levelFilterValue,
-        region: regionFilterValue
-    };
-
     //Получение параметров для фильтров
-    const { 
-        data: filtersData,
-        isLoading: isFiltersDataLoading,
-        refetch: filtersDataRefetch 
-    } = useGetFilterValues({
-        fedOkrug: fedOkrugFilterValue,
-        region: regionFilterValue
-    });
-
-    const levelOptions = generateOptions(filtersData?.levelValues || [], levelLabels);
-    const orgTypeOptions = generateOptions(filtersData?.orgTypeValues || []);
-    const statusEgrulOptions = generateOptions(filtersData?.statusEgrulValues || []);
-    const fedOkrugOptions = generateOptions(filtersData?.fedokrugValues || [], fedOkrugLabels);
-    const regionOptions = generateOptions(filtersData?.regionValues || []);
-
+    const filters = useSelector(getFilters);
+  
+    //сортировка
+    const [sortInfo, setSortInfo] = useState({ columnKey: null, order: 0 });
     //Запрос на количества записей
     const {
         data: filteredOrgsCount, 
@@ -90,14 +59,7 @@ const ViewSamplePage = () => {
         sortOrder: sortInfo.order
     }); 
 
-    //При изменении федерального округа оставляем в выбранных только подходящие регионы
-    useEffect(() => {
-        filtersDataRefetch();
-        if (filtersData && filtersData.regionValues) {
-            setRegionFilterValue(prev => prev.filter(region => filtersData.regionValues.includes(region)));
-        }
-    }, [fedOkrugFilterValue, filtersData, filtersDataRefetch]);
-
+  
     //При изменении фильтров пересчитываем записи, делаем по ним пагинацию и обновляем таблицу
     useEffect(() => {
         setCurrentPage(1);
@@ -107,25 +69,13 @@ const ViewSamplePage = () => {
             sortOrder: sortInfo.order
         });
     }, [
-        orgTypeFilterValue,
-        statusEgrulFilterValue,
-        fedOkrugFilterValue,
-        levelFilterValue,
-        regionFilterValue,
+        filters,
         sortInfo,
         orgsCountRefetch, 
         orgsRefetch
     ]);
 
-    useEffect(() => {
-        console.log(filteredOrgs);
-    }, [filteredOrgs]);
-
-    useEffect(() => {
-        console.log(orgsColumns);
-    }, [ orgsColumns]);
-
-    const isTableUpdating = isOrgsColumnsLoading || isOrgsLoading || isFilteredOrgsCountLoading;
+    const isTableUpdating =  isOrgsColumnsLoading || isOrgsLoading || isFilteredOrgsCountLoading;
 
     const handleTableChange = (pagination) => {
         setCurrentPage(pagination);
@@ -201,60 +151,17 @@ const ViewSamplePage = () => {
         });
     };
 
+    if(!selectedSampleId) {
+        return (<div>nooo</div>);
+    }
+
     return (
         <DynamicModuleLoader 
             removeAfterUnmount={false}  
             reducers={initialReducers}
         >
             <VStack gap='8' max>
-                <div style={{ padding: '20px', width: '100%' }}>
-                    <VStack gap='8' max> 
-                        {isFiltersDataLoading || isTableUpdating  ? (
-                            <VStack max align='center'>
-                                <Loader />
-                            </VStack>
-                        ) : (
-                            <>
-                                <HStack max justify='between'> 
-                                    <h3>Фильтр</h3>
-                                    <h3>Активный шаблон: {allSamples.find(sample => sample.sample_id === selectedSampleId)?.sample_name}</h3>                                    
-                                </HStack>  
-                                <Space>
-                                    <Select 
-                                        options={orgTypeOptions}
-                                        value={orgTypeFilterValue}
-                                        onChange={setOrgTypeFilterValue}
-                                        placeholder={'Тип организации'}
-                                    />
-                                    <Select 
-                                        options={statusEgrulOptions}
-                                        value={statusEgrulFilterValue}
-                                        onChange={setStatusEgrulFilterValue}
-                                        placeholder={'Статус в ЕГРЮЛ'}
-                                    />
-                                    <Select 
-                                        options={fedOkrugOptions}
-                                        value={fedOkrugFilterValue}
-                                        onChange={setFedOkrugFilterValue}
-                                        placeholder={'Федеральный округ'}
-                                    />
-                                    <Select 
-                                        options={regionOptions}
-                                        value={regionFilterValue}
-                                        onChange={setRegionFilterValue}
-                                        placeholder={'Регион'}
-                                    />
-                                    <Select 
-                                        options={levelOptions}
-                                        value={levelFilterValue}
-                                        onChange={setLevelFilterValue}
-                                        placeholder={'Уровень'}
-                                    />
-                                </Space>  
-                            </>
-                        )}
-                    </VStack>
-                </div>
+                <Filters />
                 {
                     isTableUpdating ? (
                         <VStack max align='center'>
