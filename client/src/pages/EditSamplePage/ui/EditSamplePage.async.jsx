@@ -5,15 +5,18 @@ import { DynamicModuleLoader } from '@/shared/lib/components/DynamicModuleLoader
 import { fieldsActions, fieldsReducer, getFields } from '@/entities/Fields';
 import { useParams } from 'react-router-dom';
 import { ReorderList } from '@/widgets/ReorderList';
-import { useEditSample, useSample } from '@/entities/Sample/api/sampleApi';
-import { useState, useEffect } from 'react';
+import { useAllSamples, useEditSample, useSample } from '@/entities/Sample/api/sampleApi';
+import { useEffect } from 'react';
 import { Loader } from '@/shared/ui/Loader';
 import { Button } from 'antd';
 import { HStack, VStack } from '@/shared/ui/Stack';
 import { useNavigate } from 'react-router-dom';
+import { getIsEdit } from '../model/selectors/getIsEdit';
+import { editActions, editReducer } from '../model/slice/editSlice';
 
 const initialReducers = {
     fields: fieldsReducer,
+    edit: editReducer
 };
 
 const EditSamplePage = () => {
@@ -22,23 +25,31 @@ const EditSamplePage = () => {
     const {data: sampleData, isLoading, refetch: refetchSample} = useSample(id);
     const [ updateSample ] = useEditSample();
 
+    const {
+        data: allSamples,
+        isLoading: samplesLoading
+    } = useAllSamples();
+
     const dispatch = useDispatch();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    const fields = useSelector(getFields) || [];
+    const fields = useSelector(getFields);
+    const isEdit = useSelector(getIsEdit);
 
     useEffect(() => {
-        sampleData && dispatch(fieldsActions.setFields(sampleData.fields));
-    }, [dispatch, sampleData]);
+        if(!isEdit) {
+            dispatch(editActions.setEditSample(id));
+            sampleData && dispatch(fieldsActions.setFields(sampleData.fields));
+        }
+    }, [dispatch, id, isEdit, sampleData]);
 
-    const [isModified, setIsModified] = useState(false);
-
+    
     useEffect(() => {
-        if (sampleData) {
+        if (sampleData && fields.length) {
             const initialData = sampleData.fields.map(field => ({ name: field.name, rights: field.rights }));
             const modifiedData = fields.map(field => ({ name: field.name, rights: field.rights }));
-            setIsModified(JSON.stringify(initialData) !== JSON.stringify(modifiedData));
+            const editedCondition =  JSON.stringify(initialData) !== JSON.stringify(modifiedData);
+            dispatch(editActions.setIsEdit(editedCondition));
         }
-    }, [sampleData, fields]);
+    }, [sampleData, fields, dispatch, id, isEdit]);
 
     const handleSelectedFields = (selectedFields) => {
         dispatch(fieldsActions.setFields(selectedFields));
@@ -52,7 +63,7 @@ const EditSamplePage = () => {
         dispatch(fieldsActions.updateField(newData));
     };
 
-    const handleCancel = async () => {
+    const handleCancel = () => {
         dispatch(fieldsActions.setFields(sampleData.fields));
     };
 
@@ -61,6 +72,9 @@ const EditSamplePage = () => {
         try {
             const updateData = await updateSample({id, data});
             await refetchSample();
+            dispatch(editActions.setIsEdit(false));
+            dispatch(editActions.setEditSample(null));
+            dispatch(fieldsActions.setFields([]));
             message.success(updateData.data.message); 
             navigate('/changeSample');
         } catch (error) {
@@ -69,21 +83,34 @@ const EditSamplePage = () => {
         }
     };
 
-    if(isLoading) {
+    const handleBack = () => {
+        navigate('/changeSample');
+        dispatch(editActions.setIsEdit(false));
+        dispatch(editActions.setEditSample(null));
+        dispatch(fieldsActions.setFields([]));
+    };
+
+    if(isLoading || samplesLoading) {
         return(<Loader />);
     }
 
+
     return (
-        <DynamicModuleLoader reducers={initialReducers}>
+        <DynamicModuleLoader reducers={initialReducers} removeAfterUnmount={false}>
             <Page>  
                 {sampleData && (
                     <VStack gap={16}>
+                        <h2>редактирование шаблона {allSamples.find(sample => sample.sample_id === parseInt(id))?.sample_name}</h2>
                         <ReorderList
                             fields={fields} 
                             setFields={handleSelectedFields}
                             handleChange={handleChange}
                         />
-                        {isModified && (
+                        <HStack max justify='center' gap={8}>
+                            <Button size='large'  onClick={handleBack}>Назад</Button>
+                            <Button size='large' type='primary' onClick={() => navigate('/selectSampleFields')}>Поменять поля</Button>
+                        </HStack>
+                        {isEdit && (
                             <HStack max justify='center' gap={8}>
                                 <Button size='large'  onClick={handleCancel}>Отмена</Button>
                                 <Button size='large' type='primary' onClick={handleSave}>Сохранить изменения</Button>

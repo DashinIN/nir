@@ -12,6 +12,7 @@ import { validationRules } from '../consts/consts';
 import { filtersReducer } from '@/entities/Filters/model/slice/FiltersSlice';
 import { getFilters } from '@/entities/Filters/model/selectors/getFilters';
 import { Filters } from '@/entities/Filters/ui/Filters/Filters';
+import { EditOrgModal } from '@/features/EditOrgModal/EditOrgModal';
 
 const initialReducers = {
     sample: sampleReducer,
@@ -235,34 +236,9 @@ const ViewSamplePage = () => {
                                 }}
                                 sticky
                             />
-                            <Modal
-                                title={`Редактировать запись ${ selectedOrgForEdit && selectedOrgForEdit.id}`}
-                                open={editModalVisible}
-                                onCancel={handleCloseEditModal}
-                                width={1000}
-                                footer={[
-                                    <Button key="cancel" onClick={handleCloseEditModal}>
-                                        Отмена
-                                    </Button>,
-                                    <Button  disabled={!formValid} key="submit" type="primary" onClick={handleSaveEditModal}>
-                                        Сохранить
-                                    </Button>,
-                                ]}
-                            >
-                                <Form size='small' form={form} layout="vertical" name="edit_record_form" onChange={handleFormChange}>
-                                    {orgsColumns.filter(org => org.title !== 'id').map((column) => (
-                                        <Form.Item 
-                                            key={column.key}
-                                            name={column.dataIndex}
-                                            label={column.title}
-                                            rules={validationRules[column.dataIndex]}
-                                            initialValue={selectedOrgForEdit && selectedOrgForEdit[column.dataIndex]}
-                                        >
-                                            <Input />
-                                        </Form.Item>
-                                    ))}
-                                </Form>
-                            </Modal>
+                            <EditOrgModal 
+                            
+                            />
                             <Modal
                                 title={`Удалить запись ${selectedOrgForEdit && selectedOrgForEdit.id}`}
                                 open={deleteModalVisible}
