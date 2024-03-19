@@ -1,15 +1,15 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { getFilters, getFedOkrugFitlerValue, getRegionFilterValue, getOrgTypeFilterValue, getStatusEgrulFilterValue, getLevelFilterValue } from '../../model/selectors/getFilters';
+import { getFedOkrugFitlerValue, getRegionFilterValue, getOrgTypeFilterValue, getStatusEgrulFilterValue, getLevelFilterValue } from '../../model/selectors/getFilters';
 import { filtersActions } from '../../model/slice/FiltersSlice';
 import { getSelectedSample, useAllSamples } from '@/entities/Sample';
 import { levelLabels, fedOkrugLabels } from '@/shared/consts/filtersConsts';
-import { useGetFilterValues } from '../../api/FiltersApi';
 import { HStack, VStack } from '@/shared/ui/Stack';
 import { Space } from 'antd';
 import { Loader } from '@/shared/ui/Loader';
 import { Select } from '@/shared/ui/Select';
 import { useEffect } from 'react';
 import s from './Filters.module.scss';
+import { useGetFilterValues } from '../../api/filtersApi';
 
 const generateOptions = (values, labels) => {
     return values ? values.filter(value => Boolean(value) !== false).map(value => ({

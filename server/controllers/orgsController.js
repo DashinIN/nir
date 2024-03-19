@@ -79,6 +79,7 @@ class OrgsController {
     async getSampleFieldsHeaders (req, res) {
         try {
             const selectedSampleId = req.body.selectedSampleId
+
             const fields = await OutputSamplesFields.findAll({
                 where: { sample_id: selectedSampleId },
                 order: [['field_order', 'ASC']]

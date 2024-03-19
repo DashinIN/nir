@@ -13,7 +13,7 @@ export const ReorderList = ({fields, setFields, handleChange}) => {
 
     return (
         <VStack gap={8} max align='center'>
-            <h2>Выбор порядка полей шаблона</h2>
+            <h3>Выбор порядка полей шаблона</h3>
             <VStack max className={s.reorderListWrapper}>
                 <Reorder.Group 
                     as='ol' 

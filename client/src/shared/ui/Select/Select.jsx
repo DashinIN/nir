@@ -4,6 +4,7 @@ export const Select = (props) => {
     const {options, value, onChange, placeholder} = props;
     return (
         <AntdSelect
+            size='large'
             mode="multiple"
             style={{
                 width: '300px',

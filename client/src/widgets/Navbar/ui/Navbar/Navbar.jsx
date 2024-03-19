@@ -5,10 +5,11 @@ import s from './Navbar.module.scss';
 import { userActions } from '@/entities/User/model/slice/userSlice';
 import { AuthModal } from '@/entities/User/ui/AuthModal';
 import {useLogin, useRegistration} from '@/entities/User/api/userApi';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useAuth } from '@/entities/User/hooks/useAuth';
 import { HStack } from '@/shared/ui/Stack';
 import {  useNavigate } from 'react-router-dom';
+import { getSelectedSample } from '@/entities/Sample';
 
 
 const items  = [
@@ -29,13 +30,12 @@ const items  = [
 
 export const Navbar = () => {
 
-    const [register ] = useRegistration();
+    const [register] = useRegistration();
     const [login ] = useLogin();
-
     const dispatch = useDispatch();
     const {isAuth, user} = useAuth();
-
     const navigate = useNavigate();
+    const selectedSampleId = useSelector(getSelectedSample);
 
 
     const handleRegistration = async (values) => {
@@ -97,7 +97,7 @@ export const Navbar = () => {
                         selectable: true,
                         defaultSelectedKeys: ['1'],
                     }} placement="bottomLeft">
-                        <Button type='primary'>Создание шаблона</Button>
+                        <Button type='primary'>Создать шаблон</Button>
                     </Dropdown>
                 )}
                 {isAuth && (
@@ -105,12 +105,12 @@ export const Navbar = () => {
                         <Button type='primary'>
                             <NavLink to="/changeSample">Выбрать шаблон</NavLink>
                         </Button>   
-                        <Button type='primary'>
-                            <NavLink to="/useSample">Использовать шаблон</NavLink>
-                        </Button>  
-                        <Button type='primary'>
-                            <NavLink to="/viewSample">Просмотр данных по шаблону</NavLink>
-                        </Button>
+                        {selectedSampleId && (
+                            <Button type='primary'>
+                                <NavLink to="/viewSample">Просмотр данных по шаблону</NavLink>
+                            </Button>
+                        )}
+                        
                     </>
                 )}
             </HStack>

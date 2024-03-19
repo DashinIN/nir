@@ -5,7 +5,7 @@ import ViewSamplePage from '@/pages/ViewSamplePage';
 import ChangeSampleFieldsOrderPage from '@/pages/ChangeSampleFieldsOrderPage';
 import SelectSampleFieldsPage from '@/pages/SelectSampleFieldsPage';
 import SaveSamplePage from '@/pages/SaveSamplePage';
-import EditSamplePage from '@/pages/EditSamplePage/ui/EditSamplePage.async';
+import EditSamplePage from '@/pages/EditSamplePage';
 
 
 export const routeConfig = [

@@ -8,6 +8,8 @@
 
 .fieldsContainer {
     padding: 20px 15px;
+    max-height: 550px;
+    overflow: scroll;
     background-color: white;
     border-radius: 24px;
     width: 100%;

@@ -9,6 +9,7 @@ import { Button } from 'antd';
 import { useAllSamples, useSample } from '@/entities/Sample/api/sampleApi';
 import { useEffect } from 'react';
 import { Loader } from '@/shared/ui/Loader';
+import { HStack } from '@/shared/ui/Stack';
 
 const initialReducers = {
     fields: fieldsReducer,
@@ -19,10 +20,12 @@ const SelectSampleFieldsPage = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const fields = useSelector(getFields);
-    const isEdit = useSelector(getIsEdit);
     const editSampleId = useSelector(getEditSample);
 
-    const {data: sampleData, isLoading: sampleDataLoading} = useSample(editSampleId);
+    const {
+        data: sampleData,
+        isLoading: sampleDataLoading
+    } = useSample(editSampleId);
 
     const {
         data: allSamples,
@@ -39,7 +42,6 @@ const SelectSampleFieldsPage = () => {
         });
         const combinedFields = fields.concat(newFields);
         const filteredFields = combinedFields.filter(field => selectedFields.includes(field.name));
-        console.log('budet ', filteredFields);
         dispatch(fieldsActions.setFields(filteredFields));
     };
 
@@ -63,12 +65,18 @@ const SelectSampleFieldsPage = () => {
     return (
         <DynamicModuleLoader reducers={initialReducers} removeAfterUnmount={false}>
             <Page>  
-                {editSampleId && <h2>редактирование шаблона {allSamples.find(sample => sample.sample_id === parseInt(editSampleId))?.sample_name}</h2>}
+                <HStack max justify='center'>
+                    {editSampleId && <h2>редактирование шаблона {allSamples.find(sample => sample.sample_id === parseInt(editSampleId))?.sample_name}</h2>}
+                </HStack>
                 <FieldsSelector 
                     items={fields.map(item => item.name)} 
                     setItems={handleSelectedFields}
                 />
-                <Button size='large' type='primary' onClick={handleEdit}>Поменять порядок</Button>
+                <HStack max justify='end'>
+                    {fields.length > 0 && (
+                        <Button size='large' type='primary' onClick={handleEdit}>Выбрать порядок полей</Button>
+                    )} 
+                </HStack>
             </Page>
         </DynamicModuleLoader>
     );
