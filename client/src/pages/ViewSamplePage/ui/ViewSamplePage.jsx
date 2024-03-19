@@ -96,7 +96,6 @@ const ViewSamplePage = () => {
     const [deleteOrgRecord] =  useDeleteOrgRecord();
 
     const handleOpenEditModal = (org) => {
-        console.log(org);
         setSelectedOrgForEdit(org);
         form.setFieldsValue(org);
         setEditModalVisible(true);
@@ -107,11 +106,9 @@ const ViewSamplePage = () => {
     };
 
     const handleSaveEditModal = async () => {
-        console.log(form.getFieldsValue());
         try {
             await editOrgRecord({ id: selectedOrgForEdit.id, updatedData: form.getFieldsValue() });
             setEditModalVisible(false); 
-            orgsRefetch(); 
             message.success('Изменения внесены'); 
         } catch (error) {
             message.error('Ошибка при изменении');
@@ -133,7 +130,6 @@ const ViewSamplePage = () => {
         try {
             await deleteOrgRecord(selectedOrgForEdit.id);
             setDeleteModalVisible(false); 
-            orgsRefetch(); 
             message.success('Запись успешно удалена!'); 
         } catch (error) {
             message.error('Ошибка при удалении записи');
@@ -152,7 +148,7 @@ const ViewSamplePage = () => {
     };
 
     if(!selectedSampleId) {
-        return (<div>nooo</div>);
+        return (<div>Шаблон не выбран</div>);
     }
 
     return (

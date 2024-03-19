@@ -15,6 +15,7 @@ const viewSampleApi = rtkApi.injectEndpoints({
                 method: 'POST',
                 body: req
             }),
+            providesTags: ['Orgs']
         }),
         getFilteredOrgsCount: builder.query({
             query: (filters) => ({
@@ -28,13 +29,15 @@ const viewSampleApi = rtkApi.injectEndpoints({
                 url: `/orgs/record/${id}`,
                 method: 'PUT',
                 body: updatedData
-            })
+            }),
+            invalidatesTags: ['Orgs']
         }),
         deleteOrgRecord: builder.mutation({
             query: (id) => ({
                 url: `/orgs/record/${id}`,
                 method: 'DELETE'
-            })
+            }),
+            invalidatesTags: ['Orgs']
         })
     }),
 });

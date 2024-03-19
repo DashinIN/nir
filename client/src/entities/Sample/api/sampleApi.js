@@ -4,6 +4,7 @@ const sampleApi = rtkApi.injectEndpoints({
     endpoints: (builder) => ({
         getAllSamples: builder.query({
             query: () => '/samples', 
+            providesTags: ['Samples']
         }),
         getSample: builder.query({
             query: (id) => `/samples/${id}`,
@@ -14,6 +15,7 @@ const sampleApi = rtkApi.injectEndpoints({
                 method: 'POST',
                 body: data,
             }), 
+            invalidatesTags: ['Samples']
         }),
         editSample: builder.mutation({
             query: ({ id, data }) => ({
@@ -21,12 +23,14 @@ const sampleApi = rtkApi.injectEndpoints({
                 method: 'PUT',
                 body: data,
             }), 
+            invalidatesTags: ['Samples']
         }),
         deleteSample: builder.mutation({
             query: (id) => ({
                 url: `/samples/${id}`,
                 method: 'DELETE',
             }), 
+            invalidatesTags: ['Samples']
         }),
     }),
 });

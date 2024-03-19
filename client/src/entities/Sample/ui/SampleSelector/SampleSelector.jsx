@@ -14,7 +14,6 @@ export const SampleSelector = () => {
         data: allSamples,
         isLoading,
         isError,
-        refetch
     } = useAllSamples();
     const dispatch = useDispatch();
     const selectedSampleId = useSelector(getSelectedSample); 
@@ -24,8 +23,7 @@ export const SampleSelector = () => {
             const firstSampleId = allSamples[0].sample_id;
             dispatch(sampleActions.setSelectedSample(firstSampleId));
         }
-        refetch();
-    }, [allSamples, dispatch, refetch, selectedSampleId]);
+    }, [allSamples, dispatch, selectedSampleId]);
 
     const [deleteSample] = useDeleteSample();
 
@@ -46,8 +44,7 @@ export const SampleSelector = () => {
         const sampleId = sample.sample_id; 
         try {
             const deleteData = await deleteSample(sampleId);
-            const updatedSamples = await refetch();
-            const firstSampleId = updatedSamples.data[0].sample_id;
+            const firstSampleId = allSamples[0].sample_id;
             dispatch(sampleActions.setSelectedSample(firstSampleId));
             message.success(deleteData.data.message); 
         } catch (error) {
@@ -68,7 +65,6 @@ export const SampleSelector = () => {
         <VStack max gap={8}>
             <HStack max justify='center'>
                 <h3>Активный шаблон: {allSamples.find(sample => sample.sample_id === selectedSampleId)?.sample_name}</h3>                   
-
             </HStack>
             <h2>Список доступных шаблонов</h2>
             <div className={s.container}>
