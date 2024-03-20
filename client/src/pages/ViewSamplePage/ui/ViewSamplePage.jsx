@@ -12,6 +12,7 @@ import { validationRules } from '../consts/consts';
 import { filtersReducer } from '@/entities/Filters/model/slice/FiltersSlice';
 import { getFilters } from '@/entities/Filters/model/selectors/getFilters';
 import { Filters } from '@/entities/Filters/ui/Filters/Filters';
+import { TableActions } from '@/widgets/TableActions';
 
 const initialReducers = {
     sample: sampleReducer,
@@ -95,7 +96,7 @@ const ViewSamplePage = () => {
     const [editOrgRecord] =  useEditOrgRecord();
     const [deleteOrgRecord] =  useDeleteOrgRecord();
 
-    const handleOpenEditModal = (org) => {
+    const handleOpenEditModal = (org) => () => {
         setSelectedOrgForEdit(org);
         form.setFieldsValue(org);
         setEditModalVisible(true);
@@ -117,7 +118,7 @@ const ViewSamplePage = () => {
 
     };
 
-    const handleOpenDeleteModal = (org) => {
+    const handleOpenDeleteModal = (org) => () => {
         setSelectedOrgForEdit(org);
         setDeleteModalVisible(true);
     };
@@ -190,28 +191,11 @@ const ViewSamplePage = () => {
                                         title: 'Действия',
                                         key: 'actions',
                                         width: '100px',
-                                        render: (text, record) => (
-                                            <Space>
-                                                <Tooltip title="Редактировать" color='blue'>
-                                                    <Button
-                                                        type="primary"
-                                                        shape="circle"
-                                                        size="middle"
-                                                        icon={<EditOutlined />}
-                                                        onClick={() => handleOpenEditModal(record)}
-                                                    />
-                                                </Tooltip>
-                                                <Tooltip title="Удалить" color='red'>
-                                                    <Button
-                                                        type="default"
-                                                        danger
-                                                        shape="circle"
-                                                        size="middle"
-                                                        icon={<DeleteOutlined />}
-                                                        onClick={() => handleOpenDeleteModal(record)}
-                                                    />
-                                                </Tooltip>
-                                            </Space>
+                                        render: (record) => (
+                                            <TableActions 
+                                                handleOpenEditModal={handleOpenEditModal(record)} 
+                                                handleOpenDeleteModal={handleOpenDeleteModal(record)}
+                                            />
                                         ),
                                     },
                                 ]} 

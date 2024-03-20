@@ -1,11 +1,16 @@
 .Navbar {
-    display: flex;
-    justify-content: space-between;
-    gap: 16px;
-    padding: 10px;
+    padding: 10px 20px;
     background-color: var(--inverted-bg-color);
     z-index: 100;
     position: relative;
+    color: var(--bg-color);
+}
+
+h1 {
+    font-size: 1.5rem;
+    height: 70px;
+    display: flex;
+    align-items: center;
 }
 
 

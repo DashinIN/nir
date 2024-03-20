@@ -7,25 +7,10 @@ import { AuthModal } from '@/entities/User/ui/AuthModal';
 import {useLogin, useRegistration} from '@/entities/User/api/userApi';
 import { useDispatch, useSelector } from 'react-redux';
 import { useAuth } from '@/entities/User/hooks/useAuth';
-import { HStack } from '@/shared/ui/Stack';
+import { HStack, VStack } from '@/shared/ui/Stack';
 import {  useNavigate } from 'react-router-dom';
 import { getSelectedSample } from '@/entities/Sample';
 
-
-const items  = [
-    {
-        key: '1',
-        label: (<NavLink to="/selectSampleFields">Выбор полей шаблона</NavLink>),
-    },
-    {
-        key: '2',
-        label: (<NavLink to="/changeSampleFieldsOrder">Выбор порядка полей шаблона</NavLink>),
-    },
-    {
-        key: '3',
-        label: (<NavLink to="/saveSample">Сохранение шаблона</NavLink>),
-    },
-];
 
 
 export const Navbar = () => {
@@ -90,61 +75,64 @@ export const Navbar = () => {
 
     return (
         <div className={s.Navbar}>
-            <HStack gap={16}>
-                {user.role === 'ADMIN' && (
-                    <Dropdown   menu={{
-                        items,
-                        selectable: true,
-                        defaultSelectedKeys: ['1'],
-                    }} placement="bottomLeft">
-                        <Button type='primary'>Создать шаблон</Button>
-                    </Dropdown>
-                )}
-                {isAuth && (
-                    <>
-                        <Button type='primary'>
-                            <NavLink to="/changeSample">Выбрать шаблон</NavLink>
-                        </Button>   
-                        {selectedSampleId && (
+            <VStack max>
+                <HStack max justify='center'>
+                    <h1>Работа с реестром организаций</h1>
+                </HStack>
+                <HStack max justify='between'>
+                    <HStack gap={16}>
+                        {user.role === 'ADMIN' && (
                             <Button type='primary'>
-                                <NavLink to="/viewSample">Просмотр данных по шаблону</NavLink>
-                            </Button>
+                                <NavLink to="/selectSampleFields">Созлать шаблон</NavLink>
+                            </Button> 
                         )}
+                        {isAuth && (
+                            <>
+                                <Button type='primary'>
+                                    <NavLink to="/changeSample">Выбрать шаблон</NavLink>
+                                </Button>   
+                                {selectedSampleId && (
+                                    <Button type='primary'>
+                                        <NavLink to="/viewSample">Просмотр данных по шаблону</NavLink>
+                                    </Button>
+                                )}
                         
-                    </>
-                )}
-            </HStack>
-            <HStack gap={16}>
-                {user.role === 'ADMIN' && (
-                    <>
-                        <Button onClick={handleOpenRegistrationModal} type='primary'>Регистрация</Button>
-                        <AuthModal 
-                            isRegistration
-                            modalVisible={registrationModalVisible}
-                            handleCloseModal={handleCloseRegistrationModal}
-                            handleAuth={handleRegistration}
-                        />
-                    </>
-                )}
-                {isAuth ?  (
-                    <Button onClick={logOut} type='primary'>Выйти</Button>
-                ): (
-                    <>
-                        <Button onClick={handleOpenAuthModal} type='primary'>Авторизация</Button>
-                        <AuthModal 
-                            modalVisible={authModalVisible}
-                            handleCloseModal={handleCloseAuthModal}
-                            handleAuth={handleAuth}
-                        />
-                    </>
-                )}
-                {user && (
-                    <div style={{ color: '#f4f5fa' }}>
-                        <h3>{user.email}</h3>
-                        <h3>{roles[user.role]}</h3>
-                    </div>
-                )}
-            </HStack>
+                            </>
+                        )}
+                    </HStack>
+                    <HStack gap={16}>
+                        {user.role === 'ADMIN' && (
+                            <>
+                                <Button onClick={handleOpenRegistrationModal} type='primary'>Регистрация</Button>
+                                <AuthModal 
+                                    isRegistration
+                                    modalVisible={registrationModalVisible}
+                                    handleCloseModal={handleCloseRegistrationModal}
+                                    handleAuth={handleRegistration}
+                                />
+                            </>
+                        )}
+                        {isAuth ?  (
+                            <Button onClick={logOut} type='primary'>Выйти</Button>
+                        ): (
+                            <>
+                                <Button onClick={handleOpenAuthModal} type='primary'>Авторизация</Button>
+                                <AuthModal 
+                                    modalVisible={authModalVisible}
+                                    handleCloseModal={handleCloseAuthModal}
+                                    handleAuth={handleAuth}
+                                />
+                            </>
+                        )}
+                        {user && (
+                            <VStack align='end'>
+                                <p>{user.email}</p>
+                                <p>{roles[user.role]}</p>
+                            </VStack>
+                        )}
+                    </HStack>
+                </HStack>
+            </VStack>
         </div>
     );
 };
