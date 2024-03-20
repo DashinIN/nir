@@ -152,7 +152,8 @@ const OutputSamples = sequelize.define('output_samples', {
     },
     sample_name: {
         type: DataTypes.STRING(255),
-        allowNull: false
+        allowNull: false,
+        unique: true
     }
 }, {
     tableName: 'output_samples',

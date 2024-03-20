@@ -1,14 +1,29 @@
-import { useState } from 'react';
-import { Button, Input } from 'antd';
+import { useEffect, useState } from 'react';
+import { Button, Input, message } from 'antd';
 import { HStack, VStack } from '@/shared/ui/Stack';
 import { useAddSample } from '../../api/sampleApi';
 import SaveIcon from '@/shared/assets/save.svg';
 import s from './SaveSample.module.scss';
+import { useNavigate } from 'react-router-dom';
 
 export const SaveSample = ({items}) => {
     const [sampleNameInputValue, setSampleNameInputValue] = useState('');
-    const [validationErrorMessage, setValidationErrorMessage] = useState('');
-    const [addSample, {isSuccess, isError, isLoading, error, data} ] = useAddSample();
+    const navigate = useNavigate();
+    const [addSample, {isSuccess, isError, isLoading, error} ] = useAddSample();
+
+    useEffect(() => {
+        if (isError) {
+            message.error(error.data.error);
+        }
+    }, [isError, error]);
+
+    useEffect(() => {
+        if (isSuccess) {
+            message.success(`Шаблон ${sampleNameInputValue} успешно сохранен.`);
+            setSampleNameInputValue('');
+            navigate('/changeSample');
+        }
+    }, [isSuccess, navigate, sampleNameInputValue]);
 
     const handleNameChange = (event) => {
         setSampleNameInputValue(event.target.value);
@@ -16,31 +31,17 @@ export const SaveSample = ({items}) => {
 
     const handleSave = async () => {
         if (!(sampleNameInputValue.trim() !== '' && items)) {
-            setValidationErrorMessage('Введите название и содержимое шаблона.');
+            message.error('Введите название и содержимое шаблона.');
             return;
         }
-        setValidationErrorMessage('');
 
-        const sampeleData = { name: sampleNameInputValue, items };
-        await addSample(sampeleData);
-
-        if (isSuccess) {
-            setSampleNameInputValue('');
-        }
+        const sampleData = { name: sampleNameInputValue, items };
+        await addSample(sampleData);
     };
 
     return (
         <VStack gap={8} align='center'>
             <h2>Сохранение шаблона</h2>
-            {validationErrorMessage  && (
-                <div className={s.errors}>{validationErrorMessage}</div>
-            )}
-            {(isError && !validationErrorMessage) && (
-                <div className={s.errors}>{error.data.error}</div>
-            )}
-            {isSuccess && (
-                <div>{data.message}</div>
-            )}  
             <HStack gap={8}>
                 <Input 
                     type="text"
@@ -53,7 +54,7 @@ export const SaveSample = ({items}) => {
                     className={s.saveButton}
                     size='large'
                 >
-                    {isLoading ? 'Сохранение...' : 'Cохранить'}
+                    Cохранить
                     <SaveIcon />
                 </Button>
             </HStack>          
