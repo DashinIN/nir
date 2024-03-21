@@ -94,8 +94,10 @@ class OrgsController {
                 title: field.field_name_ru,
                 dataIndex: field.field_name_en,
                 key: field.field_name_en,
-                width: fieldWidth[field.field_name_en]
+                width: fieldWidth[field.field_name_en],
+                rights: field.rights
             }))]
+
             return res.json(headers)
         } catch (error) {
             console.error('Ошибка:', error)

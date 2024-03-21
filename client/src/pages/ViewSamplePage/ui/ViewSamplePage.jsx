@@ -13,6 +13,7 @@ import { filtersReducer } from '@/entities/Filters/model/slice/FiltersSlice';
 import { getFilters } from '@/entities/Filters/model/selectors/getFilters';
 import { Filters } from '@/entities/Filters/ui/Filters/Filters';
 import { TableActions } from '@/widgets/TableActions';
+import { useAuth } from '@/entities/User/hooks/useAuth';
 
 const initialReducers = {
     sample: sampleReducer,
@@ -21,6 +22,7 @@ const initialReducers = {
 
 
 const ViewSamplePage = () => {
+    const { user } = useAuth();
     //Id текущего шаблона
     const selectedSampleId = useSelector(getSelectedSample); 
         
@@ -96,7 +98,8 @@ const ViewSamplePage = () => {
     const [editOrgRecord] =  useEditOrgRecord();
     const [deleteOrgRecord] =  useDeleteOrgRecord();
 
-    const handleOpenEditModal = (org) => () => {
+    const handleOpenEditModal =  (org) => () => {
+        console.log('gogo');
         setSelectedOrgForEdit(org);
         form.setFieldsValue(org);
         setEditModalVisible(true);
@@ -187,7 +190,7 @@ const ViewSamplePage = () => {
                                             onClick: () => handleColumnSort(column)
                                         }),
                                     })),
-                                    {
+                                    ...(user.role !== 'USER' ? [{
                                         title: 'Действия',
                                         key: 'actions',
                                         width: '100px',
@@ -197,8 +200,9 @@ const ViewSamplePage = () => {
                                                 handleOpenDeleteModal={handleOpenDeleteModal(record)}
                                             />
                                         ),
-                                    },
-                                ]} 
+                                    }] : []),
+                                ]}
+                                
                                 locale={{
                                     emptyText: 'Записях об организациях, подходящих по фильтру нет',
                                     triggerAsc: 'Сортировать по возрастанию',
@@ -232,17 +236,31 @@ const ViewSamplePage = () => {
                                 ]}
                             >
                                 <Form size='small' form={form} layout="vertical" name="edit_record_form" onChange={handleFormChange}>
-                                    {orgsColumns.filter(org => org.title !== 'id').map((column) => (
-                                        <Form.Item 
-                                            key={column.key}
-                                            name={column.dataIndex}
-                                            label={column.title}
-                                            rules={validationRules[column.dataIndex]}
-                                            initialValue={selectedOrgForEdit && selectedOrgForEdit[column.dataIndex]}
-                                        >
-                                            <Input />
-                                        </Form.Item>
-                                    ))}
+                                    {orgsColumns.filter(org => org.title !== 'id').map((column) => {
+                                        
+                                        const isAccess = {
+                                            'USER': false,
+                                            'ADMIN': true,
+                                            'MANAGER': column.rights !== 'ADMIN'
+                                        };
+                                        console.log(column);
+                                        console.log(isAccess[user.role]);
+
+                                        return (
+                                            <Form.Item 
+                                                key={column.key}
+                                                name={column.dataIndex}
+                                                label={column.title}
+                                                rules={validationRules[column.dataIndex]}
+                                                initialValue={selectedOrgForEdit && selectedOrgForEdit[column.dataIndex]}
+                                            >
+                                                <Input 
+                                                    size={isAccess[user.role] ? 'large' : 'small'} 
+                                                    disabled={!isAccess[user.role]}
+                                                />
+                                            </Form.Item>
+                                        );
+                                    })}
                                 </Form>
                             </Modal>
                             <Modal

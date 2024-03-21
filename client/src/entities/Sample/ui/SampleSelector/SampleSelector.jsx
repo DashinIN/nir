@@ -62,7 +62,7 @@ export const SampleSelector = () => {
     }
 
     return (
-        <VStack max gap={8}>
+        <VStack max gap={16} align='center'>
             <HStack max justify='center'>
                 <h3>Активный шаблон: {allSamples.find(sample => sample.sample_id === selectedSampleId)?.sample_name}</h3>                   
             </HStack>

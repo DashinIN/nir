@@ -99,7 +99,7 @@ class SamplesController {
                 rights: item.rights
             }))
             await OutputSamplesFields.bulkCreate(sampleFieldsValues)
-            return res.status(200).json({ message: 'Шаблон успешно отредактирован' })
+            return res.status(200).json({ message: `Шаблон ${name} успешно отредактирован` })
         } catch (error) {
             console.error('Ошибка:', error)
             if (error.name === 'SequelizeUniqueConstraintError') {
