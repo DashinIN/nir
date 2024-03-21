@@ -22,12 +22,12 @@ body {
 
 .ant-table-sticky-scroll-bar, .ant-table-sticky-scroll {
     background-color:  var(--bg-color) !important;
+    opacity: 1 !important;
 }
 
 *::-webkit-scrollbar-thumb, .ant-table-sticky-scroll-bar{
     border-radius: 8px !important;
     background-color:  var(--inverted-bg-color) !important;
-    opacity: 1 !important;
 
     &:hover, &:active  {
         cursor: pointer;

@@ -157,7 +157,7 @@ const ViewSamplePage = () => {
             removeAfterUnmount={false}  
             reducers={initialReducers}
         >
-            <VStack gap='8' max>
+            <VStack gap='32' max>
                 <Filters />
                 {
                     isTableUpdating ? (
@@ -207,6 +207,8 @@ const ViewSamplePage = () => {
                                 }}
                                 loading={isTableUpdating}
                                 pagination={{
+                                    size: 'default',
+                                    hideOnSinglePage: true,
                                     current: currentPage,
                                     pageSize: pageSize,
                                     total: filteredOrgsCount.totalCount,

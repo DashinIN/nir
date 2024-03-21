@@ -83,22 +83,10 @@ export const Filters = () => {
                 ) : (
                     <>
                         <HStack max justify='between'> 
-                            <h3>Фильтр</h3>
+                            <h3>Фильтр по организациям</h3>
                             <h3>Активный шаблон: {allSamples.find(sample => sample.sample_id === selectedSampleId)?.sample_name}</h3>                                    
                         </HStack>  
                         <Space>
-                            <Select 
-                                options={orgTypeOptions}
-                                value={orgTypeFilterValue}
-                                onChange={handleChangeOrgTypeFilter}
-                                placeholder={'Тип организации'}
-                            />
-                            <Select 
-                                options={statusEgrulOptions}
-                                value={statusEgrulFilterValue}
-                                onChange={handleChangeStatusEgrulFilter}
-                                placeholder={'Статус в ЕГРЮЛ'}
-                            />
                             <Select 
                                 options={fedOkrugOptions}
                                 value={fedOkrugFilterValue}
@@ -112,10 +100,22 @@ export const Filters = () => {
                                 placeholder={'Регион'}
                             />
                             <Select 
+                                options={orgTypeOptions}
+                                value={orgTypeFilterValue}
+                                onChange={handleChangeOrgTypeFilter}
+                                placeholder={'Тип организации'}
+                            />
+                            <Select 
                                 options={levelOptions}
                                 value={levelFilterValue}
                                 onChange={handleChangeLevelFilter}
-                                placeholder={'Уровень'}
+                                placeholder={'Уровень организации'}
+                            />
+                            <Select 
+                                options={statusEgrulOptions}
+                                value={statusEgrulFilterValue}
+                                onChange={handleChangeStatusEgrulFilter}
+                                placeholder={'Статус в ЕГРЮЛ'}
                             />
                         </Space>  
                     </>

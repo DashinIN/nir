@@ -13,11 +13,11 @@
 }
 
 .active {
-    background-color: var(--inverted-bg-color);
+    background-color: #1677FF;
     color: var(--bg-color);
 
     &:hover {
-        background-color: var(--inverted-bg-color);
+        background-color: #1677FF;
         cursor: default;
     }
 }

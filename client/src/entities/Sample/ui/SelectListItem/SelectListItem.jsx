@@ -45,7 +45,7 @@ export const SelectListItem = (props) => {
                     <Space>
                         <Tooltip title="Редактировать шаблон" color='blue'>
                             <Button
-                                type="primary"
+                                type='primary'
                                 shape="circle"
                                 size="middle"
                                 icon={<EditOutlined />}
@@ -54,7 +54,7 @@ export const SelectListItem = (props) => {
                         </Tooltip>
                         <Tooltip title="Удалить шаблон" color='red'>
                             <Button
-                                type="default"
+                                type='default'
                                 danger
                                 shape="circle"
                                 size="middle"
