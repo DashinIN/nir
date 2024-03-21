@@ -1,10 +1,9 @@
-import { Modal, Dropdown, Form, Input, Select, Button, Space } from 'antd';
+import { Modal, Dropdown, Form, Input, Select, Button, Space, message } from 'antd';
 import { useState } from 'react';
 
 
 export const AuthModal = ({isRegistration, modalVisible, handleCloseModal, handleAuth}) => {
     const [form] = Form.useForm();
-
     const [formValid, setFormValid] = useState(false);
 
     const handleFormChange = () => {
@@ -29,13 +28,15 @@ export const AuthModal = ({isRegistration, modalVisible, handleCloseModal, handl
         handleCloseModal();
     };
 
-    const handleConfirm =  async (values) => {
-       
-        await handleAuth(values);
+
+    const handleConfirm = async (values) => {
+        const response = await handleAuth(values); 
+        if (response.error)  return;
         form.resetFields(); 
         handleCloseModal();
-      
+        message.success(isRegistration ? 'Пользователь зарегистрирован' : 'Авторизация пройдена'); 
     };
+    
 
     return (
         <Modal

@@ -1,12 +1,13 @@
 import { FileOutput } from '@/features/FileOutput';
-import { Page } from '@/widgets/Page';
 import { VStack } from '@/shared/ui/Stack';
 import { DynamicModuleLoader } from '@/shared/lib/components/DynamicModuleLoader/DynamicModuleLoader';
 import { sampleReducer } from '@/entities/Sample/model/slice/sampleSlice';
+import { filtersReducer } from '@/entities/Filters/model/slice/FiltersSlice';
 
 
 const initialReducers = {
     sample: sampleReducer,
+    filters: filtersReducer
 };
 
 const UseSamplePage = () => {
@@ -16,11 +17,9 @@ const UseSamplePage = () => {
             removeAfterUnmount={false}  
             reducers={initialReducers}
         >
-            <Page>
-                <VStack gap={16} max>
-                    <FileOutput />
-                </VStack>
-            </Page>
+            <VStack gap={16} max>
+                <FileOutput />
+            </VStack>
         </DynamicModuleLoader>
     );
 };

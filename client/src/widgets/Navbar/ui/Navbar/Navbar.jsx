@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import { useState } from 'react';
-import { Dropdown, Button } from 'antd';
+import { Dropdown, Button, message } from 'antd';
 import s from './Navbar.module.scss';
 import { userActions } from '@/entities/User/model/slice/userSlice';
 import { AuthModal } from '@/entities/User/ui/AuthModal';
@@ -25,7 +25,11 @@ export const Navbar = () => {
 
     const handleRegistration = async (values) => {
         try {
-            await register(values);
+            const response = await register(values);
+            if(response.error) {
+                message.error(response.error.data.message);
+            } 
+            return response;
           
         } catch (err) {
             console.error('Error during registration:', err); 
@@ -43,12 +47,15 @@ export const Navbar = () => {
     };
 
     const handleAuth = async (values) => {
-        try {
-            await login(values);
+       
+        const response = await login(values);
+        if(response.error) {
+            message.error(response.error.data.message);
+        } else {
             navigate('/');
-        } catch (err) {
-            console.error('Error during login:', err); 
         }
+        return response;
+        
     };
 
     const [authModalVisible, setAuthModalVisible] = useState(false);
@@ -92,9 +99,14 @@ export const Navbar = () => {
                                     <NavLink to="/changeSample">Выбрать шаблон</NavLink>
                                 </Button>   
                                 {selectedSampleId && (
-                                    <Button type='primary'>
-                                        <NavLink to="/viewSample">Просмотр данных по шаблону</NavLink>
-                                    </Button>
+                                    <>
+                                        <Button type='primary'>
+                                            <NavLink to="/viewSample">Работа с данными</NavLink>
+                                        </Button>
+                                        <Button type='primary'>
+                                            <NavLink to="/useSample">Экспорт данных</NavLink>
+                                        </Button>
+                                    </>
                                 )}
                         
                             </>

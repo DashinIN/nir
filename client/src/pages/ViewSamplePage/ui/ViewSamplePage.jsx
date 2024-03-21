@@ -99,7 +99,6 @@ const ViewSamplePage = () => {
     const [deleteOrgRecord] =  useDeleteOrgRecord();
 
     const handleOpenEditModal =  (org) => () => {
-        console.log('gogo');
         setSelectedOrgForEdit(org);
         form.setFieldsValue(org);
         setEditModalVisible(true);
@@ -243,8 +242,6 @@ const ViewSamplePage = () => {
                                             'ADMIN': true,
                                             'MANAGER': column.rights !== 'ADMIN'
                                         };
-                                        console.log(column);
-                                        console.log(isAccess[user.role]);
 
                                         return (
                                             <Form.Item 

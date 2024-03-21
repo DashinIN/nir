@@ -10,6 +10,7 @@ import { Select } from '@/shared/ui/Select';
 import { useEffect } from 'react';
 import s from './Filters.module.scss';
 import { useGetFilterValues } from '../../api/filtersApi';
+import { Skeleton } from '@/shared/ui/Skeleton';
 
 const generateOptions = (values, labels) => {
     return values ? values.filter(value => Boolean(value) !== false).map(value => ({
@@ -77,9 +78,15 @@ export const Filters = () => {
         <div className={s.wrapper}>
             <VStack gap='8' max> 
                 {isFiltersDataLoading  ? (
-                    <VStack max align='center'>
-                        <Loader />
-                    </VStack>
+                    <div className={s.skeleton}>
+                        <HStack gap={8} max>
+                            <Skeleton width={300} height={40} border={10}/>
+                            <Skeleton width={300} height={40} border={10}/>
+                            <Skeleton width={300} height={40} border={10}/>
+                            <Skeleton width={300} height={40} border={10}/>
+                            <Skeleton width={300} height={40} border={10}/>
+                        </HStack>
+                    </div>
                 ) : (
                     <>
                         <HStack max justify='between'> 
