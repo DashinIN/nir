@@ -1,11 +1,10 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { getFedOkrugFitlerValue, getRegionFilterValue, getOrgTypeFilterValue, getStatusEgrulFilterValue, getLevelFilterValue } from '../../model/selectors/getFilters';
+import { getFedOkrugFitlerValue, getLevelFilterValue, getOrgTypeFilterValue, getRegionFilterValue, getStatusEgrulFilterValue } from '../../model/selectors/getFilters';
 import { filtersActions } from '../../model/slice/FiltersSlice';
 import { getSelectedSample, useAllSamples } from '@/entities/Sample';
-import { levelLabels, fedOkrugLabels } from '@/shared/consts/filtersConsts';
+import { fedOkrugLabels, levelLabels } from '@/shared/consts/filtersConsts';
 import { HStack, VStack } from '@/shared/ui/Stack';
 import { Space } from 'antd';
-import { Loader } from '@/shared/ui/Loader';
 import { Select } from '@/shared/ui/Select';
 import { useEffect } from 'react';
 import s from './Filters.module.scss';

@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import { useState } from 'react';
-import { Dropdown, Button, message } from 'antd';
+import { Button, message } from 'antd';
 import s from './Navbar.module.scss';
 import { userActions } from '@/entities/User/model/slice/userSlice';
 import { AuthModal } from '@/entities/User/ui/AuthModal';

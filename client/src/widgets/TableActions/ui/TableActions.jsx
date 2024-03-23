@@ -1,5 +1,5 @@
 import { Button, Space, Tooltip } from 'antd';
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { useAuth } from '@/entities/User/hooks/useAuth';
 
 

@@ -13,6 +13,12 @@ module.exports = {
   plugins: ['react-refresh'],
   rules: {
     indent: [2, 4],
+    'sort-imports': [
+      2,
+      {
+        "ignoreDeclarationSort": true
+      }
+    ],
     'linebreak-style': 'off',
     'react/self-closing-comp': ['error', {
       'component': true,
@@ -29,7 +35,7 @@ module.exports = {
         },
     ],
     'import/prefer-default-export': 'off',
-    'no-unused-vars': 'off',
+    'no-unused-vars': 1,
     'react/require-default-props': 'off',
     'react/react-in-jsx-scope': 'off',
     'react/function-component-definition': 'off',

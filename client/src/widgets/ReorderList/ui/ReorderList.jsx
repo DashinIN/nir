@@ -1,7 +1,7 @@
 import { Reorder } from 'framer-motion';
 import { useState } from 'react';
 import { classNames } from '@/shared/lib/classNames/classNames';
-import { VStack, HStack } from '@/shared/ui/Stack';
+import { HStack, VStack } from '@/shared/ui/Stack';
 import { Select } from 'antd';
 import DragIcon from '@/shared/assets/drag.svg';
 import DragActiveIcon from '@/shared/assets/dragActive.svg';

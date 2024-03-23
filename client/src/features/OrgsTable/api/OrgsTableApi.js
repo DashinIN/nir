@@ -1,6 +1,6 @@
 import { rtkApi } from '@/shared/api/rtkApi';
 
-const viewSampleApi = rtkApi.injectEndpoints({ 
+const OrgsTableApi = rtkApi.injectEndpoints({ 
     endpoints: (builder) => ({
         getSampleFieldsHeaders: builder.query({
             query: (selectedSampleId) => ({
@@ -42,8 +42,8 @@ const viewSampleApi = rtkApi.injectEndpoints({
     }),
 });
 
-export const useGetSampleFieldsHeaders = viewSampleApi.useGetSampleFieldsHeadersQuery;
-export const useGetFilteredOrgs = viewSampleApi.useGetFilteredOrgsQuery;
-export const useGetFilteredOrgsCount = viewSampleApi.useGetFilteredOrgsCountQuery;
-export const useEditOrgRecord = viewSampleApi.useEditOrgRecordMutation;
-export const useDeleteOrgRecord = viewSampleApi.useDeleteOrgRecordMutation;
+export const useGetSampleFieldsHeaders = OrgsTableApi.useGetSampleFieldsHeadersQuery;
+export const useGetFilteredOrgs = OrgsTableApi.useGetFilteredOrgsQuery;
+export const useGetFilteredOrgsCount = OrgsTableApi.useGetFilteredOrgsCountQuery;
+export const useEditOrgRecord = OrgsTableApi.useEditOrgRecordMutation;
+export const useDeleteOrgRecord = OrgsTableApi.useDeleteOrgRecordMutation;

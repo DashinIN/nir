@@ -3,7 +3,7 @@ import { Page } from '@/widgets/Page';
 import { DynamicModuleLoader } from '@/shared/lib/components/DynamicModuleLoader/DynamicModuleLoader';
 import { FieldsSelector, fieldsActions, fieldsReducer, getFields } from '@/entities/Fields';
 import { editActions, editReducer } from '@/pages/EditSamplePage/model/slice/editSlice';
-import { getEditSample, getIsEdit } from '@/pages/EditSamplePage/model/selectors/getIsEdit';
+import { getEditSample } from '@/pages/EditSamplePage/model/selectors/getIsEdit';
 import { useNavigate } from 'react-router-dom';
 import { Button } from 'antd';
 import { useAllSamples, useSample } from '@/entities/Sample/api/sampleApi';

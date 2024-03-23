@@ -1,5 +1,5 @@
-import { Button, Space, Tooltip, Modal } from 'antd';
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { Button, Modal, Space, Tooltip } from 'antd';
+import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { useState } from 'react';
 import { classNames } from '@/shared/lib/classNames/classNames';
 import s from './SelectListItem.module.scss';

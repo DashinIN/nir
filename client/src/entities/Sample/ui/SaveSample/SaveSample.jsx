@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 export const SaveSample = ({items}) => {
     const [sampleNameInputValue, setSampleNameInputValue] = useState('');
     const navigate = useNavigate();
-    const [addSample, {isSuccess, isError, isLoading, error} ] = useAddSample();
+    const [addSample, {isSuccess, isError, error} ] = useAddSample();
 
     useEffect(() => {
         if (isError) {

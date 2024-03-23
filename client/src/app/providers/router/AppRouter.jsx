@@ -1,5 +1,5 @@
 import { Suspense } from 'react';
-import { Route, Routes, Navigate } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import { Loader } from '@/shared/ui/Loader';
 import { routeConfig } from './config';
 import { useAuth } from '@/entities/User/hooks/useAuth';
