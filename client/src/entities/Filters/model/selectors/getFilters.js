@@ -1,11 +1,11 @@
 import { createSelector } from 'reselect';
 
-export const filters = (state) => state.filters || [];
-export const OrgTypeFilterValue = (state) => (state.filters ? state.filters.orgType || [] : []);
-export const StatusEgrulFilterValue = (state) => (state.filters ? state.filters.statusEgrul || [] : []);
-export const FedOkrugFitlerValue = (state) => (state.filters ? state.filters.fedOkrug || [] : []);
-export const LevelFilterValue = (state) => (state.filters ? state.filters.level || [] : []);
-export const RegionFilterValue = (state) => (state.filters ? state.filters.region || [] : []);
+const filters = (state) => state.filters || [];
+const OrgTypeFilterValue = (state) => (state.filters ? state.filters.orgType || [] : []);
+const StatusEgrulFilterValue = (state) => (state.filters ? state.filters.statusEgrul || [] : []);
+const FedOkrugFitlerValue = (state) => (state.filters ? state.filters.fedOkrug || [] : []);
+const LevelFilterValue = (state) => (state.filters ? state.filters.level || [] : []);
+const RegionFilterValue = (state) => (state.filters ? state.filters.region || [] : []);
 
 export const getOrgTypeFilterValue = createSelector(
     [OrgTypeFilterValue],

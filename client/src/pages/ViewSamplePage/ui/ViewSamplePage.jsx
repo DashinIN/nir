@@ -3,8 +3,7 @@ import { sampleReducer } from '@/entities/Sample/model/slice/sampleSlice';
 import { getSelectedSample } from '@/entities/Sample';
 import { useSelector } from 'react-redux';
 import { VStack } from '@/shared/ui/Stack';
-import { filtersReducer } from '@/entities/Filters/model/slice/FiltersSlice';
-import { Filters } from '@/entities/Filters/ui/Filters/Filters';
+import { Filters, filtersReducer } from '@/entities/Filters';
 import { OrgsTable } from '@/features/OrgsTable';
 
 const initialReducers = {
