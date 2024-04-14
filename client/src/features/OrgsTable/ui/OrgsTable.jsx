@@ -3,13 +3,13 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useDeleteOrgRecord, useEditOrgRecord, useGetFilteredOrgs, useGetFilteredOrgsCount, useGetSampleFieldsHeaders } from '../api/OrgsTableApi';
 import { getSelectedSample } from '@/entities/Sample';
-import { Button, Form, Input, Modal, Table, message } from 'antd';
+import { Button, Form, Input, Modal, Select, Table, message } from 'antd';
 import { useAuth } from '@/entities/User/hooks/useAuth';
 import { TableActions } from '@/widgets/TableActions';
 import { validationRules } from '@/pages/ViewSamplePage/consts/consts';
 import { Loader } from '@/shared/ui/Loader';
 import { VStack } from '@/shared/ui/Stack';
-import { actionsColumn, indexColumn, tableLocales } from '../consts/consts';
+import { actionsColumn, indexColumn, selectorValues, tableLocales } from '../consts/consts';
 
 
 export const OrgsTable = () => {
@@ -214,10 +214,21 @@ export const OrgsTable = () => {
                                 rules={validationRules[column.dataIndex]}
                                 initialValue={selectedOrgForEdit && selectedOrgForEdit[column.dataIndex]}
                             >
-                                <Input 
-                                    size={isAccess[user.role] ? 'large' : 'small'} 
-                                    disabled={!isAccess[user.role]}
-                                />
+                                {selectorValues[column.dataIndex] ? (
+                                    <Select 
+                                        size={isAccess[user.role] ? 'large' : 'small'} 
+                                        disabled={!isAccess[user.role]}
+                                    >
+                                        {selectorValues[column.dataIndex].map(value => (
+                                            <Select.Option key={value} value={value}>{value}</Select.Option>
+                                        ))}
+                                    </Select>
+                                ) : (
+                                    <Input 
+                                        size={isAccess[user.role] ? 'large' : 'small'} 
+                                        disabled={!isAccess[user.role]}
+                                    />
+                                )}
                             </Form.Item>
                         );
                     })}
